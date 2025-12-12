@@ -245,10 +245,7 @@ export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
                   control={control}
                   name="userType"
                   render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id="userType"
                         className={cn(
