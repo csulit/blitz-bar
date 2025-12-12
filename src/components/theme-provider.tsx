@@ -27,15 +27,21 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme)
+  const [mounted, setMounted] = useState(false)
 
+  // Read stored theme on mount
   useEffect(() => {
     const stored = localStorage.getItem(storageKey) as Theme | null
     if (stored) {
       setTheme(stored)
     }
+    setMounted(true)
   }, [storageKey])
 
+  // Apply theme to DOM - only after mounted to avoid overriding inline script
   useEffect(() => {
+    if (!mounted) return
+
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
 
@@ -49,7 +55,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme)
-  }, [theme])
+  }, [theme, mounted])
 
   const value = {
     theme,
