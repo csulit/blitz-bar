@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { loginSchema, type LoginFormData } from '@/lib/schemas/login'
+import { ModeToggle } from '@/components/mode-toggle'
 
 interface LoginFormProps extends Omit<React.ComponentProps<'div'>, 'onSubmit'> {
   onSubmit?: (data: LoginFormData) => void | Promise<void>
@@ -53,8 +54,8 @@ export function LoginForm({
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: `
-            linear-gradient(to right, #e7e5e4 1px, transparent 1px),
-            linear-gradient(to bottom, #e7e5e4 1px, transparent 1px)
+            linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)
           `,
           backgroundSize: '20px 20px',
           backgroundPosition: '0 0, 0 0',
@@ -94,6 +95,9 @@ export function LoginForm({
           WebkitMaskComposite: 'source-in',
         }}
       />
+      <div className="absolute top-6 right-6 z-20">
+        <ModeToggle />
+      </div>
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-6 p-6 md:p-10">
         <Card className="w-full max-w-3xl overflow-hidden p-0">
           <CardContent className="grid p-0 md:grid-cols-2">
