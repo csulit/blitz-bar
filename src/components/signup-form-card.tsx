@@ -14,39 +14,37 @@ import {
   FieldSeparator,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { loginSchema, type LoginFormData } from '@/lib/schemas/login'
+import { signupSchema, type SignupFormData } from '@/lib/schemas/signup'
 
-interface LoginFormCardProps extends Omit<
-  React.ComponentProps<'div'>,
-  'onSubmit'
-> {
-  onSubmit?: (data: LoginFormData) => void | Promise<void>
+interface SignupFormCardProps
+  extends Omit<React.ComponentProps<'div'>, 'onSubmit'> {
+  onSubmit?: (data: SignupFormData) => void | Promise<void>
   isLoading?: boolean
 }
 
-export function LoginFormCard({
+export function SignupFormCard({
   className,
   onSubmit,
   isLoading = false,
   ...props
-}: LoginFormCardProps) {
+}: SignupFormCardProps) {
   const {
     register,
     handleSubmit,
     setFocus,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
   })
 
   useEffect(() => {
-    const firstError = Object.keys(errors)[0] as keyof LoginFormData | undefined
+    const firstError = Object.keys(errors)[0] as keyof SignupFormData | undefined
     if (firstError) {
       setFocus(firstError)
     }
   }, [errors, setFocus])
 
-  const handleFormSubmit = async (data: LoginFormData) => {
+  const handleFormSubmit = async (data: SignupFormData) => {
     await onSubmit?.(data)
   }
 
@@ -59,9 +57,11 @@ export function LoginFormCard({
         <form className="p-6 md:p-8" onSubmit={handleSubmit(handleFormSubmit)}>
           <FieldGroup>
             <div className="flex flex-col items-center gap-2 text-center">
-              <h1 className="text-2xl font-bold font-display">Welcome back</h1>
+              <h1 className="text-2xl font-bold font-display">
+                Create an account
+              </h1>
               <p className="text-muted-foreground text-balance">
-                Login to your Acme Inc account
+                Enter your information to get started
               </p>
             </div>
             <Field>
@@ -76,30 +76,104 @@ export function LoginFormCard({
                 )}
                 {...register('email')}
               />
+              {errors.email && (
+                <FieldDescription className="text-red-500">
+                  {errors.email.message}
+                </FieldDescription>
+              )}
+            </Field>
+            <div className="grid grid-cols-[1fr_4rem] gap-4">
+              <Field>
+                <FieldLabel htmlFor="firstName">First name</FieldLabel>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  className={cn(
+                    errors.firstName &&
+                      'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
+                  )}
+                  {...register('firstName')}
+                />
+                {errors.firstName && (
+                  <FieldDescription className="text-red-500">
+                    {errors.firstName.message}
+                  </FieldDescription>
+                )}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="middleInitial">M.I.</FieldLabel>
+                <Input
+                  id="middleInitial"
+                  type="text"
+                  placeholder="A"
+                  maxLength={1}
+                  className={cn(
+                    'text-center',
+                    errors.middleInitial &&
+                      'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
+                  )}
+                  {...register('middleInitial')}
+                />
+              </Field>
+            </div>
+            <Field>
+              <FieldLabel htmlFor="lastName">Last name</FieldLabel>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                className={cn(
+                  errors.lastName &&
+                    'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
+                )}
+                {...register('lastName')}
+              />
+              {errors.lastName && (
+                <FieldDescription className="text-red-500">
+                  {errors.lastName.message}
+                </FieldDescription>
+              )}
             </Field>
             <Field>
-              <div className="flex items-center">
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <Link
-                  to="/forgot-password"
-                  className="ml-auto text-sm underline-offset-2 hover:underline"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input
                 id="password"
                 type="password"
+                placeholder="Enter your password"
                 className={cn(
                   errors.password &&
                     'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
                 )}
                 {...register('password')}
               />
+              {errors.password && (
+                <FieldDescription className="text-red-500">
+                  {errors.password.message}
+                </FieldDescription>
+              )}
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                className={cn(
+                  errors.confirmPassword &&
+                    'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
+                )}
+                {...register('confirmPassword')}
+              />
+              {errors.confirmPassword && (
+                <FieldDescription className="text-red-500">
+                  {errors.confirmPassword.message}
+                </FieldDescription>
+              )}
             </Field>
             <Field>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Logging in...' : 'Login'}
+                {isLoading ? 'Creating account...' : 'Create account'}
               </Button>
             </Field>
             <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -118,7 +192,7 @@ export function LoginFormCard({
                     fill="currentColor"
                   />
                 </svg>
-                <span className="sr-only">Login with Apple</span>
+                <span className="sr-only">Sign up with Apple</span>
               </Button>
               <Button
                 variant="outline"
@@ -132,7 +206,7 @@ export function LoginFormCard({
                     fill="currentColor"
                   />
                 </svg>
-                <span className="sr-only">Login with Google</span>
+                <span className="sr-only">Sign up with Google</span>
               </Button>
               <Button
                 variant="outline"
@@ -146,13 +220,13 @@ export function LoginFormCard({
                     fill="currentColor"
                   />
                 </svg>
-                <span className="sr-only">Login with Meta</span>
+                <span className="sr-only">Sign up with Meta</span>
               </Button>
             </Field>
             <FieldDescription className="text-center">
-              Don&apos;t have an account?{' '}
-              <Link to="/signup" className="underline underline-offset-2">
-                Sign up
+              Already have an account?{' '}
+              <Link to="/login" className="underline underline-offset-2">
+                Sign in
               </Link>
             </FieldDescription>
           </FieldGroup>

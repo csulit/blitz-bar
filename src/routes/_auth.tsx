@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { ModeToggle } from '@/components/mode-toggle'
 import { FieldDescription } from '@/components/ui/field'
 
@@ -62,7 +62,14 @@ function AuthLayout() {
         <Outlet />
         <FieldDescription className="px-6 text-center">
           By clicking continue, you agree to our{' '}
-          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          <Link to="/terms" className="underline underline-offset-4 hover:text-foreground transition-colors">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link to="/privacy" className="underline underline-offset-4 hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
+          .
         </FieldDescription>
       </div>
     </div>
