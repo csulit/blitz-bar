@@ -15,23 +15,27 @@ export const todos = pgTable('todos', {
   createdAt: timestamp('created_at').defaultNow(),
 })
 
-export const user = pgTable('user', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  emailVerified: boolean('email_verified').default(false).notNull(),
-  image: text('image'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  twoFactorEnabled: boolean('two_factor_enabled').default(false),
-  role: text('role').default('partner'),
-  banned: boolean('banned').default(false),
-  banReason: text('ban_reason'),
-  banExpires: timestamp('ban_expires'),
-})
+export const user = pgTable(
+  'user',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull().unique(),
+    emailVerified: boolean('email_verified').default(false).notNull(),
+    image: text('image'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    twoFactorEnabled: boolean('two_factor_enabled').default(false),
+    role: text('role').default('employee'),
+    banned: boolean('banned').default(false),
+    banReason: text('ban_reason'),
+    banExpires: timestamp('ban_expires'),
+  },
+  (table) => [index('user_email_idx').on(table.email)],
+)
 
 export const session = pgTable(
   'session',
@@ -51,7 +55,10 @@ export const session = pgTable(
     activeOrganizationId: uuid('active_organization_id'),
     impersonatedBy: uuid('impersonated_by'),
   },
-  (table) => [index('session_userId_idx').on(table.userId)],
+  (table) => [
+    index('session_userId_idx').on(table.userId),
+    index('session_token_idx').on(table.token),
+  ],
 )
 
 export const account = pgTable(
@@ -160,12 +167,33 @@ export const invitation = pgTable(
   ],
 )
 
-export const userRelations = relations(user, ({ many }) => ({
+export const profile = pgTable(
+  'profile',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    firstName: text('first_name'),
+    middleInitial: text('middle_initial'),
+    lastName: text('last_name'),
+    age: text('age'),
+    birthday: timestamp('birthday'),
+    gender: text('gender'),
+    maritalStatus: text('marital_status'),
+    phoneNumber: text('phone_number'),
+  },
+  (table) => [index('profile_userId_idx').on(table.userId)],
+)
+
+export const userRelations = relations(user, ({ one, many }) => ({
   sessions: many(session),
   accounts: many(account),
   twoFactors: many(twoFactor),
   members: many(member),
   invitations: many(invitation),
+  profile: one(profile),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -212,6 +240,13 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
   }),
   user: one(user, {
     fields: [invitation.inviterId],
+    references: [user.id],
+  }),
+}))
+
+export const profileRelations = relations(profile, ({ one }) => ({
+  user: one(user, {
+    fields: [profile.userId],
     references: [user.id],
   }),
 }))

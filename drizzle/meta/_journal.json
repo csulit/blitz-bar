@@ -8,6 +8,27 @@
       "when": 1765523119879,
       "tag": "0000_rapid_purifiers",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765524071040,
+      "tag": "0001_bouncy_silver_samurai",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765524362851,
+      "tag": "0002_giant_red_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765524424348,
+      "tag": "0003_eminent_genesis",
+      "breakpoints": true
     }
   ]
 }
