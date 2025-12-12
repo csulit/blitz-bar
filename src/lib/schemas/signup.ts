@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+export const userTypeOptions = ['Employee', 'Employer', 'Agency'] as const
+export type UserType = (typeof userTypeOptions)[number]
+
 export const signupSchema = z
   .object({
     email: z.email({
@@ -15,6 +18,9 @@ export const signupSchema = z
       .optional()
       .or(z.literal('')),
     lastName: z.string().min(1, { error: 'Last name is required' }),
+    userType: z.enum(userTypeOptions, {
+      error: 'Please select a user type',
+    }),
     password: z
       .string()
       .min(1, { error: 'Password is required' })

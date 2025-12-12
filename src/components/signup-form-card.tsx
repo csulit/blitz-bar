@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
 import { Check } from 'lucide-react'
-import type {SignupFormData} from '@/lib/schemas/signup';
+import type { SignupFormData } from '@/lib/schemas/signup'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -16,7 +16,14 @@ import {
   FieldSeparator,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {  signupSchema } from '@/lib/schemas/signup'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { signupSchema, userTypeOptions } from '@/lib/schemas/signup'
 import { authClient } from '@/lib/auth-client'
 
 interface SignupFormCardProps extends React.ComponentProps<'div'> {}
@@ -33,6 +40,7 @@ export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
     register,
     handleSubmit,
     setFocus,
+    control,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -84,6 +92,7 @@ export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
       firstName: data.firstName,
       middleInitial: data?.middleInitial || null,
       lastName: data.lastName,
+      userType: data.userType,
     })
 
     setIsLoading(false)
@@ -228,6 +237,37 @@ export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
                       'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
                   )}
                   {...register('lastName')}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="userType">I am a/an</FieldLabel>
+                <Controller
+                  control={control}
+                  name="userType"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger
+                        id="userType"
+                        className={cn(
+                          'w-full',
+                          errors.userType &&
+                            'border-red-400/60 ring-2 ring-red-400/20 focus-visible:ring-red-400/30',
+                        )}
+                      >
+                        <SelectValue placeholder="Select user type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {userTypeOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
               </Field>
               <Field>
