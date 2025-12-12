@@ -6,6 +6,7 @@ export const env = createEnv({
     SERVER_URL: z.url().optional(),
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_URL: z.url(),
+    RESEND_API_KEY: z.string().min(1),
   },
 
   /**
@@ -30,6 +31,7 @@ export const env = createEnv({
     SERVER_URL: process.env.SERVER_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
     // Client variables (from import.meta.env)
     VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
     VITE_APP_URL: import.meta.env.VITE_APP_URL,

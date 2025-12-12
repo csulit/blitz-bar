@@ -11,6 +11,8 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import * as schema from '@/db/schema'
 import { db } from '@/db'
+import { resend } from '@/lib/resend'
+import { ForgotPasswordEmail } from '@/emails/forgot-password'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -58,10 +60,15 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     sendResetPassword: async ({ user, url }) => {
-      await Promise.resolve()
-      console.log(
-        `Send email to ${user.email} with reset password link: ${url}`,
-      )
+      await resend.emails.send({
+        from: 'Acme Inc <noreply@acmeinc.com>',
+        to: user.email,
+        subject: 'Reset your password',
+        react: ForgotPasswordEmail({
+          resetLink: url,
+          userFirstName: user.name?.split(' ')[0],
+        }),
+      })
     },
   },
   databaseHooks: {
