@@ -37,10 +37,26 @@ export const auth = betterAuth({
         defaultValue: false,
         input: false,
       },
+      firstName: {
+        type: 'string',
+        required: false,
+        input: true,
+      },
+      middleInitial: {
+        type: 'string',
+        required: false,
+        input: true,
+      },
+      lastName: {
+        type: 'string',
+        required: false,
+        input: true,
+      },
     },
   },
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
     sendResetPassword: async ({ user, url }) => {
       await Promise.resolve()
       console.log(
@@ -51,14 +67,19 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user, _ctx) => {
+        before: async (user, ctx) => {
           // Modify the user object before it is created
+
+          if (ctx) {
+            console.log(ctx.body)
+          }
+
           return {
             data: {
               // Ensure to return Better-Auth named fields, not the original field names in your database.
               ...user,
-              firstName: user.name.split(' ')[0],
-              lastName: user.name.split(' ')[1],
+              firstName: user?.name.split(' ')[0],
+              lastName: user?.name.split(' ')[1],
             },
           }
         },

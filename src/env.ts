@@ -17,13 +17,25 @@ export const env = createEnv({
   client: {
     VITE_APP_TITLE: z.string().min(1).optional(),
     VITE_APP_URL: z.url().optional(),
+    VITE_DATABASE_URL: z.string().min(1),
+    VITE_DATABASE_URL_POOLER: z.string().min(1),
   },
 
   /**
    * What object holds the environment variables at runtime. This is usually
    * `process.env` or `import.meta.env`.
    */
-  runtimeEnv: import.meta.env,
+  runtimeEnv: {
+    // Server variables (from process.env)
+    SERVER_URL: process.env.SERVER_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    // Client variables (from import.meta.env)
+    VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
+    VITE_APP_URL: import.meta.env.VITE_APP_URL,
+    VITE_DATABASE_URL: import.meta.env.VITE_DATABASE_URL,
+    VITE_DATABASE_URL_POOLER: import.meta.env.VITE_DATABASE_URL_POOLER,
+  },
 
   /**
    * By default, this library will feed the environment variables directly to

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
@@ -15,21 +15,14 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { signupSchema, type SignupFormData } from '@/lib/schemas/signup'
+import { authClient } from '@/lib/auth-client'
 
-interface SignupFormCardProps extends Omit<
-  React.ComponentProps<'div'>,
-  'onSubmit'
-> {
-  onSubmit?: (data: SignupFormData) => void | Promise<void>
-  isLoading?: boolean
-}
+interface SignupFormCardProps extends React.ComponentProps<'div'> {}
 
-export function SignupFormCard({
-  className,
-  onSubmit,
-  isLoading = false,
-  ...props
-}: SignupFormCardProps) {
+export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -48,8 +41,35 @@ export function SignupFormCard({
     }
   }, [errors, setFocus])
 
+  useEffect(() => {
+    if (!error) return
+
+    const timer = setTimeout(() => {
+      setError(null)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [error])
+
   const handleFormSubmit = async (data: SignupFormData) => {
-    await onSubmit?.(data)
+    setIsLoading(true)
+
+    const { error } = await authClient.signUp.email({
+      email: data.email,
+      password: data.password,
+      name: `${data.firstName} ${data.lastName}`,
+      firstName: data.firstName,
+      middleInitial: data?.middleInitial || null,
+      lastName: data.lastName,
+    })
+
+    setIsLoading(false)
+
+    if (error) {
+      setError(error.message ?? 'Failed to create account')
+    } else {
+      setError(null)
+    }
   }
 
   return (
@@ -67,6 +87,20 @@ export function SignupFormCard({
               <p className="text-muted-foreground text-balance">
                 Enter your information to get started
               </p>
+            </div>
+            <div
+              className={cn(
+                'grid transition-all duration-200',
+                error
+                  ? 'grid-rows-[1fr] opacity-100'
+                  : 'grid-rows-[0fr] opacity-0',
+              )}
+            >
+              <div className="overflow-hidden">
+                <div className="rounded-md bg-red-50 dark:bg-red-950/50 p-3 text-sm text-red-600 dark:text-red-400">
+                  {error || 'Placeholder'}
+                </div>
+              </div>
             </div>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>

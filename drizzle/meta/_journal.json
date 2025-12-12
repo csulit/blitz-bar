@@ -36,6 +36,13 @@
       "when": 1765524989745,
       "tag": "0004_early_gamora",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1765547797114,
+      "tag": "0005_slimy_chat",
+      "breakpoints": true
     }
   ]
 }

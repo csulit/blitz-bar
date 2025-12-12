@@ -20,6 +20,9 @@ export const user = pgTable(
   {
     id: uuid('id').defaultRandom().primaryKey(),
     name: text('name').notNull(),
+    firstName: text('first_name'),
+    middleInitial: text('middle_initial'),
+    lastName: text('last_name'),
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').default(false).notNull(),
     image: text('image'),
@@ -177,9 +180,6 @@ export const profile = pgTable(
       .notNull()
       .unique()
       .references(() => user.id, { onDelete: 'cascade' }),
-    firstName: text('first_name'),
-    middleInitial: text('middle_initial'),
-    lastName: text('last_name'),
     age: text('age'),
     birthday: timestamp('birthday'),
     gender: text('gender'),
