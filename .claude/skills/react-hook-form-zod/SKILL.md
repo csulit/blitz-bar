@@ -13,6 +13,14 @@ This skill provides guidelines for creating validated, interactive forms using r
 - `@hookform/resolvers` - Validation resolvers (including Zod)
 - `zod` (v4+) - Schema validation
 
+## Resolver Import
+
+Import the resolver from `@hookform/resolvers/zod` (supports both Zod v3 and v4):
+
+```typescript
+import { zodResolver } from '@hookform/resolvers/zod'
+```
+
 ## Directory Structure
 
 Organize form-related code:

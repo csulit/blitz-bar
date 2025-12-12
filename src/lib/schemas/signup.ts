@@ -8,21 +8,21 @@ export const signupSchema = z
           ? 'Email is required'
           : 'Invalid email address',
     }),
-    firstName: z.string().min(1, 'First name is required'),
+    firstName: z.string().min(1, { error: 'First name is required' }),
     middleInitial: z
       .string()
-      .max(1, 'Middle initial must be a single character')
+      .max(1, { error: 'Middle initial must be a single character' })
       .optional()
       .or(z.literal('')),
-    lastName: z.string().min(1, 'Last name is required'),
+    lastName: z.string().min(1, { error: 'Last name is required' }),
     password: z
       .string()
-      .min(1, 'Password is required')
-      .min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+      .min(1, { error: 'Password is required' })
+      .min(8, { error: 'Password must be at least 8 characters' }),
+    confirmPassword: z.string().min(1, { error: 'Please confirm your password' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    error: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 

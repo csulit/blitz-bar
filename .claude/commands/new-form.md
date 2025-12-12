@@ -23,6 +23,7 @@ Based on the user's request "$ARGUMENTS", create a new form by:
    - Export both schema and inferred type
 
 3. **Create the form component** in `src/components/forms/{name}.tsx`:
+   - Import `zodResolver` from `@hookform/resolvers/zod`
    - Use `useForm` with `zodResolver`
    - Use existing Field components from `@/components/ui/field`
    - Add proper TypeScript types
@@ -31,6 +32,12 @@ Based on the user's request "$ARGUMENTS", create a new form by:
 4. **Follow the skill guidelines** in `.claude/skills/react-hook-form-zod/SKILL.md`
 
 ## Zod v4 Requirements
+
+Import the resolver from `@hookform/resolvers/zod` (supports both Zod v3 and v4):
+
+```typescript
+import { zodResolver } from '@hookform/resolvers/zod'
+```
 
 Use Zod v4 syntax (NOT v3):
 
