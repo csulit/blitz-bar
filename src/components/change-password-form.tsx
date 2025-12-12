@@ -17,8 +17,10 @@ import {
   type ChangePasswordFormData,
 } from '@/lib/schemas/change-password'
 
-interface ChangePasswordFormProps
-  extends Omit<React.ComponentProps<'div'>, 'onSubmit'> {
+interface ChangePasswordFormProps extends Omit<
+  React.ComponentProps<'div'>,
+  'onSubmit'
+> {
   onSubmit?: (data: ChangePasswordFormData) => void | Promise<void>
   isLoading?: boolean
 }
@@ -79,11 +81,6 @@ export function ChangePasswordForm({
                 )}
                 {...register('newPassword')}
               />
-              {errors.newPassword && (
-                <FieldDescription className="text-red-500">
-                  {errors.newPassword.message}
-                </FieldDescription>
-              )}
             </Field>
             <Field>
               <FieldLabel htmlFor="confirmPassword">
@@ -99,11 +96,6 @@ export function ChangePasswordForm({
                 )}
                 {...register('confirmPassword')}
               />
-              {errors.confirmPassword && (
-                <FieldDescription className="text-red-500">
-                  {errors.confirmPassword.message}
-                </FieldDescription>
-              )}
             </Field>
             <Field>
               <Button type="submit" disabled={isLoading}>

@@ -16,8 +16,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { signupSchema, type SignupFormData } from '@/lib/schemas/signup'
 
-interface SignupFormCardProps
-  extends Omit<React.ComponentProps<'div'>, 'onSubmit'> {
+interface SignupFormCardProps extends Omit<
+  React.ComponentProps<'div'>,
+  'onSubmit'
+> {
   onSubmit?: (data: SignupFormData) => void | Promise<void>
   isLoading?: boolean
 }
@@ -38,7 +40,9 @@ export function SignupFormCard({
   })
 
   useEffect(() => {
-    const firstError = Object.keys(errors)[0] as keyof SignupFormData | undefined
+    const firstError = Object.keys(errors)[0] as
+      | keyof SignupFormData
+      | undefined
     if (firstError) {
       setFocus(firstError)
     }
@@ -76,11 +80,6 @@ export function SignupFormCard({
                 )}
                 {...register('email')}
               />
-              {errors.email && (
-                <FieldDescription className="text-red-500">
-                  {errors.email.message}
-                </FieldDescription>
-              )}
             </Field>
             <div className="grid grid-cols-[1fr_4rem] gap-4">
               <Field>
@@ -95,11 +94,6 @@ export function SignupFormCard({
                   )}
                   {...register('firstName')}
                 />
-                {errors.firstName && (
-                  <FieldDescription className="text-red-500">
-                    {errors.firstName.message}
-                  </FieldDescription>
-                )}
               </Field>
               <Field>
                 <FieldLabel htmlFor="middleInitial">M.I.</FieldLabel>
@@ -129,11 +123,6 @@ export function SignupFormCard({
                 )}
                 {...register('lastName')}
               />
-              {errors.lastName && (
-                <FieldDescription className="text-red-500">
-                  {errors.lastName.message}
-                </FieldDescription>
-              )}
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -147,14 +136,11 @@ export function SignupFormCard({
                 )}
                 {...register('password')}
               />
-              {errors.password && (
-                <FieldDescription className="text-red-500">
-                  {errors.password.message}
-                </FieldDescription>
-              )}
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+              <FieldLabel htmlFor="confirmPassword">
+                Confirm password
+              </FieldLabel>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -165,11 +151,6 @@ export function SignupFormCard({
                 )}
                 {...register('confirmPassword')}
               />
-              {errors.confirmPassword && (
-                <FieldDescription className="text-red-500">
-                  {errors.confirmPassword.message}
-                </FieldDescription>
-              )}
             </Field>
             <Field>
               <Button type="submit" disabled={isLoading}>
