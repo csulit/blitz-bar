@@ -24,7 +24,12 @@ Based on the user's request "$ARGUMENTS", add or configure data loading by:
 
 4. **Include necessary imports:**
    ```typescript
-   import { createFileRoute, redirect, notFound, Await } from '@tanstack/react-router'
+   import {
+     createFileRoute,
+     redirect,
+     notFound,
+     Await,
+   } from '@tanstack/react-router'
    import { createServerFn } from '@tanstack/react-start'
    import { useSuspenseQuery, queryOptions } from '@tanstack/react-query'
    ```
@@ -160,9 +165,9 @@ function ItemsPage() {
 
 ```typescript
 export const Route = createFileRoute('/items')({
-  staleTime: 30_000,      // Fresh for 30 seconds
-  gcTime: 5 * 60_000,     // Keep in cache 5 minutes
-  shouldReload: false,    // Only reload on entry or deps change
+  staleTime: 30_000, // Fresh for 30 seconds
+  gcTime: 5 * 60_000, // Keep in cache 5 minutes
+  shouldReload: false, // Only reload on entry or deps change
   loader: () => fetchItems(),
 })
 ```
@@ -194,16 +199,16 @@ export const Route = createFileRoute('/items')({
 
 ## Configuration Options Reference
 
-| Option | Purpose | Default |
-|--------|---------|---------|
-| `beforeLoad` | Pre-loader checks, context | - |
-| `loader` | Main data fetching | - |
-| `loaderDeps` | Declare reload triggers | - |
-| `staleTime` | Data freshness duration | 0 |
-| `gcTime` | Cache retention time | 30min |
-| `shouldReload` | Reload control | true |
-| `pendingMs` | Delay before pending UI | 1000ms |
-| `pendingMinMs` | Minimum pending display | 500ms |
-| `pendingComponent` | Loading UI | - |
-| `errorComponent` | Error UI | - |
-| `notFoundComponent` | 404 UI | - |
+| Option              | Purpose                    | Default |
+| ------------------- | -------------------------- | ------- |
+| `beforeLoad`        | Pre-loader checks, context | -       |
+| `loader`            | Main data fetching         | -       |
+| `loaderDeps`        | Declare reload triggers    | -       |
+| `staleTime`         | Data freshness duration    | 0       |
+| `gcTime`            | Cache retention time       | 30min   |
+| `shouldReload`      | Reload control             | true    |
+| `pendingMs`         | Delay before pending UI    | 1000ms  |
+| `pendingMinMs`      | Minimum pending display    | 500ms   |
+| `pendingComponent`  | Loading UI                 | -       |
+| `errorComponent`    | Error UI                   | -       |
+| `notFoundComponent` | 404 UI                     | -       |

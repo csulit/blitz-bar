@@ -190,14 +190,14 @@ function PostPage() {
 
 ```typescript
 loader: async ({
-  params,          // URL path parameters
-  context,         // Router context + beforeLoad additions
-  deps,            // Values from loaderDeps
+  params, // URL path parameters
+  context, // Router context + beforeLoad additions
+  deps, // Values from loaderDeps
   abortController, // For fetch cancellation
-  cause,           // "enter" | "preload" | "stay"
-  preload,         // Boolean: is this a preload?
-  location,        // Current location object
-  route,           // Route object reference
+  cause, // "enter" | "preload" | "stay"
+  preload, // Boolean: is this a preload?
+  location, // Current location object
+  route, // Route object reference
 }) => {
   // Pass signal for cancellation support
   const data = await fetch('/api/data', {
@@ -571,11 +571,11 @@ export const Route = createFileRoute('/posts/$postId')({
 ### 1. beforeLoad vs loader
 
 | Use `beforeLoad` for | Use `loader` for |
-|---------------------|------------------|
-| Auth checks | Data fetching |
-| Redirects | Parallel loading |
-| Context injection | Cached data |
-| Lightweight checks | Heavy operations |
+| -------------------- | ---------------- |
+| Auth checks          | Data fetching    |
+| Redirects            | Parallel loading |
+| Context injection    | Cached data      |
+| Lightweight checks   | Heavy operations |
 
 ### 2. Keep beforeLoad Fast
 
@@ -625,7 +625,7 @@ loader: async () => ({
   product: await fetchProduct(id),
 
   // Can load after initial render
-  reviews: fetchReviews(id),        // No await
+  reviews: fetchReviews(id), // No await
   recommendations: fetchRelated(id), // No await
 })
 ```
@@ -689,9 +689,7 @@ export const Route = createFileRoute('/posts/$postId')({
     const post = await fetchPost(params.postId)
 
     // Only fetch comments if user is logged in
-    const comments = context.auth.user
-      ? await fetchComments(params.postId)
-      : []
+    const comments = context.auth.user ? await fetchComments(params.postId) : []
 
     return { post, comments }
   },

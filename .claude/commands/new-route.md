@@ -28,6 +28,7 @@ Based on the user's request "$ARGUMENTS", create a new route by:
    - API endpoint: Use `server.handlers` for REST APIs
 
 4. **Include necessary imports:**
+
    ```typescript
    import { createFileRoute } from '@tanstack/react-router'
    import { createServerFn } from '@tanstack/react-start' // if using server functions
@@ -48,6 +49,7 @@ Based on the user's request "$ARGUMENTS", create a new route by:
 ## Route Types
 
 ### Page Route (no data)
+
 ```typescript
 // src/routes/about.tsx
 export const Route = createFileRoute('/about')({
@@ -60,6 +62,7 @@ function AboutPage() {
 ```
 
 ### Page with SSR Data
+
 ```typescript
 // src/routes/products.tsx
 const getProducts = createServerFn({ method: 'GET' }).handler(async () => {
@@ -78,6 +81,7 @@ function ProductsPage() {
 ```
 
 ### Dynamic Route
+
 ```typescript
 // src/routes/products.$productId.tsx
 const getProduct = createServerFn({ method: 'GET' })
@@ -100,6 +104,7 @@ function ProductDetailPage() {
 ```
 
 ### API Route
+
 ```typescript
 // src/routes/api/users.ts
 export const Route = createFileRoute('/api/users')({
@@ -120,6 +125,7 @@ export const Route = createFileRoute('/api/users')({
 ```
 
 ### Protected Route
+
 ```typescript
 // src/routes/_authenticated/settings.tsx
 export const Route = createFileRoute('/_authenticated/settings')({

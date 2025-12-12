@@ -42,26 +42,26 @@ z.string().min(8, { error: 'Minimum 8 characters' })
 
 // Dynamic errors (v4 feature)
 z.string({
-  error: (issue) => issue.input === undefined ? 'Required' : 'Invalid'
+  error: (issue) => (issue.input === undefined ? 'Required' : 'Invalid'),
 })
 
 // DON'T use deprecated v3 syntax
-z.string({ message: 'Required' })  // deprecated
-z.string().email()  // use z.email() instead
+z.string({ message: 'Required' }) // deprecated
+z.string().email() // use z.email() instead
 ```
 
 ## Field Type Mapping
 
-| Argument | Zod Type | Input Type |
-|----------|----------|------------|
-| email | `z.email()` | `type="email"` |
-| password | `z.string().min(8)` | `type="password"` |
-| name, title, text | `z.string()` | `type="text"` |
-| age, count, number | `z.number()` | `type="number"` + `valueAsNumber` |
-| url, website | `z.url()` | `type="url"` |
-| checkbox, agree, enabled | `z.boolean()` | Checkbox component |
-| date | `z.string()` or `z.date()` | `type="date"` |
-| select, role, status | `z.enum([...])` | Select component |
+| Argument                 | Zod Type                   | Input Type                        |
+| ------------------------ | -------------------------- | --------------------------------- |
+| email                    | `z.email()`                | `type="email"`                    |
+| password                 | `z.string().min(8)`        | `type="password"`                 |
+| name, title, text        | `z.string()`               | `type="text"`                     |
+| age, count, number       | `z.number()`               | `type="number"` + `valueAsNumber` |
+| url, website             | `z.url()`                  | `type="url"`                      |
+| checkbox, agree, enabled | `z.boolean()`              | Checkbox component                |
+| date                     | `z.string()` or `z.date()` | `type="date"`                     |
+| select, role, status     | `z.enum([...])`            | Select component                  |
 
 ## Example Commands
 

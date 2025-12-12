@@ -10,12 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Dashboard01IndexRouteImport } from './routes/dashboard-01/index'
 import { Route as UserIdRouteImport } from './routes/user.$id'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AuthChangePasswordRouteImport } from './routes/_auth/change-password'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiTqTodosRouteImport } from './routes/demo/api.tq-todos'
@@ -28,6 +32,10 @@ import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ss
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +67,21 @@ const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   id: '/demo/drizzle',
   path: '/demo/drizzle',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthChangePasswordRoute = AuthChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
@@ -104,6 +127,9 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/change-password': typeof AuthChangePasswordRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -121,6 +147,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/change-password': typeof AuthChangePasswordRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -138,7 +167,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/_auth/change-password': typeof AuthChangePasswordRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/_auth/login': typeof AuthLoginRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -158,6 +191,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/change-password'
+    | '/forgot-password'
+    | '/login'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -175,6 +211,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/change-password'
+    | '/forgot-password'
+    | '/login'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -191,7 +230,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_auth'
     | '/about'
+    | '/_auth/change-password'
+    | '/_auth/forgot-password'
+    | '/_auth/login'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -209,6 +252,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
   AboutRoute: typeof AboutRoute
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
@@ -232,6 +276,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -275,6 +326,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/drizzle'
       preLoaderRoute: typeof DemoDrizzleRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/change-password': {
+      id: '/_auth/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthChangePasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
@@ -335,8 +407,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthRouteChildren {
+  AuthChangePasswordRoute: typeof AuthChangePasswordRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthChangePasswordRoute: AuthChangePasswordRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
   AboutRoute: AboutRoute,
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,
