@@ -15,7 +15,7 @@ This skill provides guidelines for creating validated, interactive forms using r
 
 ## Resolver Import
 
-Import the resolver from `@hookform/resolvers/zod` (supports both Zod v3 and v4):
+Import the resolver from `@hookform/resolvers/zod`:
 
 ```typescript
 import { zodResolver } from '@hookform/resolvers/zod'

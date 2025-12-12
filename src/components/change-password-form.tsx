@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
+import type {ChangePasswordFormData} from '@/lib/schemas/change-password';
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,8 +14,8 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import {
-  changePasswordSchema,
-  type ChangePasswordFormData,
+  
+  changePasswordSchema
 } from '@/lib/schemas/change-password'
 
 interface ChangePasswordFormProps extends Omit<

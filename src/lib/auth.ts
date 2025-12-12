@@ -1,16 +1,16 @@
-import { db } from '@/db'
 import {
-  twoFactor,
+  admin,
+  customSession,
   lastLoginMethod,
   multiSession,
   organization,
-  admin,
-  customSession,
+  twoFactor,
 } from 'better-auth/plugins'
 import { betterAuth } from 'better-auth'
-import * as schema from '@/db/schema'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import * as schema from '@/db/schema'
+import { db } from '@/db'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -84,7 +84,7 @@ export const auth = betterAuth({
           }
         },
         after: async (user) => {
-          //perform additional actions, like creating a stripe customer
+          // perform additional actions, like creating a stripe customer
           console.log('New user created:', user)
         },
       },

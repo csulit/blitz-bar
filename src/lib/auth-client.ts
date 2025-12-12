@@ -1,9 +1,9 @@
 import { createAuthClient } from 'better-auth/client'
 import {
-  organizationClient,
-  twoFactorClient,
   adminClient,
   inferAdditionalFields,
+  organizationClient,
+  twoFactorClient,
 } from 'better-auth/client/plugins'
 import type { auth } from './auth'
 

@@ -1,12 +1,12 @@
 import { relations } from 'drizzle-orm'
 import {
-  pgTable,
-  text,
-  timestamp,
   boolean,
   index,
-  uuid,
+  pgTable,
   serial,
+  text,
+  timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core'
 
 export const todos = pgTable('todos', {

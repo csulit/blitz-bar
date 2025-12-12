@@ -1,15 +1,16 @@
 import fs from 'node:fs'
 import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
   useCallback,
   useState,
 } from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import type {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal} from 'react';
 
 /*
 const loggingMiddleware = createMiddleware().server(
@@ -25,7 +26,7 @@ const loggedServerFunction = createServerFn({ method: "GET" }).middleware([
 
 const TODOS_FILE = 'todos.json'
 
-async function readTodos(): Promise<{ id: number; name: string }[]> {
+async function readTodos(): Promise<Array<{ id: number; name: string }>> {
   return JSON.parse(
     await fs.promises.readFile(TODOS_FILE, 'utf-8').catch(() =>
       JSON.stringify(

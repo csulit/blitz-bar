@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
+import type {LoginFormData} from '@/lib/schemas/login';
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,7 +15,7 @@ import {
   FieldSeparator,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { loginSchema, type LoginFormData } from '@/lib/schemas/login'
+import {  loginSchema } from '@/lib/schemas/login'
 import { authClient } from '@/lib/auth-client'
 
 interface LoginFormCardProps extends React.ComponentProps<'div'> {}

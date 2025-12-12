@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
+import { Check } from 'lucide-react'
+import type {SignupFormData} from '@/lib/schemas/signup';
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Check } from 'lucide-react'
 import placeholderImage from '@/assets/placeholder.svg'
 import {
   Field,
@@ -15,7 +16,7 @@ import {
   FieldSeparator,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { signupSchema, type SignupFormData } from '@/lib/schemas/signup'
+import {  signupSchema } from '@/lib/schemas/signup'
 import { authClient } from '@/lib/auth-client'
 
 interface SignupFormCardProps extends React.ComponentProps<'div'> {}

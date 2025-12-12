@@ -1,7 +1,7 @@
+import { existsSync, readFileSync } from 'node:fs'
 import { instantPostgres } from 'get-db/sdk'
-import { readFileSync, existsSync } from 'fs'
-import type { Plugin } from 'vite'
 import pg from 'pg'
+import type { Plugin } from 'vite'
 
 interface NeonPluginOptions {
   seed?: {

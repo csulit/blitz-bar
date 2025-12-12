@@ -1,7 +1,8 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
+import {  useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
-import { db } from '@/db'
 import { queryKeys } from '../keys'
+import type {UseQueryOptions} from '@tanstack/react-query';
+import { db } from '@/db'
 
 /**
  * Server function for fetching todos
