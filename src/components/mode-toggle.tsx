@@ -1,14 +1,21 @@
+import { useEffect, useState } from 'react'
 import { useTheme } from '@/components/theme-provider'
 import { cn } from '@/lib/utils'
 
 export function ModeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // After mounting, determine if dark mode is active
   const isDark =
-    theme === 'dark' ||
-    (theme === 'system' &&
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches)
+    mounted &&
+    (theme === 'dark' ||
+      (theme === 'system' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches))
 
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark')
