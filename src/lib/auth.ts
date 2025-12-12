@@ -31,6 +31,12 @@ export const auth = betterAuth({
         defaultValue: 'Employee',
         input: true,
       },
+      userVerified: {
+        type: 'boolean',
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
   emailAndPassword: {

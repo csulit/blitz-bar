@@ -31,6 +31,7 @@ export const user = pgTable(
     twoFactorEnabled: boolean('two_factor_enabled').default(false),
     role: text('role').default('user'),
     userType: text('user_type').default('Employee'),
+    userVerified: boolean('user_verified').default(false),
     banned: boolean('banned').default(false),
     banReason: text('ban_reason'),
     banExpires: timestamp('ban_expires'),
