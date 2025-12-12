@@ -25,6 +25,12 @@ export const auth = betterAuth({
         defaultValue: 'partner',
         input: false,
       },
+      userType: {
+        type: 'string',
+        required: false,
+        defaultValue: 'Employee',
+        input: true,
+      },
     },
   },
   emailAndPassword: {
@@ -79,6 +85,7 @@ export const auth = betterAuth({
       return {
         user: {
           ...user,
+          userType: 'query database to get the user type',
           role: 'query database to get the user role',
         },
         session,
