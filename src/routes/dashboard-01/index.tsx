@@ -7,9 +7,13 @@ import { SiteHeader } from '@/components/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
 import data from './data.json'
+import { authMiddleware } from '@/middleware/auth'
 
 export const Route = createFileRoute('/dashboard-01/')({
   component: RouteComponent,
+  server: {
+    middleware: [authMiddleware],
+  },
 })
 
 function RouteComponent() {
