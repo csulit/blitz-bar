@@ -1,5 +1,19 @@
-import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
+import { createFileRoute, Outlet, Link, useRouter } from '@tanstack/react-router'
+import { LogOut } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { ModeToggle } from '@/components/mode-toggle'
+import { Button } from '@/components/ui/button'
+import { authClient } from '@/lib/auth-client'
 import { withSessionMiddleware } from '@/middleware/with-session'
 
 export const Route = createFileRoute('/_pending_verification')({
@@ -10,6 +24,13 @@ export const Route = createFileRoute('/_pending_verification')({
 })
 
 function PendingVerificationLayout() {
+  const router = useRouter()
+
+  async function handleLogout() {
+    await authClient.signOut()
+    router.navigate({ to: '/login' })
+  }
+
   return (
     <div className="min-h-screen w-full relative">
       {/* Dashed Grid Background */}
@@ -96,8 +117,31 @@ function PendingVerificationLayout() {
           Acme Inc
         </Link>
       </div>
-      <div className="fixed top-6 right-6 z-50">
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2">
         <ModeToggle />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <LogOut className="h-[1.2rem] w-[1.2rem]" />
+              <span className="sr-only">Sign out</span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign out</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to sign out? You will need to sign in
+                again to access your account.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout}>
+                Sign out
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-6 p-6 pt-24 md:p-10 md:pt-24">
