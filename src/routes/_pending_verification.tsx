@@ -1,11 +1,11 @@
 import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
 import { ModeToggle } from '@/components/mode-toggle'
-import { authMiddleware } from '@/middleware/auth'
+import { withSessionMiddleware } from '@/middleware/with-session'
 
 export const Route = createFileRoute('/_pending_verification')({
   component: PendingVerificationLayout,
   server: {
-    middleware: [authMiddleware],
+    middleware: [withSessionMiddleware],
   },
 })
 

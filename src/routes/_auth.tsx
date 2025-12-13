@@ -1,9 +1,13 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router'
 import { ModeToggle } from '@/components/mode-toggle'
 import { FieldDescription } from '@/components/ui/field'
+import { withSessionMiddleware } from '@/middleware/with-session'
 
 export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
+  server: {
+    middleware: [withSessionMiddleware],
+  },
 })
 
 function AuthLayout() {
@@ -62,11 +66,17 @@ function AuthLayout() {
         <Outlet />
         <FieldDescription className="px-6 text-center">
           By clicking continue, you agree to our{' '}
-          <Link to="/terms" className="underline underline-offset-4 hover:text-foreground transition-colors">
+          <Link
+            to="/terms"
+            className="underline underline-offset-4 hover:text-foreground transition-colors"
+          >
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link to="/privacy" className="underline underline-offset-4 hover:text-foreground transition-colors">
+          <Link
+            to="/privacy"
+            className="underline underline-offset-4 hover:text-foreground transition-colors"
+          >
             Privacy Policy
           </Link>
           .
