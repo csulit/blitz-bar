@@ -92,7 +92,7 @@ export const auth = betterAuth({
       user: { email: string; firstName?: string }
     }) => {
       const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
-      await resend.emails.send({
+      void resend.emails.send({
         from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
         to: user.email,
         subject: 'Your password has been changed',
