@@ -7,6 +7,7 @@ const PUBLIC_PATHS = [
   '/signup',
   '/forgot-password',
   '/reset-password',
+  '/change-password',
 ]
 
 export const withSessionMiddleware = createMiddleware().server(
