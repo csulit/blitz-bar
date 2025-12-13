@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as Pending_verificationRouteImport } from './routes/_pending_verification'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Dashboard01IndexRouteImport } from './routes/dashboard-01/index'
@@ -19,6 +20,8 @@ import { Route as UserIdRouteImport } from './routes/user.$id'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
+import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
+import { Route as Pending_verificationVerificationDocumentsRouteImport } from './routes/_pending_verification/verification-documents'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -46,6 +49,10 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Pending_verificationRoute = Pending_verificationRouteImport.update({
+  id: '/_pending_verification',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -82,6 +89,18 @@ const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   path: '/demo/drizzle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Pending_verificationVerificationStatusRoute =
+  Pending_verificationVerificationStatusRouteImport.update({
+    id: '/verification-status',
+    path: '/verification-status',
+    getParentRoute: () => Pending_verificationRoute,
+  } as any)
+const Pending_verificationVerificationDocumentsRoute =
+  Pending_verificationVerificationDocumentsRouteImport.update({
+    id: '/verification-documents',
+    path: '/verification-documents',
+    getParentRoute: () => Pending_verificationRoute,
+  } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -157,6 +176,8 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
+  '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -181,6 +202,8 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
+  '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -200,6 +223,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/_pending_verification': typeof Pending_verificationRouteWithChildren
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -207,6 +231,8 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/_pending_verification/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
+  '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -233,6 +259,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/signup'
+    | '/verification-documents'
+    | '/verification-status'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -257,6 +285,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/signup'
+    | '/verification-documents'
+    | '/verification-status'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -275,6 +305,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/_pending_verification'
     | '/about'
     | '/privacy'
     | '/terms'
@@ -282,6 +313,8 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/signup'
+    | '/_pending_verification/verification-documents'
+    | '/_pending_verification/verification-status'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -301,6 +334,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  Pending_verificationRoute: typeof Pending_verificationRouteWithChildren
   AboutRoute: typeof AboutRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -341,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_pending_verification': {
+      id: '/_pending_verification'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof Pending_verificationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -391,6 +432,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/drizzle'
       preLoaderRoute: typeof DemoDrizzleRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_pending_verification/verification-status': {
+      id: '/_pending_verification/verification-status'
+      path: '/verification-status'
+      fullPath: '/verification-status'
+      preLoaderRoute: typeof Pending_verificationVerificationStatusRouteImport
+      parentRoute: typeof Pending_verificationRoute
+    }
+    '/_pending_verification/verification-documents': {
+      id: '/_pending_verification/verification-documents'
+      path: '/verification-documents'
+      fullPath: '/verification-documents'
+      preLoaderRoute: typeof Pending_verificationVerificationDocumentsRouteImport
+      parentRoute: typeof Pending_verificationRoute
     }
     '/_auth/signup': {
       id: '/_auth/signup'
@@ -502,9 +557,25 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface Pending_verificationRouteChildren {
+  Pending_verificationVerificationDocumentsRoute: typeof Pending_verificationVerificationDocumentsRoute
+  Pending_verificationVerificationStatusRoute: typeof Pending_verificationVerificationStatusRoute
+}
+
+const Pending_verificationRouteChildren: Pending_verificationRouteChildren = {
+  Pending_verificationVerificationDocumentsRoute:
+    Pending_verificationVerificationDocumentsRoute,
+  Pending_verificationVerificationStatusRoute:
+    Pending_verificationVerificationStatusRoute,
+}
+
+const Pending_verificationRouteWithChildren =
+  Pending_verificationRoute._addFileChildren(Pending_verificationRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  Pending_verificationRoute: Pending_verificationRouteWithChildren,
   AboutRoute: AboutRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
