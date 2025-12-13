@@ -6,12 +6,12 @@ export const Route = createFileRoute('/privacy')({
   head: () => ({
     meta: [
       {
-        title: 'Privacy Policy | Acme Inc',
+        title: 'Privacy Policy | My Home Support',
       },
       {
         name: 'description',
         content:
-          'Privacy Policy for Acme Inc - Learn how we collect, use, and protect your data.',
+          'Privacy Policy for My Home Support - Learn how we collect, use, and protect your data.',
       },
     ],
   }),
@@ -31,7 +31,7 @@ function PrivacyPolicyPage() {
             to="/"
             className="font-display text-lg tracking-tight hover:text-primary transition-colors"
           >
-            Acme Inc
+            My Home Support
           </Link>
           <div className="flex items-center gap-6">
             <Link
@@ -482,7 +482,7 @@ function PrivacyPolicyPage() {
                       Mailing Address
                     </span>
                     <p className="mt-1 text-foreground">
-                      Acme Inc — Privacy Department
+                      My Home Support — Privacy Department
                       <br />
                       123 Innovation Drive
                       <br />
@@ -498,7 +498,7 @@ function PrivacyPolicyPage() {
           <footer className="mt-24 pt-12 border-t border-border/50">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <p className="text-sm text-muted-foreground">
-                © 2025 Acme Inc. All rights reserved.
+                © 2025 My Home Support. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
                 <Link

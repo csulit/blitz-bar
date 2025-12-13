@@ -16,7 +16,7 @@ interface UserDeactivatedEmailProps {
 export function UserDeactivatedEmail({
   userFirstName,
 }: UserDeactivatedEmailProps) {
-  const previewText = 'Your Acme Inc account has been deactivated'
+  const previewText = 'Your My Home Support account has been deactivated'
 
   return (
     <Html>
@@ -36,11 +36,11 @@ export function UserDeactivatedEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Your Acme Inc account has been deactivated.
+              Your My Home Support account has been deactivated.
             </Text>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>

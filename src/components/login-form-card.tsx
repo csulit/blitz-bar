@@ -90,7 +90,7 @@ export function LoginFormCard({ className, ...props }: LoginFormCardProps) {
             <div className="flex flex-col items-center gap-2 text-center">
               <h1 className="text-2xl font-bold font-display">Welcome back</h1>
               <p className="text-muted-foreground text-balance">
-                Login to your Acme Inc account
+                Login to your My Home Support account
               </p>
             </div>
             <div

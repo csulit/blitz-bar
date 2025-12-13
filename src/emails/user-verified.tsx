@@ -21,7 +21,7 @@ export function UserVerifiedEmail({
   userFirstName,
   loginUrl,
 }: UserVerifiedEmailProps) {
-  const previewText = 'Your account has been verified - you can now start using Acme Inc'
+  const previewText = 'Your account has been verified - you can now start using My Home Support'
 
   return (
     <Html>
@@ -41,12 +41,12 @@ export function UserVerifiedEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Great news! Your Acme Inc account has been verified by an
+              Great news! Your My Home Support account has been verified by an
               administrator. You now have full access to all features and can
               start using the app.
             </Text>
             <Text style={paragraph}>
-              Log in now to explore everything Acme Inc has to offer.
+              Log in now to explore everything My Home Support has to offer.
             </Text>
             <Section style={buttonContainer}>
               <Button style={button} href={loginUrl}>
@@ -63,7 +63,7 @@ export function UserVerifiedEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>

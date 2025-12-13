@@ -6,12 +6,12 @@ export const Route = createFileRoute('/terms')({
   head: () => ({
     meta: [
       {
-        title: 'Terms of Service | Acme Inc',
+        title: 'Terms of Service | My Home Support',
       },
       {
         name: 'description',
         content:
-          'Terms of Service for Acme Inc - Read our terms and conditions.',
+          'Terms of Service for My Home Support - Read our terms and conditions.',
       },
     ],
   }),
@@ -31,7 +31,7 @@ function TermsOfServicePage() {
             to="/"
             className="font-display text-lg tracking-tight hover:text-primary transition-colors"
           >
-            Acme Inc
+            My Home Support
           </Link>
           <div className="flex items-center gap-6">
             <Link
@@ -67,7 +67,7 @@ function TermsOfServicePage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
             Please read these terms carefully before using our services. By
-            accessing or using Acme Inc, you agree to be bound by these terms.
+            accessing or using My Home Support, you agree to be bound by these terms.
           </p>
         </div>
       </header>
@@ -113,7 +113,7 @@ function TermsOfServicePage() {
           <article className="space-y-16">
             <Section id="section-01" number="01" title="Acceptance of Terms">
               <p>
-                By accessing and using the services provided by Acme Inc ("we,"
+                By accessing and using the services provided by My Home Support ("we,"
                 "us," or "our"), you accept and agree to be bound by these Terms
                 of Service and our Privacy Policy. If you do not agree to these
                 terms, you may not use our services.
@@ -160,7 +160,7 @@ function TermsOfServicePage() {
               <p>
                 All content, features, and functionality of our services,
                 including but not limited to text, graphics, logos, icons,
-                images, audio clips, and software, are owned by Acme Inc or our
+                images, audio clips, and software, are owned by My Home Support or our
                 licensors and are protected by copyright, trademark, and other
                 intellectual property laws.
               </p>
@@ -217,7 +217,7 @@ function TermsOfServicePage() {
               title="Limitation of Liability"
             >
               <p>
-                To the fullest extent permitted by applicable law, Acme Inc
+                To the fullest extent permitted by applicable law, My Home Support
                 shall not be liable for any indirect, incidental, special,
                 consequential, or punitive damages, or any loss of profits or
                 revenues, whether incurred directly or indirectly, or any loss
@@ -274,7 +274,7 @@ function TermsOfServicePage() {
                       Address
                     </span>
                     <p className="mt-1 text-foreground">
-                      Acme Inc
+                      My Home Support
                       <br />
                       123 Innovation Drive
                       <br />
@@ -290,7 +290,7 @@ function TermsOfServicePage() {
           <footer className="mt-24 pt-12 border-t border-border/50">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <p className="text-sm text-muted-foreground">
-                © 2025 Acme Inc. All rights reserved.
+                © 2025 My Home Support. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
                 <Link

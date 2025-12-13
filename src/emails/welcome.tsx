@@ -17,7 +17,7 @@ interface WelcomeEmailProps {
 }
 
 export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
-  const previewText = 'Welcome to Acme Inc - Your account is being verified'
+  const previewText = 'Welcome to My Home Support - Your account is being verified'
 
   return (
     <Html>
@@ -32,7 +32,7 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
       <Body style={main}>
         <Container style={container}>
           <Section style={card}>
-            <Heading style={heading}>Welcome to Acme Inc!</Heading>
+            <Heading style={heading}>Welcome to My Home Support!</Heading>
             <Text style={paragraph}>Hi{userName ? ` ${userName}` : ''},</Text>
             <Text style={paragraph}>
               Thank you for signing up! We&apos;re excited to have you on board.
@@ -70,7 +70,7 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
             </Text>
             <Hr style={hr} />
             <Text style={footer}>
-              If you didn&apos;t create an account with Acme Inc, please ignore
+              If you didn&apos;t create an account with My Home Support, please ignore
               this email or contact our support team.
             </Text>
             {loginUrl && (
@@ -83,7 +83,7 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
             )}
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>

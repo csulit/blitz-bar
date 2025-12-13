@@ -68,12 +68,19 @@ export const auth = betterAuth({
       user: { email: string; firstName?: string }
       url: string
     }) => {
+      // Extract token from the URL path (e.g., /api/auth/reset-password/TOKEN?callback...)
+      const urlObj = new URL(url)
+      const pathParts = urlObj.pathname.split('/')
+      const token = pathParts[pathParts.length - 1]
+      const baseUrl = env.VITE_APP_URL || 'http://localhost:3000'
+      const resetLink = `${baseUrl}/change-password?token=${token}`
+
       await resend.emails.send({
         from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
         to: user.email,
         subject: 'Reset your password',
         react: ForgotPasswordEmail({
-          resetLink: url,
+          resetLink,
           userFirstName: user.firstName,
         }),
       })

@@ -114,7 +114,7 @@ function PendingVerificationLayout() {
           to="/"
           className="font-display text-lg tracking-tight hover:text-primary transition-colors"
         >
-          Acme Inc
+          My Home Support
         </Link>
       </div>
       <div className="fixed top-6 right-6 z-50 flex items-center gap-2">

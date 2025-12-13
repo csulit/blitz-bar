@@ -21,7 +21,7 @@ export function ForgotPasswordEmail({
   resetLink,
   userFirstName,
 }: ForgotPasswordEmailProps) {
-  const previewText = 'Reset your Acme Inc password'
+  const previewText = 'Reset your My Home Support password'
 
   return (
     <Html>
@@ -41,7 +41,7 @@ export function ForgotPasswordEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              We received a request to reset your password for your Acme Inc
+              We received a request to reset your password for your My Home Support
               account. Click the button below to choose a new password.
             </Text>
             <Section style={buttonContainer}>
@@ -63,7 +63,7 @@ export function ForgotPasswordEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>

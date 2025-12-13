@@ -21,7 +21,7 @@ export function EmailConfirmationEmail({
   verificationLink,
   userFirstName,
 }: EmailConfirmationEmailProps) {
-  const previewText = 'Confirm your Acme Inc email address'
+  const previewText = 'Confirm your My Home Support email address'
 
   return (
     <Html>
@@ -41,7 +41,7 @@ export function EmailConfirmationEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Thanks for signing up for Acme Inc! Please confirm your email
+              Thanks for signing up for My Home Support! Please confirm your email
               address by clicking the button below.
             </Text>
             <Section style={buttonContainer}>
@@ -63,7 +63,7 @@ export function EmailConfirmationEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>

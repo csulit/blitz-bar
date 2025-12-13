@@ -21,7 +21,7 @@ export function UserActivatedEmail({
   userFirstName,
   loginUrl,
 }: UserActivatedEmailProps) {
-  const previewText = 'Your Acme Inc account has been reactivated'
+  const previewText = 'Your My Home Support account has been reactivated'
 
   return (
     <Html>
@@ -41,7 +41,7 @@ export function UserActivatedEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Great news! Your Acme Inc account has been reactivated by an
+              Great news! Your My Home Support account has been reactivated by an
               administrator. You can now log in and access your account again.
             </Text>
             <Section style={buttonContainer}>
@@ -59,7 +59,7 @@ export function UserActivatedEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
           </Text>
         </Container>
       </Body>
