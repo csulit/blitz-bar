@@ -86,7 +86,7 @@ export const auth = betterAuth({
       })
     },
     resetPasswordTokenExpiresIn: 3600,
-    afterResetPassword: async ({
+    onPasswordReset: async ({
       user,
     }: {
       user: { email: string; firstName?: string }
