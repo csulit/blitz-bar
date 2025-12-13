@@ -13,6 +13,8 @@ import * as schema from '@/db/schema'
 import { db } from '@/db'
 import { resend } from '@/lib/resend'
 import { ForgotPasswordEmail } from '@/emails/forgot-password'
+import { ChangePasswordSuccessEmail } from '@/emails/change-password-success'
+import { env } from '@/env'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -59,14 +61,37 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
-    sendResetPassword: async ({ user, url }) => {
+    sendResetPassword: async ({
+      user,
+      url,
+    }: {
+      user: { email: string; firstName?: string }
+      url: string
+    }) => {
       await resend.emails.send({
         from: 'Acme Inc <noreply@acmeinc.com>',
         to: user.email,
         subject: 'Reset your password',
         react: ForgotPasswordEmail({
           resetLink: url,
-          userFirstName: user.name?.split(' ')[0],
+          userFirstName: user.firstName,
+        }),
+      })
+    },
+    resetPasswordTokenExpiresIn: 3600,
+    afterResetPassword: async ({
+      user,
+    }: {
+      user: { email: string; firstName?: string }
+    }) => {
+      const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
+      await resend.emails.send({
+        from: 'Acme Inc <noreply@acmeinc.com>',
+        to: user.email,
+        subject: 'Your password has been changed',
+        react: ChangePasswordSuccessEmail({
+          userName: user.firstName,
+          loginUrl,
         }),
       })
     },
