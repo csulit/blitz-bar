@@ -69,7 +69,7 @@ export const auth = betterAuth({
       url: string
     }) => {
       await resend.emails.send({
-        from: 'Acme Inc <noreply@acmeinc.com>',
+        from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
         to: user.email,
         subject: 'Reset your password',
         react: ForgotPasswordEmail({
@@ -86,7 +86,7 @@ export const auth = betterAuth({
     }) => {
       const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
       await resend.emails.send({
-        from: 'Acme Inc <noreply@acmeinc.com>',
+        from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
         to: user.email,
         subject: 'Your password has been changed',
         react: ChangePasswordSuccessEmail({
