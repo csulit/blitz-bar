@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1765523119879,
-      "tag": "0000_rapid_purifiers",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1765524071040,
-      "tag": "0001_bouncy_silver_samurai",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1765524362851,
-      "tag": "0002_giant_red_hulk",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1765524424348,
-      "tag": "0003_eminent_genesis",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1765524989745,
-      "tag": "0004_early_gamora",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1765547797114,
-      "tag": "0005_slimy_chat",
+      "when": 1765616672177,
+      "tag": "0000_purple_james_howlett",
       "breakpoints": true
     }
   ]

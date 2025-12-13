@@ -19,7 +19,6 @@ export const env = createEnv({
     VITE_APP_TITLE: z.string().min(1).optional(),
     VITE_APP_URL: z.url().optional(),
     VITE_DATABASE_URL: z.string().min(1),
-    VITE_DATABASE_URL_POOLER: z.string().min(1),
   },
 
   /**
@@ -36,7 +35,6 @@ export const env = createEnv({
     VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
     VITE_APP_URL: import.meta.env.VITE_APP_URL,
     VITE_DATABASE_URL: import.meta.env.VITE_DATABASE_URL,
-    VITE_DATABASE_URL_POOLER: import.meta.env.VITE_DATABASE_URL_POOLER,
   },
 
   /**
