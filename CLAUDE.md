@@ -77,3 +77,14 @@ Files/routes prefixed with `demo` are examples and can be safely deleted.
 ```
 
 Cal Sans is optimized for large point sizes. Do not use it for body copy or small UI text.
+
+### Code Change Guidelines
+
+**Only change what is explicitly requested.** Do not:
+
+- Refactor or restructure code beyond the specific ask
+- Change layouts, styling, or components that weren't mentioned
+- "Improve" or "enhance" things the user didn't ask about
+- Make assumptions about what else might need changing
+
+If the user asks to "make the step indicator horizontal", only change the step indicator. Do not touch document selectors, layout structure, widths, alignments, or anything else.
