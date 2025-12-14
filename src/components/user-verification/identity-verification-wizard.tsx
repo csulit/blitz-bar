@@ -185,7 +185,7 @@ export function IdentityVerificationWizard({
           )}
 
           {/* Step 3: Upload */}
-          {state.currentStep === 'setup' && (
+          {state.currentStep === 'upload' && (
             <>
               {/* Header */}
               <div className="mb-8">
