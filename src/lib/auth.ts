@@ -10,6 +10,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { eq } from 'drizzle-orm'
+import { waitUntil } from '@vercel/functions'
 import * as schema from '@/db/schema'
 import { db } from '@/db'
 import { resend } from '@/lib/resend'
@@ -17,7 +18,6 @@ import { ForgotPasswordEmail } from '@/emails/forgot-password'
 import { EmailConfirmationEmail } from '@/emails/email-confirmation'
 import { ChangePasswordSuccessEmail } from '@/emails/change-password-success'
 import { env } from '@/env'
-import { waitUntil } from '@vercel/functions'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

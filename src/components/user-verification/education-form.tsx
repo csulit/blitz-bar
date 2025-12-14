@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { useForm, useWatch, Controller } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDebouncedCallback } from 'use-debounce'
 import { useUpdateEducation } from './hooks/mutations/use-update-education'
+import type { EducationFormData } from '@/lib/schemas/education'
 import {
   Field,
   FieldError,
@@ -19,16 +20,15 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
-  educationSchema,
-  educationLevelOptions,
   educationLevelLabels,
-  seniorHighTrackOptions,
-  seniorHighTrackLabels,
-  seniorHighStrandOptions,
-  seniorHighStrandLabels,
-  honorsOptions,
+  educationLevelOptions,
+  educationSchema,
   honorsLabels,
-  type EducationFormData,
+  honorsOptions,
+  seniorHighStrandLabels,
+  seniorHighStrandOptions,
+  seniorHighTrackLabels,
+  seniorHighTrackOptions,
 } from '@/lib/schemas/education'
 
 interface EducationFormProps {

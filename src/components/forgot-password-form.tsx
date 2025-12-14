@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
 import { Mail } from 'lucide-react'
+import type { ForgotPasswordFormData } from '@/lib/schemas/forgot-password'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,10 +14,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  forgotPasswordSchema,
-  type ForgotPasswordFormData,
-} from '@/lib/schemas/forgot-password'
+import { forgotPasswordSchema } from '@/lib/schemas/forgot-password'
 import { authClient } from '@/lib/auth-client'
 
 interface ForgotPasswordFormProps extends React.ComponentProps<'div'> {}

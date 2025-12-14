@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils'
 import { steps } from './constants'
+import { cn } from '@/lib/utils'
 
 interface HorizontalStepperProps {
   currentStepIndex: number

@@ -1,10 +1,10 @@
-import type { VerificationStep, DocumentType } from './types'
+import type { DocumentType, VerificationStep } from './types'
 
-export const steps: {
+export const steps: Array<{
   id: VerificationStep
   label: string
   completed: boolean
-}[] = [
+}> = [
   { id: 'personal_info', label: 'Personal Info', completed: false },
   { id: 'education', label: 'Education', completed: false },
   { id: 'setup', label: 'Upload', completed: false },
@@ -12,11 +12,11 @@ export const steps: {
   { id: 'review', label: 'Review', completed: false },
 ]
 
-export const documentTypes: {
+export const documentTypes: Array<{
   id: DocumentType
   label: string
   icon: React.ReactNode
-}[] = [
+}> = [
   {
     id: 'identity_card',
     label: 'Identity Card',

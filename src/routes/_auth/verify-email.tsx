@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import { CheckCircle2, Mail, XCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { CheckCircle2, XCircle, Mail } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
 
 const verifyEmailSearchSchema = z.object({

@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils'
 import { documentTypes } from './constants'
 import type { DocumentType } from './types'
+import { cn } from '@/lib/utils'
 
 interface DocumentTypeSelectorProps {
   selected: DocumentType

@@ -3,9 +3,9 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { eq } from 'drizzle-orm'
 import { educationKeys } from '../keys'
+import type { EducationFormData } from '@/lib/schemas/education'
 import { db } from '@/db'
 import { education } from '@/db/schema'
-import type { EducationFormData } from '@/lib/schemas/education'
 
 type UpdateEducationInput = Partial<EducationFormData>
 

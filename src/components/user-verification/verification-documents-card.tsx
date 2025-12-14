@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -20,7 +20,7 @@ interface Document {
   commentedAt?: string
 }
 
-const mockDocuments: Document[] = [
+const mockDocuments: Array<Document> = [
   {
     id: '1',
     type: 'government_id',

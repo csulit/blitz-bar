@@ -3,11 +3,11 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format } from 'date-fns'
 import { eq } from 'drizzle-orm'
-import type { UseQueryOptions } from '@tanstack/react-query'
 import { personalInfoKeys } from '../keys'
-import { db } from '@/db'
-import { user, profile } from '@/db/schema'
+import type { UseQueryOptions } from '@tanstack/react-query'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
+import { db } from '@/db'
+import { user } from '@/db/schema'
 
 /**
  * Server function for fetching personal info

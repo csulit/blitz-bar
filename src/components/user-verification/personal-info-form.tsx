@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDebouncedCallback } from 'use-debounce'
 import { format, parse } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { useUpdatePersonalInfo } from './hooks/mutations/use-update-personal-info'
+import type {PersonalInfoFormData} from '@/lib/schemas/personal-info';
+import { cn } from '@/lib/utils'
 import {
   Field,
   FieldError,
@@ -29,10 +30,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  personalInfoSchema,
+  
   genderOptions,
   maritalStatusOptions,
-  type PersonalInfoFormData,
+  personalInfoSchema
 } from '@/lib/schemas/personal-info'
 
 interface PersonalInfoFormProps {
