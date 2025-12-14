@@ -64,7 +64,13 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
-    sendVerificationEmail: async ({ user, token }) => {
+    sendVerificationEmail: async ({
+      user,
+      token,
+    }: {
+      user: { email: string; firstName?: string }
+      token: string
+    }) => {
       const baseUrl = env.VITE_APP_URL || 'http://localhost:3000'
       const verificationLink = `${baseUrl}/verify-email?token=${token}`
 
