@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { steps } from '../constants'
 import { usePersonalInfo } from './queries/use-personal-info'
 import { useEducation } from './queries/use-education'
@@ -30,8 +31,14 @@ type WizardAction =
   | { type: 'SET_DOC_TYPE'; docType: DocumentType }
   | { type: 'SET_FRONT_FILE'; file: UploadedFile | null }
   | { type: 'SET_BACK_FILE'; file: UploadedFile | null }
-  | { type: 'UPDATE_FRONT_FILE'; updater: (prev: UploadedFile | null) => UploadedFile | null }
-  | { type: 'UPDATE_BACK_FILE'; updater: (prev: UploadedFile | null) => UploadedFile | null }
+  | {
+      type: 'UPDATE_FRONT_FILE'
+      updater: (prev: UploadedFile | null) => UploadedFile | null
+    }
+  | {
+      type: 'UPDATE_BACK_FILE'
+      updater: (prev: UploadedFile | null) => UploadedFile | null
+    }
   | { type: 'SET_PERSONAL_INFO_VALID'; isValid: boolean }
   | { type: 'SET_PERSONAL_INFO_DATA'; data: Partial<PersonalInfoFormData> }
   | { type: 'SET_EDUCATION_VALID'; isValid: boolean }
@@ -106,7 +113,15 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 }
 
 export function useWizardState() {
-  const [state, dispatch] = useReducer(wizardReducer, initialState)
+  const { step: urlStep } = useSearch({
+    from: '/_pending_verification/verification-documents',
+  })
+  const navigate = useNavigate()
+
+  const [state, dispatch] = useReducer(wizardReducer, {
+    ...initialState,
+    currentStep: urlStep ?? 'personal_info',
+  })
 
   // Fetch saved personal info from database
   const { data: savedPersonalInfo, isLoading: isLoadingPersonalInfo } =
@@ -129,6 +144,15 @@ export function useWizardState() {
     }
   }, [savedEducation])
 
+  // Sync current step to URL query params
+  useEffect(() => {
+    void navigate({
+      to: '/verification-documents',
+      search: { step: state.currentStep },
+      replace: true,
+    })
+  }, [state.currentStep, navigate])
+
   const currentStepIndex = steps.findIndex((s) => s.id === state.currentStep)
   const isFirstStep = currentStepIndex === 0
   const isLastStep = currentStepIndex === steps.length - 1
@@ -150,7 +174,13 @@ export function useWizardState() {
       default:
         return false
     }
-  }, [state.currentStep, state.personalInfo.isValid, state.education.isValid, state.frontFile, state.backFile])
+  }, [
+    state.currentStep,
+    state.personalInfo.isValid,
+    state.education.isValid,
+    state.frontFile,
+    state.backFile,
+  ])
 
   // Actions
   const actions = useMemo(
@@ -164,10 +194,12 @@ export function useWizardState() {
         dispatch({ type: 'SET_FRONT_FILE', file }),
       setBackFile: (file: UploadedFile | null) =>
         dispatch({ type: 'SET_BACK_FILE', file }),
-      updateFrontFile: (updater: (prev: UploadedFile | null) => UploadedFile | null) =>
-        dispatch({ type: 'UPDATE_FRONT_FILE', updater }),
-      updateBackFile: (updater: (prev: UploadedFile | null) => UploadedFile | null) =>
-        dispatch({ type: 'UPDATE_BACK_FILE', updater }),
+      updateFrontFile: (
+        updater: (prev: UploadedFile | null) => UploadedFile | null,
+      ) => dispatch({ type: 'UPDATE_FRONT_FILE', updater }),
+      updateBackFile: (
+        updater: (prev: UploadedFile | null) => UploadedFile | null,
+      ) => dispatch({ type: 'UPDATE_BACK_FILE', updater }),
       setPersonalInfoValid: (isValid: boolean) =>
         dispatch({ type: 'SET_PERSONAL_INFO_VALID', isValid }),
       setPersonalInfoData: (data: Partial<PersonalInfoFormData>) =>
