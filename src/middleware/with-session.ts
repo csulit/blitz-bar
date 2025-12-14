@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   '/forgot-password',
   '/reset-password',
   '/change-password',
+  '/verify-email',
 ]
 
 export const withSessionMiddleware = createMiddleware().server(

@@ -22,6 +22,7 @@ import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
 import { Route as Pending_verificationVerificationDocumentsRouteImport } from './routes/_pending_verification/verification-documents'
+import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -101,6 +102,11 @@ const Pending_verificationVerificationDocumentsRoute =
     path: '/verification-documents',
     getParentRoute: () => Pending_verificationRoute,
   } as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -202,6 +209,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_pending_verification/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/signup'
+    | '/verify-email'
     | '/verification-documents'
     | '/verification-status'
     | '/demo/drizzle'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/signup'
+    | '/verify-email'
     | '/verification-documents'
     | '/verification-status'
     | '/demo/drizzle'
@@ -313,6 +324,7 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/signup'
+    | '/_auth/verify-email'
     | '/_pending_verification/verification-documents'
     | '/_pending_verification/verification-status'
     | '/demo/drizzle'
@@ -447,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Pending_verificationVerificationDocumentsRouteImport
       parentRoute: typeof Pending_verificationRoute
     }
+    '/_auth/verify-email': {
+      id: '/_auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -546,6 +565,7 @@ interface AuthRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -553,6 +573,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

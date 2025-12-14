@@ -13,6 +13,7 @@ import * as schema from '@/db/schema'
 import { db } from '@/db'
 import { resend } from '@/lib/resend'
 import { ForgotPasswordEmail } from '@/emails/forgot-password'
+import { EmailConfirmationEmail } from '@/emails/email-confirmation'
 import { ChangePasswordSuccessEmail } from '@/emails/change-password-success'
 import { env } from '@/env'
 import { waitUntil } from '@vercel/functions'
@@ -62,6 +63,23 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
+    requireEmailVerification: true,
+    sendVerificationEmail: async ({ user, token }) => {
+      const baseUrl = env.VITE_APP_URL || 'http://localhost:3000'
+      const verificationLink = `${baseUrl}/verify-email?token=${token}`
+
+      waitUntil(
+        resend.emails.send({
+          from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
+          to: user.email,
+          subject: 'Confirm your email address',
+          react: EmailConfirmationEmail({
+            verificationLink,
+            userFirstName: user.firstName,
+          }),
+        }),
+      )
+    },
     sendResetPassword: async ({
       user,
       url,
