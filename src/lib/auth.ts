@@ -15,6 +15,7 @@ import { resend } from '@/lib/resend'
 import { ForgotPasswordEmail } from '@/emails/forgot-password'
 import { ChangePasswordSuccessEmail } from '@/emails/change-password-success'
 import { env } from '@/env'
+import { waitUntil } from '@vercel/functions'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -92,15 +93,17 @@ export const auth = betterAuth({
       user: { email: string; firstName?: string }
     }) => {
       const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
-      void resend.emails.send({
-        from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
-        to: user.email,
-        subject: 'Your password has been changed',
-        react: ChangePasswordSuccessEmail({
-          userName: user.firstName,
-          loginUrl,
+      waitUntil(
+        resend.emails.send({
+          from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
+          to: user.email,
+          subject: 'Your password has been changed',
+          react: ChangePasswordSuccessEmail({
+            userName: user.firstName,
+            loginUrl,
+          }),
         }),
-      })
+      )
     },
   },
   databaseHooks: {

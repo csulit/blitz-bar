@@ -50,6 +50,7 @@
     "@tanstack/react-start": "^1.141.3",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-plugin": "^1.141.2",
+    "@vercel/functions": "^3.3.4",
     "better-auth": "^1.4.6",
     "cal-sans": "^1.0.1",
     "class-variance-authority": "^0.7.1",
