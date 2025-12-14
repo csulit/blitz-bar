@@ -6,6 +6,7 @@ export const steps: {
   completed: boolean
 }[] = [
   { id: 'personal_info', label: 'Personal Info', completed: false },
+  { id: 'education', label: 'Education', completed: false },
   { id: 'setup', label: 'Upload', completed: false },
   { id: 'verification', label: 'Verification', completed: false },
   { id: 'review', label: 'Review', completed: false },

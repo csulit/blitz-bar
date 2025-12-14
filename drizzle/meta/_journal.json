@@ -8,6 +8,20 @@
       "when": 1765616672177,
       "tag": "0000_purple_james_howlett",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765700820277,
+      "tag": "0001_nice_warbound",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765700950302,
+      "tag": "0002_silly_blindfold",
+      "breakpoints": true
     }
   ]
 }

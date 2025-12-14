@@ -29,9 +29,10 @@ export const personalInfoSchema = z.object({
   maritalStatus: z.enum(maritalStatusOptions, {
     error: 'Please select a marital status',
   }),
-  phoneNumber: z.string({ error: 'Phone number is required' }).min(1, {
-    error: 'Phone number is required',
-  }),
+  phoneNumber: z
+    .string({ error: 'Phone number is required' })
+    .length(10, { error: 'Phone number must be 10 digits' })
+    .regex(/^\d+$/, { error: 'Phone number must contain only digits' }),
 })
 
 export type PersonalInfoFormData = z.infer<typeof personalInfoSchema>

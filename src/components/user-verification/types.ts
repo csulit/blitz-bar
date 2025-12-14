@@ -1,5 +1,6 @@
 export type VerificationStep =
   | 'personal_info'
+  | 'education'
   | 'setup'
   | 'verification'
   | 'review'

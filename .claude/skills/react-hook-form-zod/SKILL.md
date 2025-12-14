@@ -492,7 +492,44 @@ const form = useForm({
 />
 ```
 
-### 6. Error Display
+### 6. Watching Field Values
+
+Use `useWatch` instead of `watch` for better performance. `useWatch` isolates re-renders to only when watched values change, while `watch` causes the entire form to re-render.
+
+```typescript
+import { useForm, useWatch } from 'react-hook-form'
+
+function MyForm() {
+  const { control, register } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { level: '', isStudent: false },
+  })
+
+  // Preferred: useWatch for conditional rendering
+  const selectedLevel = useWatch({ control, name: 'level' })
+  const isStudent = useWatch({ control, name: 'isStudent' })
+
+  // Watch multiple fields
+  const [firstName, lastName] = useWatch({
+    control,
+    name: ['firstName', 'lastName'],
+  })
+
+  return (
+    <form>
+      {/* Conditional fields based on watched values */}
+      {selectedLevel === 'college' && (
+        <Input {...register('degree')} placeholder="Degree" />
+      )}
+      {isStudent && (
+        <Input {...register('studentId')} placeholder="Student ID" />
+      )}
+    </form>
+  )
+}
+```
+
+### 7. Error Display
 
 ```typescript
 // Using the Field components
@@ -506,7 +543,7 @@ const form = useForm({
 <FieldError errors={[errors.items?.[0]?.name]} />
 ```
 
-### 7. Server-Side Validation
+### 8. Server-Side Validation
 
 For forms that submit to server functions:
 

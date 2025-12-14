@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { format, parse } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import {
   Field,
   FieldError,
@@ -8,6 +11,14 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { PhoneInput } from '@/components/ui/phone-input'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -111,7 +122,44 @@ export function PersonalInfoForm({
         </Field>
         <Field data-invalid={!!errors.birthday}>
           <FieldLabel htmlFor="birthday">Birthday</FieldLabel>
-          <Input id="birthday" type="date" {...register('birthday')} />
+          <Controller
+            name="birthday"
+            control={control}
+            render={({ field }) => {
+              const dateValue = field.value
+                ? parse(field.value, 'yyyy-MM-dd', new Date())
+                : undefined
+              return (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="birthday"
+                      variant="outline"
+                      className={cn(
+                        'w-full justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 size-4" />
+                      {field.value
+                        ? format(dateValue!, 'PPP')
+                        : 'Pick a date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dateValue}
+                      onSelect={(date) =>
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )
+            }}
+          />
           <FieldError>{errors.birthday?.message}</FieldError>
         </Field>
       </div>
@@ -167,11 +215,17 @@ export function PersonalInfoForm({
       {/* Phone Number */}
       <Field data-invalid={!!errors.phoneNumber}>
         <FieldLabel htmlFor="phoneNumber">Phone number</FieldLabel>
-        <Input
-          id="phoneNumber"
-          type="tel"
-          placeholder="+1 (555) 123-4567"
-          {...register('phoneNumber')}
+        <Controller
+          name="phoneNumber"
+          control={control}
+          render={({ field }) => (
+            <PhoneInput
+              id="phoneNumber"
+              placeholder="908 899 1537"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
         <FieldError>{errors.phoneNumber?.message}</FieldError>
       </Field>

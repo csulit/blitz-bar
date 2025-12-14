@@ -6,8 +6,10 @@ import { HorizontalStepper } from './horizontal-stepper'
 import { DocumentTypeSelector } from './document-type-selector'
 import { FileUploadZone } from './file-upload-zone'
 import { PersonalInfoForm } from './personal-info-form'
+import { EducationForm } from './education-form'
 import type { VerificationStep, DocumentType, UploadedFile } from './types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
+import type { EducationFormData } from '@/lib/schemas/education'
 
 interface IdentityVerificationWizardProps extends React.ComponentProps<'div'> {}
 
@@ -20,6 +22,10 @@ export function IdentityVerificationWizard({
   const [isPersonalInfoValid, setIsPersonalInfoValid] = useState(false)
   const [personalInfoData, setPersonalInfoData] = useState<
     Partial<PersonalInfoFormData>
+  >({})
+  const [isEducationValid, setIsEducationValid] = useState(false)
+  const [educationData, setEducationData] = useState<
+    Partial<EducationFormData>
   >({})
   const [selectedDocType, setSelectedDocType] =
     useState<DocumentType>('identity_card')
@@ -81,10 +87,23 @@ export function IdentityVerificationWizard({
     [],
   )
 
+  const handleEducationValidChange = useCallback((isValid: boolean) => {
+    setIsEducationValid(isValid)
+  }, [])
+
+  const handleEducationDataChange = useCallback(
+    (data: Partial<EducationFormData>) => {
+      setEducationData(data)
+    },
+    [],
+  )
+
   const canContinue = (() => {
     switch (currentStep) {
       case 'personal_info':
         return isPersonalInfoValid
+      case 'education':
+        return isEducationValid
       case 'setup':
         return frontFile?.status === 'success' && backFile?.status === 'success'
       case 'verification':
@@ -134,7 +153,30 @@ export function IdentityVerificationWizard({
             </>
           )}
 
-          {/* Step 2: Upload */}
+          {/* Step 2: Education */}
+          {currentStep === 'education' && (
+            <>
+              {/* Header */}
+              <div className="mb-8">
+                <h1 className="font-display text-2xl md:text-3xl text-foreground">
+                  Educational Background
+                </h1>
+                <p className="mt-2 text-muted-foreground text-balance">
+                  Please provide your highest educational attainment. This helps
+                  us understand your background.
+                </p>
+              </div>
+
+              {/* Education Form */}
+              <EducationForm
+                defaultValues={educationData}
+                onValidChange={handleEducationValidChange}
+                onDataChange={handleEducationDataChange}
+              />
+            </>
+          )}
+
+          {/* Step 3: Upload */}
           {currentStep === 'setup' && (
             <>
               {/* Header */}
@@ -218,7 +260,7 @@ export function IdentityVerificationWizard({
             </>
           )}
 
-          {/* Step 3: Verification */}
+          {/* Step 4: Verification */}
           {currentStep === 'verification' && (
             <>
               <div className="mb-8">
@@ -260,7 +302,7 @@ export function IdentityVerificationWizard({
             </>
           )}
 
-          {/* Step 4: Review */}
+          {/* Step 5: Review */}
           {currentStep === 'review' && (
             <>
               <div className="mb-8">

@@ -189,6 +189,33 @@ export const profile = pgTable(
   (table) => [index('profile_userId_idx').on(table.userId)],
 )
 
+export const identityDocument = pgTable(
+  'identity_document',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    documentType: text('document_type').notNull(), // 'identity_card' | 'driver_license' | 'passport'
+    frontImageUrl: text('front_image_url').notNull(),
+    backImageUrl: text('back_image_url'),
+    status: text('status').default('pending').notNull(), // 'pending' | 'verified' | 'rejected'
+    rejectionReason: text('rejection_reason'),
+    submittedAt: timestamp('submitted_at').defaultNow().notNull(),
+    verifiedAt: timestamp('verified_at'),
+    verifiedBy: uuid('verified_by').references(() => user.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('identity_document_userId_idx').on(table.userId),
+    index('identity_document_status_idx').on(table.status),
+  ],
+)
+
 export const userRelations = relations(user, ({ one, many }) => ({
   sessions: many(session),
   accounts: many(account),
@@ -196,6 +223,8 @@ export const userRelations = relations(user, ({ one, many }) => ({
   members: many(member),
   invitations: many(invitation),
   profile: one(profile),
+  identityDocuments: many(identityDocument),
+  educations: many(education),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -249,6 +278,64 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
 export const profileRelations = relations(profile, ({ one }) => ({
   user: one(user, {
     fields: [profile.userId],
+    references: [user.id],
+  }),
+}))
+
+export const identityDocumentRelations = relations(
+  identityDocument,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [identityDocument.userId],
+      references: [user.id],
+    }),
+    verifier: one(user, {
+      fields: [identityDocument.verifiedBy],
+      references: [user.id],
+    }),
+  }),
+)
+
+// Philippine Educational Levels:
+// - elementary: Elementary (Grades 1-6)
+// - junior_high: Junior High School (Grades 7-10)
+// - senior_high: Senior High School (Grades 11-12)
+// - vocational: Vocational/Technical (TESDA)
+// - college: College/University (Bachelor's)
+// - postgraduate: Post-Graduate (Master's, Doctorate)
+export const education = pgTable(
+  'education',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    level: text('level').notNull(), // 'elementary' | 'junior_high' | 'senior_high' | 'vocational' | 'college' | 'postgraduate'
+    schoolName: text('school_name').notNull(),
+    schoolAddress: text('school_address'), // City/Municipality, Province
+    degree: text('degree'), // For college: Bachelor of Science in Computer Science
+    course: text('course'), // For vocational: TESDA course name
+    track: text('track'), // For senior high: Academic, TVL, Sports, Arts & Design
+    strand: text('strand'), // For senior high: STEM, ABM, HUMSS, GAS, etc.
+    yearStarted: text('year_started'),
+    yearGraduated: text('year_graduated'), // Can be 'Present' or year
+    isCurrentlyEnrolled: boolean('is_currently_enrolled').default(false),
+    honors: text('honors'), // e.g., "With Honors", "Cum Laude", "Magna Cum Laude"
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('education_userId_idx').on(table.userId),
+    index('education_level_idx').on(table.level),
+  ],
+)
+
+export const educationRelations = relations(education, ({ one }) => ({
+  user: one(user, {
+    fields: [education.userId],
     references: [user.id],
   }),
 }))
