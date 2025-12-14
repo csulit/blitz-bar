@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useDebouncedCallback } from 'use-debounce'
 import { format, parse } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useUpdatePersonalInfo } from './hooks/mutations/use-update-personal-info'
 import {
   Field,
   FieldError,
@@ -55,18 +57,47 @@ export function PersonalInfoForm({
     defaultValues,
   })
 
+  const { mutate: savePersonalInfo } = useUpdatePersonalInfo()
+  const isInitialMount = useRef(true)
+
+  // Debounced save function - 500ms delay
+  const debouncedSave = useDebouncedCallback(
+    (data: Partial<PersonalInfoFormData>) => {
+      // Only save non-empty values
+      const nonEmptyData = Object.fromEntries(
+        Object.entries(data).filter(
+          ([, value]) => value !== undefined && value !== '',
+        ),
+      ) as Partial<PersonalInfoFormData>
+
+      if (Object.keys(nonEmptyData).length > 0) {
+        savePersonalInfo(nonEmptyData)
+      }
+    },
+    500,
+  )
+
   // Notify parent when validity changes
   useEffect(() => {
     onValidChange(isValid)
   }, [isValid, onValidChange])
 
-  // Notify parent when data changes
+  // Notify parent when data changes and trigger debounced save
   useEffect(() => {
     const subscription = watch((data) => {
       onDataChange(data)
+
+      // Skip the initial mount to avoid saving defaultValues immediately
+      if (isInitialMount.current) {
+        isInitialMount.current = false
+        return
+      }
+
+      // Trigger debounced save to database
+      debouncedSave(data)
     })
     return () => subscription.unsubscribe()
-  }, [watch, onDataChange])
+  }, [watch, onDataChange, debouncedSave])
 
   return (
     <FieldGroup>

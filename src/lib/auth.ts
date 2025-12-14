@@ -9,6 +9,7 @@ import {
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { eq } from 'drizzle-orm'
 import * as schema from '@/db/schema'
 import { db } from '@/db'
 import { resend } from '@/lib/resend'
@@ -175,11 +176,20 @@ export const auth = betterAuth({
     organization(),
     admin(),
     customSession(async ({ user, session }) => {
+      // Query user from database to get actual values
+      const dbUser = await db.query.user.findFirst({
+        where: eq(schema.user.id, user.id),
+      })
+
       return {
         user: {
           ...user,
-          userType: 'query database to get the user type',
-          role: 'query database to get the user role',
+          userType: dbUser?.userType ?? 'Employee',
+          role: dbUser?.role ?? 'user',
+          userVerified: dbUser?.userVerified ?? false,
+          firstName: dbUser?.firstName ?? null,
+          middleInitial: dbUser?.middleInitial ?? null,
+          lastName: dbUser?.lastName ?? null,
         },
         session,
       }

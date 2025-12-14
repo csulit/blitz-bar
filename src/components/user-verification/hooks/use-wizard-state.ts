@@ -1,8 +1,9 @@
-import { useReducer, useCallback, useMemo } from 'react'
-import { steps } from './constants'
-import type { VerificationStep, DocumentType, UploadedFile } from './types'
+import { useReducer, useCallback, useMemo, useEffect } from 'react'
+import { steps } from '../constants'
+import type { VerificationStep, DocumentType, UploadedFile } from '../types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import type { EducationFormData } from '@/lib/schemas/education'
+import { usePersonalInfo } from './queries/use-personal-info'
 
 // State
 export interface WizardState {
@@ -106,6 +107,17 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 export function useWizardState() {
   const [state, dispatch] = useReducer(wizardReducer, initialState)
 
+  // Fetch saved personal info from database
+  const { data: savedPersonalInfo, isLoading: isLoadingPersonalInfo } =
+    usePersonalInfo()
+
+  // Initialize personal info data from fetched data (only once when data loads)
+  useEffect(() => {
+    if (savedPersonalInfo && Object.keys(savedPersonalInfo).length > 0) {
+      dispatch({ type: 'SET_PERSONAL_INFO_DATA', data: savedPersonalInfo })
+    }
+  }, [savedPersonalInfo])
+
   const currentStepIndex = steps.findIndex((s) => s.id === state.currentStep)
   const isFirstStep = currentStepIndex === 0
   const isLastStep = currentStepIndex === steps.length - 1
@@ -185,6 +197,10 @@ export function useWizardState() {
     isFirstStep,
     isLastStep,
     canContinue,
+    // Loading states
+    isLoadingPersonalInfo,
+    // Initial data from server (for form defaultValues)
+    savedPersonalInfo,
     // Stable callbacks for child components
     handlePersonalInfoValidChange,
     handlePersonalInfoDataChange,
