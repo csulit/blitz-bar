@@ -163,7 +163,7 @@ export function useWizardState() {
         return state.personalInfo.isValid
       case 'education':
         return state.education.isValid
-      case 'setup':
+      case 'upload':
         return (
           state.frontFile?.status === 'success' &&
           state.backFile?.status === 'success'

@@ -5,7 +5,7 @@ import { IdentityVerificationWizard } from '@/components/user-verification'
 const verificationStepSchema = z.enum([
   'personal_info',
   'education',
-  'setup',
+  'upload',
   'verification',
   'review',
 ])

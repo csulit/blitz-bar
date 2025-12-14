@@ -1,7 +1,7 @@
 export type VerificationStep =
   | 'personal_info'
   | 'education'
-  | 'setup'
+  | 'upload'
   | 'verification'
   | 'review'
 export type DocumentType = 'identity_card' | 'driver_license' | 'passport'
