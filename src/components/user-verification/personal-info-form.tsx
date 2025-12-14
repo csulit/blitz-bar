@@ -149,6 +149,7 @@ export function PersonalInfoForm({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      captionLayout="dropdown"
                       selected={dateValue}
                       onSelect={(date) =>
                         field.onChange(date ? format(date, 'yyyy-MM-dd') : '')

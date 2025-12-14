@@ -1,15 +1,12 @@
-import { useState, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { steps } from './constants'
 import { HorizontalStepper } from './horizontal-stepper'
 import { DocumentTypeSelector } from './document-type-selector'
 import { FileUploadZone } from './file-upload-zone'
 import { PersonalInfoForm } from './personal-info-form'
 import { EducationForm } from './education-form'
-import type { VerificationStep, DocumentType, UploadedFile } from './types'
-import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
-import type { EducationFormData } from '@/lib/schemas/education'
+import { useWizardState } from './use-wizard-state'
+import type { UploadedFile } from './types'
 
 interface IdentityVerificationWizardProps extends React.ComponentProps<'div'> {}
 
@@ -17,42 +14,25 @@ export function IdentityVerificationWizard({
   className,
   ...props
 }: IdentityVerificationWizardProps) {
-  const [currentStep, setCurrentStep] =
-    useState<VerificationStep>('personal_info')
-  const [isPersonalInfoValid, setIsPersonalInfoValid] = useState(false)
-  const [personalInfoData, setPersonalInfoData] = useState<
-    Partial<PersonalInfoFormData>
-  >({})
-  const [isEducationValid, setIsEducationValid] = useState(false)
-  const [educationData, setEducationData] = useState<
-    Partial<EducationFormData>
-  >({})
-  const [selectedDocType, setSelectedDocType] =
-    useState<DocumentType>('identity_card')
-  const [frontFile, setFrontFile] = useState<UploadedFile | null>(null)
-  const [backFile, setBackFile] = useState<UploadedFile | null>(null)
-
-  const currentStepIndex = steps.findIndex((s) => s.id === currentStep)
-  const isFirstStep = currentStepIndex === 0
-  const isLastStep = currentStepIndex === steps.length - 1
-
-  const handleBack = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStep(steps[currentStepIndex - 1].id)
-    }
-  }
-
-  const handleContinue = () => {
-    if (currentStepIndex < steps.length - 1) {
-      setCurrentStep(steps[currentStepIndex + 1].id)
-    }
-  }
+  const {
+    state,
+    actions,
+    currentStepIndex,
+    isFirstStep,
+    isLastStep,
+    canContinue,
+    handlePersonalInfoValidChange,
+    handlePersonalInfoDataChange,
+    handleEducationValidChange,
+    handleEducationDataChange,
+  } = useWizardState()
 
   const simulateUpload = (
     file: File,
-    setter: React.Dispatch<React.SetStateAction<UploadedFile | null>>,
+    updateFile: (updater: (prev: UploadedFile | null) => UploadedFile | null) => void,
+    setFile: (file: UploadedFile | null) => void,
   ) => {
-    setter({
+    setFile({
       name: file.name,
       size: file.size,
       progress: 0,
@@ -65,54 +45,16 @@ export function IdentityVerificationWizard({
       if (progress >= 100) {
         progress = 100
         clearInterval(interval)
-        setter((prev) =>
+        updateFile((prev) =>
           prev ? { ...prev, progress: 100, status: 'success' } : null,
         )
       } else {
-        setter((prev) =>
+        updateFile((prev) =>
           prev ? { ...prev, progress: Math.round(progress) } : null,
         )
       }
     }, 200)
   }
-
-  const handlePersonalInfoValidChange = useCallback((isValid: boolean) => {
-    setIsPersonalInfoValid(isValid)
-  }, [])
-
-  const handlePersonalInfoDataChange = useCallback(
-    (data: Partial<PersonalInfoFormData>) => {
-      setPersonalInfoData(data)
-    },
-    [],
-  )
-
-  const handleEducationValidChange = useCallback((isValid: boolean) => {
-    setIsEducationValid(isValid)
-  }, [])
-
-  const handleEducationDataChange = useCallback(
-    (data: Partial<EducationFormData>) => {
-      setEducationData(data)
-    },
-    [],
-  )
-
-  const canContinue = (() => {
-    switch (currentStep) {
-      case 'personal_info':
-        return isPersonalInfoValid
-      case 'education':
-        return isEducationValid
-      case 'setup':
-        return frontFile?.status === 'success' && backFile?.status === 'success'
-      case 'verification':
-      case 'review':
-        return true
-      default:
-        return false
-    }
-  })()
 
   return (
     <div
@@ -131,7 +73,7 @@ export function IdentityVerificationWizard({
       <div className="flex flex-col">
         <div className="flex-1 p-6 md:p-8">
           {/* Step 1: Personal Info */}
-          {currentStep === 'personal_info' && (
+          {state.currentStep === 'personal_info' && (
             <>
               {/* Header */}
               <div className="mb-8">
@@ -146,7 +88,7 @@ export function IdentityVerificationWizard({
 
               {/* Personal Info Form */}
               <PersonalInfoForm
-                defaultValues={personalInfoData}
+                defaultValues={state.personalInfo.data}
                 onValidChange={handlePersonalInfoValidChange}
                 onDataChange={handlePersonalInfoDataChange}
               />
@@ -154,7 +96,7 @@ export function IdentityVerificationWizard({
           )}
 
           {/* Step 2: Education */}
-          {currentStep === 'education' && (
+          {state.currentStep === 'education' && (
             <>
               {/* Header */}
               <div className="mb-8">
@@ -169,7 +111,7 @@ export function IdentityVerificationWizard({
 
               {/* Education Form */}
               <EducationForm
-                defaultValues={educationData}
+                defaultValues={state.education.data}
                 onValidChange={handleEducationValidChange}
                 onDataChange={handleEducationDataChange}
               />
@@ -177,7 +119,7 @@ export function IdentityVerificationWizard({
           )}
 
           {/* Step 3: Upload */}
-          {currentStep === 'setup' && (
+          {state.currentStep === 'setup' && (
             <>
               {/* Header */}
               <div className="mb-8">
@@ -196,8 +138,8 @@ export function IdentityVerificationWizard({
                   Verify my identity using
                 </label>
                 <DocumentTypeSelector
-                  selected={selectedDocType}
-                  onSelect={setSelectedDocType}
+                  selected={state.selectedDocType}
+                  onSelect={actions.setDocType}
                 />
               </div>
 
@@ -205,16 +147,20 @@ export function IdentityVerificationWizard({
               <div className="space-y-6">
                 <FileUploadZone
                   label="Front side"
-                  file={frontFile}
-                  onFileSelect={(file) => simulateUpload(file, setFrontFile)}
-                  onRemove={() => setFrontFile(null)}
+                  file={state.frontFile}
+                  onFileSelect={(file) =>
+                    simulateUpload(file, actions.updateFrontFile, actions.setFrontFile)
+                  }
+                  onRemove={() => actions.setFrontFile(null)}
                 />
 
                 <FileUploadZone
                   label="Back side"
-                  file={backFile}
-                  onFileSelect={(file) => simulateUpload(file, setBackFile)}
-                  onRemove={() => setBackFile(null)}
+                  file={state.backFile}
+                  onFileSelect={(file) =>
+                    simulateUpload(file, actions.updateBackFile, actions.setBackFile)
+                  }
+                  onRemove={() => actions.setBackFile(null)}
                 />
               </div>
 
@@ -261,7 +207,7 @@ export function IdentityVerificationWizard({
           )}
 
           {/* Step 4: Verification */}
-          {currentStep === 'verification' && (
+          {state.currentStep === 'verification' && (
             <>
               <div className="mb-8">
                 <h1 className="font-display text-2xl md:text-3xl text-foreground">
@@ -303,7 +249,7 @@ export function IdentityVerificationWizard({
           )}
 
           {/* Step 5: Review */}
-          {currentStep === 'review' && (
+          {state.currentStep === 'review' && (
             <>
               <div className="mb-8">
                 <h1 className="font-display text-2xl md:text-3xl text-foreground">
@@ -338,7 +284,7 @@ export function IdentityVerificationWizard({
                         Documents Uploaded
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {selectedDocType.replace('_', ' ')} - Front & Back
+                        {state.selectedDocType.replace('_', ' ')} - Front & Back
                       </p>
                     </div>
                   </div>
@@ -384,14 +330,14 @@ export function IdentityVerificationWizard({
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
-              onClick={handleBack}
+              onClick={actions.goBack}
               disabled={isFirstStep}
             >
               Back
             </Button>
             <Button
               disabled={!canContinue}
-              onClick={handleContinue}
+              onClick={actions.goNext}
               className="min-w-30"
             >
               {isLastStep ? 'Submit' : 'Continue'}
