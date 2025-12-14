@@ -87,4 +87,4 @@ Cal Sans is optimized for large point sizes. Do not use it for body copy or smal
 - "Improve" or "enhance" things the user didn't ask about
 - Make assumptions about what else might need changing
 
-If the user asks to "make the step indicator horizontal", only change the step indicator. Do not touch document selectors, layout structure, widths, alignments, or anything else.
+**Example:** If asked to "change the button color to blue", only modify the button's color. Do not reorganize the surrounding layout, update unrelated components, or refactor the file structure.
