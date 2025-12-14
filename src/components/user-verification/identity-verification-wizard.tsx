@@ -29,7 +29,9 @@ export function IdentityVerificationWizard({
 
   const simulateUpload = (
     file: File,
-    updateFile: (updater: (prev: UploadedFile | null) => UploadedFile | null) => void,
+    updateFile: (
+      updater: (prev: UploadedFile | null) => UploadedFile | null,
+    ) => void,
     setFile: (file: UploadedFile | null) => void,
   ) => {
     setFile({
@@ -149,7 +151,11 @@ export function IdentityVerificationWizard({
                   label="Front side"
                   file={state.frontFile}
                   onFileSelect={(file) =>
-                    simulateUpload(file, actions.updateFrontFile, actions.setFrontFile)
+                    simulateUpload(
+                      file,
+                      actions.updateFrontFile,
+                      actions.setFrontFile,
+                    )
                   }
                   onRemove={() => actions.setFrontFile(null)}
                 />
@@ -158,7 +164,11 @@ export function IdentityVerificationWizard({
                   label="Back side"
                   file={state.backFile}
                   onFileSelect={(file) =>
-                    simulateUpload(file, actions.updateBackFile, actions.setBackFile)
+                    simulateUpload(
+                      file,
+                      actions.updateBackFile,
+                      actions.setBackFile,
+                    )
                   }
                   onRemove={() => actions.setBackFile(null)}
                 />
@@ -323,10 +333,7 @@ export function IdentityVerificationWizard({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t bg-muted/20 px-6 py-4 md:px-8">
-          <Button variant="ghost" className="text-muted-foreground">
-            Cancel
-          </Button>
+        <div className="flex items-center justify-end border-t bg-muted/20 px-6 py-4 md:px-8">
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
