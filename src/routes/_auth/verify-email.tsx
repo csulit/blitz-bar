@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Field, FieldLabel } from '@/components/ui/field'
+import { CheckCircle2, XCircle, Mail } from 'lucide-react'
+import { authClient } from '@/lib/auth-client'
 
 const verifyEmailSearchSchema = z.object({
   token: z.string().catch(''),
@@ -38,6 +42,32 @@ export const Route = createFileRoute('/_auth/verify-email')({
 
 function VerifyEmailPage() {
   const { verificationResult } = Route.useRouteContext()
+  const [email, setEmail] = useState('')
+  const [resendState, setResendState] = useState<
+    'idle' | 'loading' | 'success' | 'error'
+  >('idle')
+  const [resendError, setResendError] = useState<string | null>(null)
+
+  const handleResendVerification = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email.trim()) return
+
+    setResendState('loading')
+    setResendError(null)
+
+    const { error } = await authClient.sendVerificationEmail({
+      email: email.trim(),
+      callbackURL: '/login',
+    })
+
+    if (error) {
+      setResendState('error')
+      setResendError(error.message ?? 'Failed to send verification email')
+    } else {
+      setResendState('success')
+    }
+  }
 
   return (
     <Card className="w-full max-w-md">
@@ -66,9 +96,48 @@ function VerifyEmailPage() {
             <p className="text-center text-muted-foreground">
               {verificationResult.error}
             </p>
-            <Button asChild className="w-full">
-              <Link to="/login">Back to login</Link>
-            </Button>
+
+            {resendState === 'success' ? (
+              <div className="flex flex-col items-center gap-4 w-full">
+                <Mail className="h-10 w-10 text-muted-foreground" />
+                <p className="text-center text-sm text-muted-foreground">
+                  Verification email sent! Check your inbox.
+                </p>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/login">Back to login</Link>
+                </Button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleResendVerification}
+                className="flex flex-col gap-4 w-full"
+              >
+                <Field>
+                  <FieldLabel htmlFor="resend-email">
+                    Resend verification email
+                  </FieldLabel>
+                  <Input
+                    id="resend-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={resendState === 'loading'}
+                  />
+                </Field>
+                {resendState === 'error' && resendError && (
+                  <p className="text-sm text-destructive text-center">
+                    {resendError}
+                  </p>
+                )}
+                <Button type="submit" disabled={resendState === 'loading'}>
+                  {resendState === 'loading' ? 'Sending...' : 'Resend email'}
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/login">Back to login</Link>
+                </Button>
+              </form>
+            )}
           </>
         )}
       </CardContent>
