@@ -1,5 +1,5 @@
 // Query keys
-export { personalInfoKeys } from './keys'
+export { personalInfoKeys, educationKeys } from './keys'
 
 // Query hooks
 export { usePersonalInfo, getPersonalInfo } from './queries/use-personal-info'
@@ -9,6 +9,10 @@ export {
   useUpdatePersonalInfo,
   updatePersonalInfo,
 } from './mutations/use-update-personal-info'
+export {
+  useUpdateEducation,
+  updateEducation,
+} from './mutations/use-update-education'
 
 // State hooks
 export { useWizardState } from './use-wizard-state'

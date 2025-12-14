@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm, useWatch, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useDebouncedCallback } from 'use-debounce'
+import { useUpdateEducation } from './hooks/mutations/use-update-education'
 import {
   Field,
   FieldError,
@@ -43,7 +45,6 @@ export function EducationForm({
   const {
     register,
     control,
-    watch,
     formState: { errors, isValid },
   } = useForm<EducationFormData>({
     resolver: zodResolver(educationSchema),
@@ -54,21 +55,48 @@ export function EducationForm({
     },
   })
 
-  const selectedLevel = useWatch({ control, name: 'level' })
-  const isCurrentlyEnrolled = useWatch({ control, name: 'isCurrentlyEnrolled' })
+  const { mutate: saveEducation } = useUpdateEducation()
+  const isInitialMount = useRef(true)
+
+  const formData = useWatch({ control })
+  const selectedLevel = formData.level
+  const isCurrentlyEnrolled = formData.isCurrentlyEnrolled
+
+  // Debounced save function - 500ms delay
+  const debouncedSave = useDebouncedCallback(
+    (data: Partial<EducationFormData>) => {
+      // Only save non-empty values
+      const nonEmptyData = Object.fromEntries(
+        Object.entries(data).filter(
+          ([, value]) => value !== undefined && value !== '',
+        ),
+      ) as Partial<EducationFormData>
+
+      if (Object.keys(nonEmptyData).length > 0) {
+        saveEducation(nonEmptyData)
+      }
+    },
+    500,
+  )
 
   // Notify parent when validity changes
   useEffect(() => {
     onValidChange(isValid)
   }, [isValid, onValidChange])
 
-  // Notify parent when data changes
+  // Notify parent when data changes and trigger debounced save
   useEffect(() => {
-    const subscription = watch((data) => {
-      onDataChange(data)
-    })
-    return () => subscription.unsubscribe()
-  }, [watch, onDataChange])
+    onDataChange(formData)
+
+    // Skip the initial mount to avoid saving defaultValues immediately
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    // Trigger debounced save to database
+    debouncedSave(formData)
+  }, [formData, onDataChange, debouncedSave])
 
   const showDegreeField =
     selectedLevel === 'college' || selectedLevel === 'postgraduate'

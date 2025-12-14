@@ -13,9 +13,9 @@ type UpdatePersonalInfoInput = Partial<PersonalInfoFormData>
  * Server function for updating personal info
  * Splits data between user table (name fields) and profile table (other fields)
  */
-export const updatePersonalInfo = createServerFn({ method: 'POST' }).handler(
-  async (ctx: { data: UpdatePersonalInfoInput }) => {
-    const data = ctx.data
+export const updatePersonalInfo = createServerFn({ method: 'POST' })
+  .inputValidator((data: UpdatePersonalInfoInput) => data)
+  .handler(async ({ data }) => {
     const request = getRequest()
     const { auth } = await import('@/lib/auth')
 
@@ -69,8 +69,7 @@ export const updatePersonalInfo = createServerFn({ method: 'POST' }).handler(
     }
 
     return { success: true }
-  },
-)
+  })
 
 /**
  * Hook for updating personal info
