@@ -20,6 +20,7 @@ import { Route as UserIdRouteImport } from './routes/user.$id'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
+import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
 import { Route as Pending_verificationVerificationDocumentsRouteImport } from './routes/_pending_verification/verification-documents'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
@@ -88,6 +89,11 @@ const DemoNeonRoute = DemoNeonRouteImport.update({
 const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   id: '/demo/drizzle',
   path: '/demo/drizzle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUploadthingRoute = ApiUploadthingRouteImport.update({
+  id: '/api/uploadthing',
+  path: '/api/uploadthing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Pending_verificationVerificationStatusRoute =
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_pending_verification/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/verification-documents'
     | '/verification-status'
+    | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/verification-documents'
     | '/verification-status'
+    | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/_auth/verify-email'
     | '/_pending_verification/verification-documents'
     | '/_pending_verification/verification-status'
+    | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  ApiUploadthingRoute: typeof ApiUploadthingRoute
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -443,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/drizzle'
       fullPath: '/demo/drizzle'
       preLoaderRoute: typeof DemoDrizzleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/uploadthing': {
+      id: '/api/uploadthing'
+      path: '/api/uploadthing'
+      fullPath: '/api/uploadthing'
+      preLoaderRoute: typeof ApiUploadthingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_pending_verification/verification-status': {
@@ -600,6 +620,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  ApiUploadthingRoute: ApiUploadthingRoute,
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,

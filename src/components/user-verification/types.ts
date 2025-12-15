@@ -12,4 +12,5 @@ export interface UploadedFile {
   size: number
   progress: number
   status: UploadStatus
+  url?: string
 }

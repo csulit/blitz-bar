@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo, useReducer } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { steps } from '../constants'
 import { usePersonalInfo } from './queries/use-personal-info'
 import { useEducation } from './queries/use-education'
+import { useIdentityDocument } from './queries/use-identity-document'
+import { useSaveIdentityDocument } from './mutations/use-save-identity-document'
 import type { DocumentType, UploadedFile, VerificationStep } from '../types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import type { EducationFormData } from '@/lib/schemas/education'
@@ -144,6 +146,89 @@ export function useWizardState() {
     }
   }, [savedEducation])
 
+  // Fetch saved identity document from database
+  const { data: savedIdentityDocument, isLoading: isLoadingIdentityDocument } =
+    useIdentityDocument()
+
+  // Initialize identity document files from fetched data (only once when data loads)
+  const hasInitializedFromSaved = useRef(false)
+  useEffect(() => {
+    if (savedIdentityDocument && !hasInitializedFromSaved.current) {
+      hasInitializedFromSaved.current = true
+
+      // Set document type
+      dispatch({
+        type: 'SET_DOC_TYPE',
+        docType: savedIdentityDocument.documentType,
+      })
+
+      // Set front file from saved URL
+      if (savedIdentityDocument.frontImageUrl) {
+        dispatch({
+          type: 'SET_FRONT_FILE',
+          file: {
+            name: 'Previously uploaded document',
+            size: 0, // Size not stored in DB, showing as 0
+            progress: 100,
+            status: 'success',
+            url: savedIdentityDocument.frontImageUrl,
+          },
+        })
+      }
+
+      // Set back file from saved URL
+      if (savedIdentityDocument.backImageUrl) {
+        dispatch({
+          type: 'SET_BACK_FILE',
+          file: {
+            name: 'Previously uploaded document',
+            size: 0, // Size not stored in DB, showing as 0
+            progress: 100,
+            status: 'success',
+            url: savedIdentityDocument.backImageUrl,
+          },
+        })
+      }
+    }
+  }, [savedIdentityDocument])
+
+  // Auto-save identity document when files are uploaded
+  const { mutate: saveIdentityDocument } = useSaveIdentityDocument()
+  const lastSavedFrontUrl = useRef<string | undefined>(undefined)
+  const lastSavedBackUrl = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    // Only save when we have a successfully uploaded file with a URL
+    // and the URL is different from what we last saved
+    const frontUrl = state.frontFile?.status === 'success' ? state.frontFile.url : undefined
+    const backUrl = state.backFile?.status === 'success' ? state.backFile.url : undefined
+
+    // Check if we need to save (either URL changed)
+    const frontChanged = frontUrl !== lastSavedFrontUrl.current
+    const backChanged = backUrl !== lastSavedBackUrl.current
+
+    // Only save if something changed and we have at least one file
+    if ((frontChanged || backChanged) && (frontUrl || backUrl)) {
+      // Update refs before saving to prevent duplicate saves
+      lastSavedFrontUrl.current = frontUrl
+      lastSavedBackUrl.current = backUrl
+
+      // Save to database
+      saveIdentityDocument({
+        documentType: state.selectedDocType,
+        frontImageUrl: frontUrl,
+        backImageUrl: backUrl,
+      })
+    }
+  }, [
+    state.frontFile?.status,
+    state.frontFile?.url,
+    state.backFile?.status,
+    state.backFile?.url,
+    state.selectedDocType,
+    saveIdentityDocument,
+  ])
+
   // Sync current step to URL query params
   useEffect(() => {
     void navigate({
@@ -243,9 +328,11 @@ export function useWizardState() {
     // Loading states
     isLoadingPersonalInfo,
     isLoadingEducation,
+    isLoadingIdentityDocument,
     // Initial data from server (for form defaultValues)
     savedPersonalInfo,
     savedEducation,
+    savedIdentityDocument,
     // Stable callbacks for child components
     handlePersonalInfoValidChange,
     handlePersonalInfoDataChange,

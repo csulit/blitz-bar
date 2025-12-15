@@ -4,7 +4,7 @@ import { FileUploadZone } from './file-upload-zone'
 import { PersonalInfoForm } from './personal-info-form'
 import { EducationForm } from './education-form'
 import { useWizardState } from './hooks/use-wizard-state'
-import type { UploadedFile } from './types'
+import { useSubmitIdentityDocument } from './hooks/mutations/use-submit-identity-document'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +23,7 @@ export function IdentityVerificationWizard({
     canContinue,
     isLoadingPersonalInfo,
     isLoadingEducation,
+    isLoadingIdentityDocument,
     savedPersonalInfo,
     savedEducation,
     handlePersonalInfoValidChange,
@@ -31,35 +32,34 @@ export function IdentityVerificationWizard({
     handleEducationDataChange,
   } = useWizardState()
 
-  const simulateUpload = (
-    file: File,
-    updateFile: (
-      updater: (prev: UploadedFile | null) => UploadedFile | null,
-    ) => void,
-    setFile: (file: UploadedFile | null) => void,
-  ) => {
-    setFile({
-      name: file.name,
-      size: file.size,
-      progress: 0,
-      status: 'uploading',
-    })
+  const { mutateAsync: submitDocument, isPending: isSubmitting } =
+    useSubmitIdentityDocument()
 
-    let progress = 0
-    const interval = setInterval(() => {
-      progress += Math.random() * 15 + 5
-      if (progress >= 100) {
-        progress = 100
-        clearInterval(interval)
-        updateFile((prev) =>
-          prev ? { ...prev, progress: 100, status: 'success' } : null,
-        )
-      } else {
-        updateFile((prev) =>
-          prev ? { ...prev, progress: Math.round(progress) } : null,
-        )
-      }
-    }, 200)
+  const handleSubmit = async () => {
+    if (!state.frontFile?.url) {
+      console.error('Front file URL is required')
+      return
+    }
+
+    try {
+      await submitDocument({
+        documentType: state.selectedDocType,
+        frontImageUrl: state.frontFile.url,
+        backImageUrl: state.backFile?.url,
+      })
+      // TODO: Navigate to success page or show success message
+      console.log('Identity document submitted successfully')
+    } catch (error) {
+      console.error('Failed to submit identity document:', error)
+    }
+  }
+
+  const handleContinue = () => {
+    if (isLastStep) {
+      handleSubmit()
+    } else {
+      actions.goNext()
+    }
   }
 
   return (
@@ -198,85 +198,108 @@ export function IdentityVerificationWizard({
                 </p>
               </div>
 
-              {/* Document Type Selection */}
-              <div className="mb-8">
-                <label className="mb-3 block text-sm font-medium text-foreground">
-                  Verify my identity using
-                </label>
-                <DocumentTypeSelector
-                  selected={state.selectedDocType}
-                  onSelect={actions.setDocType}
-                />
-              </div>
-
-              {/* File Upload Zones */}
-              <div className="space-y-6">
-                <FileUploadZone
-                  label="Front side"
-                  file={state.frontFile}
-                  onFileSelect={(file) =>
-                    simulateUpload(
-                      file,
-                      actions.updateFrontFile,
-                      actions.setFrontFile,
-                    )
-                  }
-                  onRemove={() => actions.setFrontFile(null)}
-                />
-
-                <FileUploadZone
-                  label="Back side"
-                  file={state.backFile}
-                  onFileSelect={(file) =>
-                    simulateUpload(
-                      file,
-                      actions.updateBackFile,
-                      actions.setBackFile,
-                    )
-                  }
-                  onRemove={() => actions.setBackFile(null)}
-                />
-              </div>
-
-              {/* Info box */}
-              <div className="mt-8 rounded-xl border bg-muted/30 p-4">
-                <div className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+              {isLoadingIdentityDocument ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
                     <svg
-                      className="h-4 w-4 text-primary"
+                      className="h-8 w-8 text-primary animate-spin"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
                     >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      />
                       <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium text-foreground">
-                      Tips for a successful upload
+                    <p className="text-sm text-muted-foreground">
+                      Loading your documents...
                     </p>
-                    <ul className="mt-2 space-y-1 text-muted-foreground">
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                        Make sure all four corners are visible
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                        Ensure the document is not expired
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                        Avoid glare and shadows on the document
-                      </li>
-                    </ul>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {/* Document Type Selection */}
+                  <div className="mb-8">
+                    <label className="mb-3 block text-sm font-medium text-foreground">
+                      Verify my identity using
+                    </label>
+                    <DocumentTypeSelector
+                      selected={state.selectedDocType}
+                      onSelect={actions.setDocType}
+                    />
+                  </div>
+
+                  {/* File Upload Zones */}
+                  <div className="space-y-6">
+                    <FileUploadZone
+                      label="Front side"
+                      file={state.frontFile}
+                      onUploadProgress={actions.setFrontFile}
+                      onUploadComplete={actions.setFrontFile}
+                      onUploadError={actions.setFrontFile}
+                      onRemove={() => actions.setFrontFile(null)}
+                    />
+
+                    <FileUploadZone
+                      label="Back side"
+                      file={state.backFile}
+                      onUploadProgress={actions.setBackFile}
+                      onUploadComplete={actions.setBackFile}
+                      onUploadError={actions.setBackFile}
+                      onRemove={() => actions.setBackFile(null)}
+                    />
+                  </div>
+
+                  {/* Info box */}
+                  <div className="mt-8 rounded-xl border bg-muted/30 p-4">
+                    <div className="flex gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                        <svg
+                          className="h-4 w-4 text-primary"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="text-sm">
+                        <p className="font-medium text-foreground">
+                          Tips for a successful upload
+                        </p>
+                        <ul className="mt-2 space-y-1 text-muted-foreground">
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                            Make sure all four corners are visible
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                            Ensure the document is not expired
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                            Avoid glare and shadows on the document
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
 
@@ -402,30 +425,57 @@ export function IdentityVerificationWizard({
             <Button
               variant="outline"
               onClick={actions.goBack}
-              disabled={isFirstStep}
+              disabled={isFirstStep || isSubmitting}
             >
               Back
             </Button>
             <Button
-              disabled={!canContinue}
-              onClick={actions.goNext}
+              disabled={!canContinue || isSubmitting}
+              onClick={handleContinue}
               className="min-w-30"
             >
-              {isLastStep ? 'Submit' : 'Continue'}
-              {!isLastStep && (
-                <svg
-                  className="ml-1 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="mr-2 h-4 w-4 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Submitting...
+                </>
+              ) : isLastStep ? (
+                'Submit'
+              ) : (
+                <>
+                  Continue
+                  <svg
+                    className="ml-1 h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </>
               )}
             </Button>
           </div>
