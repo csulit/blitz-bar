@@ -1,17 +1,38 @@
+import { useEffect, useState } from 'react'
 import { HorizontalStepper } from './horizontal-stepper'
 import { DocumentTypeSelector } from './document-type-selector'
 import { FileUploadZone } from './file-upload-zone'
 import { PersonalInfoForm } from './personal-info-form'
 import { EducationForm } from './education-form'
+import { JobHistoryForm } from './job-history-form'
 import { useWizardState } from './hooks/use-wizard-state'
+import { useReviewData } from './hooks/queries/use-review-data'
+import {
+  useVerificationStatus,
+  type VerificationStatusData,
+} from './hooks/queries/use-verification-status'
 import { useSubmitIdentityDocument } from './hooks/mutations/use-submit-identity-document'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-interface IdentityVerificationWizardProps extends React.ComponentProps<'div'> {}
+interface IdentityVerificationWizardProps extends React.ComponentProps<'div'> {
+  /** Initial verification status from server-side beforeLoad (avoids client fetch flicker) */
+  initialStatus?: VerificationStatusData
+}
 
 export function IdentityVerificationWizard({
   className,
+  initialStatus,
   ...props
 }: IdentityVerificationWizardProps) {
   const {
@@ -24,16 +45,40 @@ export function IdentityVerificationWizard({
     isLoadingPersonalInfo,
     isLoadingEducation,
     isLoadingIdentityDocument,
+    isLoadingJobHistory,
     savedPersonalInfo,
     savedEducation,
+    savedJobHistory,
     handlePersonalInfoValidChange,
     handlePersonalInfoDataChange,
     handleEducationValidChange,
     handleEducationDataChange,
+    handleJobHistoryValidChange,
+    handleJobHistoryDataChange,
   } = useWizardState()
 
   const { mutateAsync: submitDocument, isPending: isSubmitting } =
     useSubmitIdentityDocument()
+
+  const reviewData = useReviewData()
+  const { data: verificationStatus } = useVerificationStatus({
+    initialData: initialStatus,
+  })
+
+  // Check if verification is already submitted or verified (cannot edit)
+  const isVerificationLocked =
+    verificationStatus?.status === 'submitted' ||
+    verificationStatus?.status === 'verified'
+
+  // Force navigation to review step when verification is locked
+  useEffect(() => {
+    if (isVerificationLocked && state.currentStep !== 'review') {
+      actions.setStep('review')
+    }
+  }, [isVerificationLocked, state.currentStep, actions])
+
+  // Confirmation dialog state
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
   const handleSubmit = async () => {
     if (!state.frontFile?.url) {
@@ -56,10 +101,15 @@ export function IdentityVerificationWizard({
 
   const handleContinue = () => {
     if (isLastStep) {
-      handleSubmit()
+      setShowConfirmDialog(true)
     } else {
       actions.goNext()
     }
+  }
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmDialog(false)
+    await handleSubmit()
   }
 
   return (
@@ -303,45 +353,56 @@ export function IdentityVerificationWizard({
             </>
           )}
 
-          {/* Step 4: Verification */}
-          {state.currentStep === 'verification' && (
+          {/* Step 4: Job History */}
+          {state.currentStep === 'job_history' && (
             <>
+              {/* Header */}
               <div className="mb-8">
                 <h1 className="font-display text-2xl md:text-3xl text-foreground">
-                  Verification in Progress
+                  Work Experience
                 </h1>
                 <p className="mt-2 text-muted-foreground text-balance">
-                  We're verifying your documents. This usually takes a few
-                  moments.
+                  Please provide your recent job history. This helps us
+                  understand your professional background.
                 </p>
               </div>
 
-              <div className="flex flex-col items-center justify-center py-12">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-6">
-                  <svg
-                    className="h-8 w-8 text-primary animate-spin"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
+              {/* Job History Form */}
+              {isLoadingJobHistory ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <svg
+                      className="h-8 w-8 text-primary animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <p className="text-sm text-muted-foreground">
+                      Loading your job history...
+                    </p>
+                  </div>
                 </div>
-                <p className="text-muted-foreground text-center">
-                  Please wait while we verify your identity...
-                </p>
-              </div>
+              ) : (
+                <JobHistoryForm
+                  key={savedJobHistory ? 'loaded' : 'empty'}
+                  defaultValues={savedJobHistory ?? state.jobHistory.data}
+                  onValidChange={handleJobHistoryValidChange}
+                  onDataChange={handleJobHistoryDataChange}
+                />
+              )}
             </>
           )}
 
@@ -357,13 +418,107 @@ export function IdentityVerificationWizard({
                 </p>
               </div>
 
-              <div className="space-y-6">
-                {/* Summary Card */}
-                <div className="rounded-xl border bg-muted/30 p-6 space-y-4">
+              <div className="space-y-4">
+                {/* Personal Info Card */}
+                <div className="rounded-xl border bg-muted/30 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
+                    <div
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full',
+                        reviewData.personalInfo.isComplete
+                          ? 'bg-green-500/10'
+                          : 'bg-muted',
+                      )}
+                    >
                       <svg
-                        className="h-5 w-5 text-green-600 dark:text-green-500"
+                        className={cn(
+                          'h-5 w-5',
+                          reviewData.personalInfo.isComplete
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-muted-foreground',
+                        )}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">
+                        Personal Info
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {reviewData.personalInfo.summary}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Education Card */}
+                <div className="rounded-xl border bg-muted/30 p-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full',
+                        reviewData.education.isComplete
+                          ? 'bg-green-500/10'
+                          : 'bg-muted',
+                      )}
+                    >
+                      <svg
+                        className={cn(
+                          'h-5 w-5',
+                          reviewData.education.isComplete
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-muted-foreground',
+                        )}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">
+                        Education Info
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {reviewData.education.summary}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Documents Card */}
+                <div className="rounded-xl border bg-muted/30 p-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full',
+                        reviewData.document.isComplete
+                          ? 'bg-green-500/10'
+                          : 'bg-muted',
+                      )}
+                    >
+                      <svg
+                        className={cn(
+                          'h-5 w-5',
+                          reviewData.document.isComplete
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-muted-foreground',
+                        )}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -381,13 +536,53 @@ export function IdentityVerificationWizard({
                         Documents Uploaded
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {state.selectedDocType.replace('_', ' ')} - Front & Back
+                        {reviewData.document.summary}
                       </p>
                     </div>
                   </div>
                 </div>
 
+                {/* Job History Card */}
                 <div className="rounded-xl border bg-muted/30 p-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full',
+                        reviewData.jobHistory.isComplete
+                          ? 'bg-green-500/10'
+                          : 'bg-muted',
+                      )}
+                    >
+                      <svg
+                        className={cn(
+                          'h-5 w-5',
+                          reviewData.jobHistory.isComplete
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-muted-foreground',
+                        )}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">Job History</p>
+                      <p className="text-sm text-muted-foreground">
+                        {reviewData.jobHistory.summary}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* What happens next info box */}
+                <div className="rounded-xl border bg-muted/30 p-4 mt-6">
                   <div className="flex gap-3">
                     <svg
                       className="h-5 w-5 shrink-0 text-primary mt-0.5"
@@ -421,18 +616,134 @@ export function IdentityVerificationWizard({
 
         {/* Footer */}
         <div className="flex items-center justify-end border-t bg-muted/20 px-6 py-4 md:px-8">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={actions.goBack}
-              disabled={isFirstStep || isSubmitting}
-            >
-              Back
-            </Button>
-            <Button
-              disabled={!canContinue || isSubmitting}
-              onClick={handleContinue}
-              className="min-w-30"
+          {isVerificationLocked ? (
+            <div className="flex items-center gap-2 text-sm">
+              {verificationStatus?.status === 'submitted' ? (
+                <>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/10">
+                    <svg
+                      className="h-4 w-4 text-amber-600 dark:text-amber-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-muted-foreground">
+                    Verification pending review
+                  </span>
+                </>
+              ) : (
+                <>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/10">
+                    <svg
+                      className="h-4 w-4 text-green-600 dark:text-green-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-muted-foreground">
+                    Verification complete
+                  </span>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={actions.goBack}
+                disabled={isFirstStep || isSubmitting}
+              >
+                Back
+              </Button>
+              <Button
+                disabled={!canContinue || isSubmitting}
+                onClick={handleContinue}
+                className="min-w-30"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="mr-2 h-4 w-4 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Submitting...
+                  </>
+                ) : isLastStep ? (
+                  'Submit'
+                ) : (
+                  <>
+                    Continue
+                    <svg
+                      className="ml-1 h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                      />
+                    </svg>
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Submit Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display">
+              Submit Verification
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to submit your verification? Once submitted,
+              you won't be able to make changes until the review is complete.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitting}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmSubmit}
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
@@ -457,30 +768,13 @@ export function IdentityVerificationWizard({
                   </svg>
                   Submitting...
                 </>
-              ) : isLastStep ? (
-                'Submit'
               ) : (
-                <>
-                  Continue
-                  <svg
-                    className="ml-1 h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                    />
-                  </svg>
-                </>
+                'Yes, Submit'
               )}
-            </Button>
-          </div>
-        </div>
-      </div>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

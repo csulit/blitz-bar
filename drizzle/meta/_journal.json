@@ -22,6 +22,20 @@
       "when": 1765700950302,
       "tag": "0002_silly_blindfold",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765763474661,
+      "tag": "0003_great_boomerang",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1765769457302,
+      "tag": "0004_aromatic_sage",
+      "breakpoints": true
     }
   ]
 }

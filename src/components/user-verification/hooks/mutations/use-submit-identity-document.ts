@@ -3,10 +3,10 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { UTApi } from 'uploadthing/server'
 import { eq, desc } from 'drizzle-orm'
-import { identityDocumentKeys } from '../keys'
+import { identityDocumentKeys, verificationStatusKeys } from '../keys'
 import { extractFileKeyFromUrl } from '../../lib/extract-file-key'
 import { db } from '@/db'
-import { identityDocument } from '@/db/schema'
+import { identityDocument, userVerification } from '@/db/schema'
 import type { DocumentType } from '../../types'
 
 interface SubmitIdentityDocumentInput {
@@ -86,6 +86,22 @@ export const submitIdentityDocument = createServerFn({ method: 'POST' })
         .where(eq(identityDocument.id, existingDocument.id))
         .returning()
 
+      // Update verification status to submitted
+      await db
+        .insert(userVerification)
+        .values({
+          userId,
+          status: 'submitted',
+          submittedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: userVerification.userId,
+          set: {
+            status: 'submitted',
+            submittedAt: new Date(),
+          },
+        })
+
       return {
         success: true,
         documentId: updatedDocument.id,
@@ -103,6 +119,22 @@ export const submitIdentityDocument = createServerFn({ method: 'POST' })
         status: 'pending',
       })
       .returning()
+
+    // Create verification status as submitted
+    await db
+      .insert(userVerification)
+      .values({
+        userId,
+        status: 'submitted',
+        submittedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: userVerification.userId,
+        set: {
+          status: 'submitted',
+          submittedAt: new Date(),
+        },
+      })
 
     return {
       success: true,
@@ -131,6 +163,7 @@ export function useSubmitIdentityDocument() {
       submitIdentityDocument({ data: input }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: identityDocumentKeys.all })
+      queryClient.invalidateQueries({ queryKey: verificationStatusKeys.all })
     },
     onError: (error) => {
       console.error('Failed to submit identity document:', error)

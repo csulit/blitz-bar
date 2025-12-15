@@ -1,5 +1,11 @@
 // Query keys
-export { personalInfoKeys, educationKeys, identityDocumentKeys } from './keys'
+export {
+  personalInfoKeys,
+  educationKeys,
+  identityDocumentKeys,
+  jobHistoryKeys,
+  verificationStatusKeys,
+} from './keys'
 
 // Query hooks
 export { usePersonalInfo, getPersonalInfo } from './queries/use-personal-info'
@@ -8,6 +14,17 @@ export {
   useIdentityDocument,
   getIdentityDocument,
 } from './queries/use-identity-document'
+export { useJobHistory, getJobHistory } from './queries/use-job-history'
+export { useReviewData } from './queries/use-review-data'
+export type { ReviewData, ReviewStepData } from './queries/use-review-data'
+export {
+  useVerificationStatus,
+  getVerificationStatus,
+} from './queries/use-verification-status'
+export type {
+  VerificationStatus,
+  VerificationStatusData,
+} from './queries/use-verification-status'
 
 // Mutation hooks
 export {
@@ -18,6 +35,10 @@ export {
   useUpdateEducation,
   updateEducation,
 } from './mutations/use-update-education'
+export {
+  useUpdateJobHistory,
+  updateJobHistory,
+} from './mutations/use-update-job-history'
 export {
   useSubmitIdentityDocument,
   submitIdentityDocument,

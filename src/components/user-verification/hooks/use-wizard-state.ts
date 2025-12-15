@@ -4,10 +4,12 @@ import { steps } from '../constants'
 import { usePersonalInfo } from './queries/use-personal-info'
 import { useEducation } from './queries/use-education'
 import { useIdentityDocument } from './queries/use-identity-document'
+import { useJobHistory } from './queries/use-job-history'
 import { useSaveIdentityDocument } from './mutations/use-save-identity-document'
 import type { DocumentType, UploadedFile, VerificationStep } from '../types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import type { EducationFormData } from '@/lib/schemas/education'
+import type { JobHistoryFormData } from '@/lib/schemas/job-history'
 
 // State
 export interface WizardState {
@@ -22,6 +24,10 @@ export interface WizardState {
   education: {
     isValid: boolean
     data: Partial<EducationFormData>
+  }
+  jobHistory: {
+    isValid: boolean
+    data: JobHistoryFormData
   }
 }
 
@@ -45,6 +51,8 @@ type WizardAction =
   | { type: 'SET_PERSONAL_INFO_DATA'; data: Partial<PersonalInfoFormData> }
   | { type: 'SET_EDUCATION_VALID'; isValid: boolean }
   | { type: 'SET_EDUCATION_DATA'; data: Partial<EducationFormData> }
+  | { type: 'SET_JOB_HISTORY_VALID'; isValid: boolean }
+  | { type: 'SET_JOB_HISTORY_DATA'; data: JobHistoryFormData }
 
 const initialState: WizardState = {
   currentStep: 'personal_info',
@@ -58,6 +66,10 @@ const initialState: WizardState = {
   education: {
     isValid: false,
     data: {},
+  },
+  jobHistory: {
+    isValid: false,
+    data: { jobs: [] },
   },
 }
 
@@ -109,6 +121,16 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
         ...state,
         education: { ...state.education, data: action.data },
       }
+    case 'SET_JOB_HISTORY_VALID':
+      return {
+        ...state,
+        jobHistory: { ...state.jobHistory, isValid: action.isValid },
+      }
+    case 'SET_JOB_HISTORY_DATA':
+      return {
+        ...state,
+        jobHistory: { ...state.jobHistory, data: action.data },
+      }
     default:
       return state
   }
@@ -145,6 +167,17 @@ export function useWizardState() {
       dispatch({ type: 'SET_EDUCATION_DATA', data: savedEducation })
     }
   }, [savedEducation])
+
+  // Fetch saved job history from database
+  const { data: savedJobHistory, isLoading: isLoadingJobHistory } =
+    useJobHistory()
+
+  // Initialize job history data from fetched data (only once when data loads)
+  useEffect(() => {
+    if (savedJobHistory && savedJobHistory.jobs && savedJobHistory.jobs.length > 0) {
+      dispatch({ type: 'SET_JOB_HISTORY_DATA', data: savedJobHistory })
+    }
+  }, [savedJobHistory])
 
   // Fetch saved identity document from database
   const { data: savedIdentityDocument, isLoading: isLoadingIdentityDocument } =
@@ -253,7 +286,8 @@ export function useWizardState() {
           state.frontFile?.status === 'success' &&
           state.backFile?.status === 'success'
         )
-      case 'verification':
+      case 'job_history':
+        return state.jobHistory.isValid
       case 'review':
         return true
       default:
@@ -265,6 +299,7 @@ export function useWizardState() {
     state.education.isValid,
     state.frontFile,
     state.backFile,
+    state.jobHistory.isValid,
   ])
 
   // Actions
@@ -293,6 +328,10 @@ export function useWizardState() {
         dispatch({ type: 'SET_EDUCATION_VALID', isValid }),
       setEducationData: (data: Partial<EducationFormData>) =>
         dispatch({ type: 'SET_EDUCATION_DATA', data }),
+      setJobHistoryValid: (isValid: boolean) =>
+        dispatch({ type: 'SET_JOB_HISTORY_VALID', isValid }),
+      setJobHistoryData: (data: JobHistoryFormData) =>
+        dispatch({ type: 'SET_JOB_HISTORY_DATA', data }),
     }),
     [],
   )
@@ -318,6 +357,16 @@ export function useWizardState() {
     [actions],
   )
 
+  const handleJobHistoryValidChange = useCallback(
+    (isValid: boolean) => actions.setJobHistoryValid(isValid),
+    [actions],
+  )
+
+  const handleJobHistoryDataChange = useCallback(
+    (data: JobHistoryFormData) => actions.setJobHistoryData(data),
+    [actions],
+  )
+
   return {
     state,
     actions,
@@ -329,14 +378,18 @@ export function useWizardState() {
     isLoadingPersonalInfo,
     isLoadingEducation,
     isLoadingIdentityDocument,
+    isLoadingJobHistory,
     // Initial data from server (for form defaultValues)
     savedPersonalInfo,
     savedEducation,
     savedIdentityDocument,
+    savedJobHistory,
     // Stable callbacks for child components
     handlePersonalInfoValidChange,
     handlePersonalInfoDataChange,
     handleEducationValidChange,
     handleEducationDataChange,
+    handleJobHistoryValidChange,
+    handleJobHistoryDataChange,
   }
 }

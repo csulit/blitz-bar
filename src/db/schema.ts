@@ -225,6 +225,8 @@ export const userRelations = relations(user, ({ one, many }) => ({
   profile: one(profile),
   identityDocuments: many(identityDocument),
   educations: many(education),
+  jobHistories: many(jobHistory),
+  verification: one(userVerification),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -339,3 +341,73 @@ export const educationRelations = relations(education, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export const jobHistory = pgTable(
+  'job_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    companyName: text('company_name').notNull(),
+    position: text('position').notNull(),
+    startMonth: text('start_month').notNull(), // "YYYY-MM" format
+    endMonth: text('end_month'), // "YYYY-MM" format, null if current job
+    isCurrentJob: boolean('is_current_job').default(false),
+    summary: text('summary').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index('job_history_userId_idx').on(table.userId)],
+)
+
+export const jobHistoryRelations = relations(jobHistory, ({ one }) => ({
+  user: one(user, {
+    fields: [jobHistory.userId],
+    references: [user.id],
+  }),
+}))
+
+// Tracks the overall user verification submission status
+// This is separate from identityDocument.status which tracks document review
+export const userVerification = pgTable(
+  'user_verification',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    status: text('status').default('draft').notNull(), // 'draft' | 'submitted' | 'verified' | 'rejected'
+    submittedAt: timestamp('submitted_at'),
+    verifiedAt: timestamp('verified_at'),
+    verifiedBy: uuid('verified_by').references(() => user.id),
+    rejectionReason: text('rejection_reason'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('user_verification_userId_idx').on(table.userId),
+    index('user_verification_status_idx').on(table.status),
+  ],
+)
+
+export const userVerificationRelations = relations(
+  userVerification,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [userVerification.userId],
+      references: [user.id],
+    }),
+    verifier: one(user, {
+      fields: [userVerification.verifiedBy],
+      references: [user.id],
+    }),
+  }),
+)

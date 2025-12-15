@@ -2,7 +2,7 @@ export type VerificationStep =
   | 'personal_info'
   | 'education'
   | 'upload'
-  | 'verification'
+  | 'job_history'
   | 'review'
 export type DocumentType = 'identity_card' | 'driver_license' | 'passport'
 export type UploadStatus = 'uploading' | 'success' | 'error'

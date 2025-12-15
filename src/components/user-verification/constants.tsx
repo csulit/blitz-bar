@@ -8,7 +8,7 @@ export const steps: Array<{
   { id: 'personal_info', label: 'Personal Info', completed: false },
   { id: 'education', label: 'Education', completed: false },
   { id: 'upload', label: 'Upload', completed: false },
-  { id: 'verification', label: 'Verification', completed: false },
+  { id: 'job_history', label: 'Job History', completed: false },
   { id: 'review', label: 'Review', completed: false },
 ]
 
