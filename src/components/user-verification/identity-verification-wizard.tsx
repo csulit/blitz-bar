@@ -122,7 +122,10 @@ export function IdentityVerificationWizard({
     >
       {/* Horizontal Stepper Header */}
       <div className="border-b bg-muted/20 px-6 py-6">
-        <HorizontalStepper currentStepIndex={currentStepIndex} />
+        <HorizontalStepper
+          currentStepIndex={currentStepIndex}
+          allCompleted={isVerificationLocked}
+        />
       </div>
 
       {/* Main Content */}

@@ -3,17 +3,21 @@ import { cn } from '@/lib/utils'
 
 interface HorizontalStepperProps {
   currentStepIndex: number
+  /** When true, all steps (including current) show as completed */
+  allCompleted?: boolean
 }
 
 export function HorizontalStepper({
   currentStepIndex,
+  allCompleted = false,
 }: HorizontalStepperProps) {
   return (
     <div className="flex items-center justify-center">
       <nav className="flex items-center">
         {steps.map((step, index) => {
-          const isActive = index === currentStepIndex
-          const isPast = index < currentStepIndex || step.completed
+          const isActive = !allCompleted && index === currentStepIndex
+          const isPast =
+            allCompleted || index < currentStepIndex || step.completed
 
           return (
             <div key={step.id} className="flex items-center">
