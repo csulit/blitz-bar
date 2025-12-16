@@ -15,6 +15,7 @@ import * as schema from '@/db/schema'
 import { db } from '@/db'
 import { resend } from '@/lib/resend'
 import { ForgotPasswordEmail } from '@/emails/forgot-password'
+import { WelcomeEmail } from '@/emails/welcome'
 import { EmailConfirmationEmail } from '@/emails/email-confirmation'
 import { ChangePasswordSuccessEmail } from '@/emails/change-password-success'
 import { env } from '@/env'
@@ -151,8 +152,18 @@ export const auth = betterAuth({
           }
         },
         after: async (user) => {
-          // perform additional actions, like creating a stripe customer
-          console.log('New user created:', user)
+          const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
+          waitUntil(
+            resend.emails.send({
+              from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
+              to: user.email,
+              subject: 'Welcome to My Home Support',
+              react: WelcomeEmail({
+                userName: user.firstName ?? user.name,
+                loginUrl,
+              }),
+            }),
+          )
         },
       },
     },
