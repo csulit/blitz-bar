@@ -64,7 +64,7 @@ export function LoginFormCard({ className, ...props }: LoginFormCardProps) {
       }
       // Redirect based on verification status
       if (user.userVerified) {
-        window.location.href = '/dashboard-01'
+        window.location.href = '/dashboard'
       } else {
         window.location.href = '/verification-status'
       }

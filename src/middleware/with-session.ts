@@ -37,13 +37,13 @@ export const withSessionMiddleware = createMiddleware().server(
     // Logged in users shouldn't be on public auth pages
     if (isPublicPath) {
       throw redirect({
-        to: user.userVerified ? '/dashboard-01' : '/verification-status',
+        to: user.userVerified ? '/dashboard' : '/verification-status',
       })
     }
 
     // Verified users shouldn't be on verification pages
     if (user.userVerified && isVerificationPath) {
-      throw redirect({ to: '/dashboard-01' })
+      throw redirect({ to: '/dashboard' })
     }
 
     // Unverified users should only be on verification pages

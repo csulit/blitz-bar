@@ -13,15 +13,16 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as Pending_verificationRouteImport } from './routes/_pending_verification'
+import { Route as MainRouteImport } from './routes/_main'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as Dashboard01IndexRouteImport } from './routes/dashboard-01/index'
 import { Route as UserIdRouteImport } from './routes/user.$id'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
+import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -56,6 +57,10 @@ const Pending_verificationRoute = Pending_verificationRouteImport.update({
   id: '/_pending_verification',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MainRoute = MainRouteImport.update({
+  id: '/_main',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -63,11 +68,6 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Dashboard01IndexRoute = Dashboard01IndexRouteImport.update({
-  id: '/dashboard-01/',
-  path: '/dashboard-01/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UserIdRoute = UserIdRouteImport.update({
@@ -101,6 +101,11 @@ const Pending_verificationVerificationStatusRoute =
     path: '/verification-status',
     getParentRoute: () => Pending_verificationRoute,
   } as any)
+const MainDashboardRoute = MainDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => MainRoute,
+} as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
@@ -182,13 +187,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/user/$id': typeof UserIdRoute
-  '/dashboard-01': typeof Dashboard01IndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -209,13 +214,13 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/user/$id': typeof UserIdRoute
-  '/dashboard-01': typeof Dashboard01IndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -230,6 +235,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/_main': typeof MainRouteWithChildren
   '/_pending_verification': typeof Pending_verificationRouteWithChildren
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
@@ -239,13 +245,13 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_main/dashboard': typeof MainDashboardRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/user/$id': typeof UserIdRoute
-  '/dashboard-01/': typeof Dashboard01IndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -268,13 +274,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
+    | '/dashboard'
     | '/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
     | '/user/$id'
-    | '/dashboard-01'
     | '/api/auth/$'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -295,13 +301,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
+    | '/dashboard'
     | '/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
     | '/user/$id'
-    | '/dashboard-01'
     | '/api/auth/$'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -315,6 +321,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/_main'
     | '/_pending_verification'
     | '/about'
     | '/privacy'
@@ -324,13 +331,13 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/_auth/verify-email'
+    | '/_main/dashboard'
     | '/_pending_verification/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/tanstack-query'
     | '/user/$id'
-    | '/dashboard-01/'
     | '/api/auth/$'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -345,6 +352,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  MainRoute: typeof MainRouteWithChildren
   Pending_verificationRoute: typeof Pending_verificationRouteWithChildren
   AboutRoute: typeof AboutRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -354,7 +362,6 @@ export interface RootRouteChildren {
   DemoNeonRoute: typeof DemoNeonRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   UserIdRoute: typeof UserIdRoute
-  Dashboard01IndexRoute: typeof Dashboard01IndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
@@ -396,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Pending_verificationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main': {
+      id: '/_main'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof MainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -408,13 +422,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard-01/': {
-      id: '/dashboard-01/'
-      path: '/dashboard-01'
-      fullPath: '/dashboard-01'
-      preLoaderRoute: typeof Dashboard01IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/user/$id': {
@@ -458,6 +465,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/verification-status'
       preLoaderRoute: typeof Pending_verificationVerificationStatusRouteImport
       parentRoute: typeof Pending_verificationRoute
+    }
+    '/_main/dashboard': {
+      id: '/_main/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof MainDashboardRouteImport
+      parentRoute: typeof MainRoute
     }
     '/_auth/verify-email': {
       id: '/_auth/verify-email'
@@ -578,6 +592,16 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface MainRouteChildren {
+  MainDashboardRoute: typeof MainDashboardRoute
+}
+
+const MainRouteChildren: MainRouteChildren = {
+  MainDashboardRoute: MainDashboardRoute,
+}
+
+const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
+
 interface Pending_verificationRouteChildren {
   Pending_verificationVerificationStatusRoute: typeof Pending_verificationVerificationStatusRoute
 }
@@ -593,6 +617,7 @@ const Pending_verificationRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  MainRoute: MainRouteWithChildren,
   Pending_verificationRoute: Pending_verificationRouteWithChildren,
   AboutRoute: AboutRoute,
   PrivacyRoute: PrivacyRoute,
@@ -602,7 +627,6 @@ const rootRouteChildren: RootRouteChildren = {
   DemoNeonRoute: DemoNeonRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   UserIdRoute: UserIdRoute,
-  Dashboard01IndexRoute: Dashboard01IndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoApiTqTodosRoute: DemoApiTqTodosRoute,

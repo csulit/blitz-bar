@@ -26,7 +26,7 @@ export const Route = createFileRoute('/')({
     }
 
     throw redirect({
-      to: user.userVerified ? '/dashboard-01' : '/verification-status',
+      to: user.userVerified ? '/dashboard' : '/verification-status',
     })
   },
 })
