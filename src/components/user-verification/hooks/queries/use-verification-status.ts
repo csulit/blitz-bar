@@ -7,7 +7,12 @@ import type { UseQueryOptions } from '@tanstack/react-query'
 import { db } from '@/db'
 import { userVerification } from '@/db/schema'
 
-export type VerificationStatus = 'draft' | 'submitted' | 'verified' | 'rejected'
+export type VerificationStatus =
+  | 'draft'
+  | 'submitted'
+  | 'verified'
+  | 'rejected'
+  | 'info_requested'
 
 export interface VerificationStatusData {
   status: VerificationStatus

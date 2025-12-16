@@ -31,6 +31,8 @@ const adminSteps: Array<AdminStep> = [
     description: 'Complete your verification forms',
     getStatus: (status, reviewData) => {
       if (status === 'submitted' || status === 'verified') return 'completed'
+      // For info_requested or rejected, show as current since user needs to update
+      if (status === 'info_requested' || status === 'rejected') return 'current'
       if (reviewData.isAllComplete) return 'completed'
       return 'current'
     },
@@ -39,9 +41,13 @@ const adminSteps: Array<AdminStep> = [
     id: 'documents',
     title: 'Document Submission',
     description: 'Submit for admin review',
-    getStatus: (status) => {
+    getStatus: (status, reviewData) => {
       if (status === 'submitted' || status === 'verified') return 'completed'
-      return 'pending'
+      // For info_requested or rejected, show as pending (waiting for user to resubmit)
+      if (status === 'info_requested' || status === 'rejected') {
+        return reviewData.isAllComplete ? 'current' : 'pending'
+      }
+      return reviewData.isAllComplete ? 'current' : 'pending'
     },
   },
   {
@@ -51,6 +57,7 @@ const adminSteps: Array<AdminStep> = [
     getStatus: (status) => {
       if (status === 'verified') return 'completed'
       if (status === 'submitted') return 'current'
+      // For info_requested or rejected, admin has already reviewed - waiting for user action
       return 'pending'
     },
   },
