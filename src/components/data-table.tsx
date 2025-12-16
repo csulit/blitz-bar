@@ -1,14 +1,12 @@
 import * as React from 'react'
 import {
   DndContext,
-  
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
-  
   closestCenter,
   useSensor,
-  useSensors
+  useSensors,
 } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import {
@@ -40,21 +38,21 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
+  useReactTable,
 } from '@tanstack/react-table'
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import type {DragEndEvent, UniqueIdentifier} from '@dnd-kit/core';
+import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import type {
   ColumnDef,
   ColumnFiltersState,
   Row,
   SortingState,
-  VisibilityState} from '@tanstack/react-table';
+  VisibilityState,
+} from '@tanstack/react-table'
 
-import type {
-  ChartConfig} from '@/components/ui/chart';
+import type { ChartConfig } from '@/components/ui/chart'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useIsMobile } from '@/hooks/use-mobile'

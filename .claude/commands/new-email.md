@@ -53,14 +53,14 @@ container: maxWidth: '480px'
 
 ## Prop Patterns
 
-| Template Type   | Common Props                                |
-| --------------- | ------------------------------------------- |
-| Password Reset  | `resetLink`, `userFirstName`                |
-| Welcome         | `userName`, `loginUrl`                      |
-| Verification    | `verificationLink`, `userName`              |
-| Notification    | `title`, `message`, `actionUrl`             |
-| Invitation      | `inviterName`, `organizationName`, `inviteLink` |
-| Receipt         | `orderNumber`, `items`, `total`             |
+| Template Type  | Common Props                                    |
+| -------------- | ----------------------------------------------- |
+| Password Reset | `resetLink`, `userFirstName`                    |
+| Welcome        | `userName`, `loginUrl`                          |
+| Verification   | `verificationLink`, `userName`                  |
+| Notification   | `title`, `message`, `actionUrl`                 |
+| Invitation     | `inviterName`, `organizationName`, `inviteLink` |
+| Receipt        | `orderNumber`, `items`, `total`                 |
 
 ## Example Commands
 

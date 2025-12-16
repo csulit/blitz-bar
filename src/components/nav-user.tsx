@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { useRouter } from '@tanstack/react-router'
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -6,7 +8,18 @@ import {
   IconUserCircle,
 } from '@tabler/icons-react'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { authClient } from '@/lib/auth-client'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +46,13 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
+
+  async function handleLogout() {
+    await authClient.signOut()
+    router.navigate({ to: '/login' })
+  }
 
   return (
     <SidebarMenu>
@@ -92,12 +112,30 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setShowLogoutDialog(true)}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign out</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to sign out? You will need to sign in
+                again to access your account.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout}>
+                Sign out
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SidebarMenuItem>
     </SidebarMenu>
   )

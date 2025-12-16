@@ -42,17 +42,17 @@ All email templates should match the app's design aesthetic:
 
 ### Colors
 
-| Element        | Color     | Usage                          |
-| -------------- | --------- | ------------------------------ |
-| Background     | `#e0d4f5` | Light purple/lavender          |
-| Card           | `#ffffff` | White container                |
-| Primary Button | `#8b5cf6` | Purple action buttons          |
-| Heading        | `#0f172a` | Dark slate for titles          |
-| Body Text      | `#475569` | Slate gray for paragraphs      |
-| Muted Text     | `#64748b` | Lighter gray for secondary     |
-| Footer Text    | `#94a3b8` | Light gray for copyright       |
-| Link           | `#8b5cf6` | Purple for links               |
-| Border/HR      | `#e2e8f0` | Light gray for dividers        |
+| Element        | Color     | Usage                      |
+| -------------- | --------- | -------------------------- |
+| Background     | `#e0d4f5` | Light purple/lavender      |
+| Card           | `#ffffff` | White container            |
+| Primary Button | `#8b5cf6` | Purple action buttons      |
+| Heading        | `#0f172a` | Dark slate for titles      |
+| Body Text      | `#475569` | Slate gray for paragraphs  |
+| Muted Text     | `#64748b` | Lighter gray for secondary |
+| Footer Text    | `#94a3b8` | Light gray for copyright   |
+| Link           | `#8b5cf6` | Purple for links           |
+| Border/HR      | `#e2e8f0` | Light gray for dividers    |
 
 ### Typography
 
@@ -111,12 +111,8 @@ export function ExampleEmail({ userName, actionUrl }: ExampleEmailProps) {
         <Container style={container}>
           <Section style={card}>
             <Heading style={heading}>Email Title</Heading>
-            <Text style={paragraph}>
-              Hi{userName ? ` ${userName}` : ''},
-            </Text>
-            <Text style={paragraph}>
-              Your email content goes here.
-            </Text>
+            <Text style={paragraph}>Hi{userName ? ` ${userName}` : ''},</Text>
+            <Text style={paragraph}>Your email content goes here.</Text>
             <Section style={buttonContainer}>
               <Button style={button} href={actionUrl}>
                 Action Button
@@ -297,22 +293,22 @@ Use case: Team/org invitations
 
 From `@react-email/components`:
 
-| Component   | Usage                             |
-| ----------- | --------------------------------- |
-| `Html`      | Root element                      |
-| `Head`      | Document head (styles, fonts)     |
-| `Preview`   | Preview text for email clients    |
-| `Body`      | Email body wrapper                |
-| `Container` | Centered content container        |
-| `Section`   | Group related content             |
-| `Heading`   | h1-h6 headings                    |
-| `Text`      | Paragraph text                    |
-| `Button`    | CTA buttons with href             |
-| `Link`      | Hyperlinks                        |
-| `Hr`        | Horizontal rule/divider           |
-| `Img`       | Images (use absolute URLs)        |
-| `Row`       | Flex row for layouts              |
-| `Column`    | Columns within Row                |
+| Component   | Usage                          |
+| ----------- | ------------------------------ |
+| `Html`      | Root element                   |
+| `Head`      | Document head (styles, fonts)  |
+| `Preview`   | Preview text for email clients |
+| `Body`      | Email body wrapper             |
+| `Container` | Centered content container     |
+| `Section`   | Group related content          |
+| `Heading`   | h1-h6 headings                 |
+| `Text`      | Paragraph text                 |
+| `Button`    | CTA buttons with href          |
+| `Link`      | Hyperlinks                     |
+| `Hr`        | Horizontal rule/divider        |
+| `Img`       | Images (use absolute URLs)     |
+| `Row`       | Flex row for layouts           |
+| `Column`    | Columns within Row             |
 
 ## Best Practices
 
@@ -343,6 +339,7 @@ Most email clients display at max 600px width. Use `maxWidth: '480px'` or `maxWi
 ### 5. Test Across Clients
 
 Test emails in:
+
 - Gmail (web & mobile)
 - Outlook (desktop & web)
 - Apple Mail

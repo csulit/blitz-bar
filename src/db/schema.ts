@@ -223,10 +223,9 @@ export const userRelations = relations(user, ({ one, many }) => ({
   members: many(member),
   invitations: many(invitation),
   profile: one(profile),
-  identityDocuments: many(identityDocument),
+  identityDocuments: many(identityDocument, { relationName: 'documentOwner' }),
   educations: many(education),
   jobHistories: many(jobHistory),
-  verification: one(userVerification),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -290,10 +289,12 @@ export const identityDocumentRelations = relations(
     user: one(user, {
       fields: [identityDocument.userId],
       references: [user.id],
+      relationName: 'documentOwner',
     }),
     verifier: one(user, {
       fields: [identityDocument.verifiedBy],
       references: [user.id],
+      relationName: 'documentVerifier',
     }),
   }),
 )
@@ -381,7 +382,7 @@ export const userVerification = pgTable(
       .notNull()
       .unique()
       .references(() => user.id, { onDelete: 'cascade' }),
-    status: text('status').default('draft').notNull(), // 'draft' | 'submitted' | 'verified' | 'rejected'
+    status: text('status').default('draft').notNull(), // 'draft' | 'submitted' | 'verified' | 'rejected' | 'info_requested'
     submittedAt: timestamp('submitted_at'),
     verifiedAt: timestamp('verified_at'),
     verifiedBy: uuid('verified_by').references(() => user.id),
@@ -400,13 +401,53 @@ export const userVerification = pgTable(
 
 export const userVerificationRelations = relations(
   userVerification,
-  ({ one }) => ({
+  ({ one, many }) => ({
     user: one(user, {
       fields: [userVerification.userId],
       references: [user.id],
+      relationName: 'verificationOwner',
     }),
     verifier: one(user, {
       fields: [userVerification.verifiedBy],
+      references: [user.id],
+      relationName: 'verificationVerifier',
+    }),
+    auditLogs: many(verificationAuditLog),
+  }),
+)
+
+// Tracks all admin actions on verification submissions for audit trail
+export const verificationAuditLog = pgTable(
+  'verification_audit_log',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    verificationId: uuid('verification_id')
+      .notNull()
+      .references(() => userVerification.id, { onDelete: 'cascade' }),
+    adminUserId: uuid('admin_user_id')
+      .notNull()
+      .references(() => user.id),
+    action: text('action').notNull(), // 'approved' | 'rejected' | 'info_requested'
+    reason: text('reason'),
+    previousStatus: text('previous_status').notNull(),
+    newStatus: text('new_status').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    index('verification_audit_log_verificationId_idx').on(table.verificationId),
+    index('verification_audit_log_adminUserId_idx').on(table.adminUserId),
+  ],
+)
+
+export const verificationAuditLogRelations = relations(
+  verificationAuditLog,
+  ({ one }) => ({
+    verification: one(userVerification, {
+      fields: [verificationAuditLog.verificationId],
+      references: [userVerification.id],
+    }),
+    admin: one(user, {
+      fields: [verificationAuditLog.adminUserId],
       references: [user.id],
     }),
   }),

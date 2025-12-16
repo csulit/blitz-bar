@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-interface PhoneInputProps
-  extends Omit<React.ComponentProps<'input'>, 'onChange' | 'value' | 'type'> {
+interface PhoneInputProps extends Omit<
+  React.ComponentProps<'input'>,
+  'onChange' | 'value' | 'type'
+> {
   value?: string
   onChange?: (value: string) => void
 }
@@ -49,7 +51,7 @@ function PhoneInput({
         'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
         'dark:bg-input/30',
         disabled && 'pointer-events-none cursor-not-allowed opacity-50',
-        className
+        className,
       )}
     >
       <span className="text-muted-foreground flex h-full shrink-0 items-center border-r px-3 text-sm select-none">
