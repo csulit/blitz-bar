@@ -41,14 +41,14 @@ export function useReviewData(): ReviewData {
     personalInfo?.gender
   )
   const personalInfoSummary = personalInfoComplete
-    ? `${personalInfo.firstName} ${personalInfo.lastName} - ${capitalizeFirst(personalInfo.gender)}`
+    ? `${personalInfo.firstName} ${personalInfo.lastName} - ${capitalizeFirst(personalInfo.gender!)}`
     : 'Not completed'
 
   // Build education summary
   const educationComplete = !!(education?.level && education?.schoolName)
   let educationSummary = 'Not completed'
   if (educationComplete) {
-    const levelDisplay = formatEducationLevel(education.level)
+    const levelDisplay = formatEducationLevel(education.level!)
     educationSummary = education.degree
       ? `${education.degree} at ${education.schoolName}`
       : `${levelDisplay} at ${education.schoolName}`

@@ -57,7 +57,9 @@ export const getVerificationStatus = createServerFn({ method: 'GET' }).handler(
 )
 
 // Infer the return type from the server function
-type VerificationStatusResult = Awaited<ReturnType<typeof getVerificationStatus>>
+type VerificationStatusResult = Awaited<
+  ReturnType<typeof getVerificationStatus>
+>
 
 /**
  * Hook for fetching current user's verification status
