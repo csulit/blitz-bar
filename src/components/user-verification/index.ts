@@ -1,3 +1,6 @@
-export { IdentityVerificationWizard } from './identity-verification-wizard'
-export { VerificationDocumentsCard } from './verification-documents-card'
-export { VerificationStatusCard } from './verification-status-card'
+// Main components
+export { VerificationUnifiedPage } from './verification-unified-page'
+export { VerificationWizardDialog } from './verification-wizard-dialog'
+export { VerificationSubmittedView } from './verification-submitted-view'
+export { AdminProgressStepper } from './admin-progress-stepper'
+export { WizardProgressCard } from './wizard-progress-card'

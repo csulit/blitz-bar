@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { VerificationStatusCard } from '@/components/user-verification'
+import { VerificationUnifiedPage } from '@/components/user-verification/verification-unified-page'
 
 export const Route = createFileRoute(
   '/_pending_verification/verification-status',
@@ -8,5 +8,5 @@ export const Route = createFileRoute(
 })
 
 function VerificationStatusPage() {
-  return <VerificationStatusCard />
+  return <VerificationUnifiedPage />
 }

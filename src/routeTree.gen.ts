@@ -22,7 +22,6 @@ import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
-import { Route as Pending_verificationVerificationDocumentsRouteImport } from './routes/_pending_verification/verification-documents'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -100,12 +99,6 @@ const Pending_verificationVerificationStatusRoute =
   Pending_verificationVerificationStatusRouteImport.update({
     id: '/verification-status',
     path: '/verification-status',
-    getParentRoute: () => Pending_verificationRoute,
-  } as any)
-const Pending_verificationVerificationDocumentsRoute =
-  Pending_verificationVerificationDocumentsRouteImport.update({
-    id: '/verification-documents',
-    path: '/verification-documents',
     getParentRoute: () => Pending_verificationRoute,
   } as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
@@ -189,7 +182,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -217,7 +209,6 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -248,7 +239,6 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
-  '/_pending_verification/verification-documents': typeof Pending_verificationVerificationDocumentsRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
@@ -278,7 +268,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
-    | '/verification-documents'
     | '/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
@@ -306,7 +295,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
-    | '/verification-documents'
     | '/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
@@ -336,7 +324,6 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/_auth/verify-email'
-    | '/_pending_verification/verification-documents'
     | '/_pending_verification/verification-status'
     | '/api/uploadthing'
     | '/demo/drizzle'
@@ -472,13 +459,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Pending_verificationVerificationStatusRouteImport
       parentRoute: typeof Pending_verificationRoute
     }
-    '/_pending_verification/verification-documents': {
-      id: '/_pending_verification/verification-documents'
-      path: '/verification-documents'
-      fullPath: '/verification-documents'
-      preLoaderRoute: typeof Pending_verificationVerificationDocumentsRouteImport
-      parentRoute: typeof Pending_verificationRoute
-    }
     '/_auth/verify-email': {
       id: '/_auth/verify-email'
       path: '/verify-email'
@@ -599,13 +579,10 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface Pending_verificationRouteChildren {
-  Pending_verificationVerificationDocumentsRoute: typeof Pending_verificationVerificationDocumentsRoute
   Pending_verificationVerificationStatusRoute: typeof Pending_verificationVerificationStatusRoute
 }
 
 const Pending_verificationRouteChildren: Pending_verificationRouteChildren = {
-  Pending_verificationVerificationDocumentsRoute:
-    Pending_verificationVerificationDocumentsRoute,
   Pending_verificationVerificationStatusRoute:
     Pending_verificationVerificationStatusRoute,
 }

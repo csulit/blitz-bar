@@ -1,4 +1,4 @@
-import { Link, Outlet, createFileRoute, useRouter } from '@tanstack/react-router'
+import { Outlet, createFileRoute, useRouter, Link } from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
 import {
   AlertDialog,
@@ -80,33 +80,6 @@ function PendingVerificationLayout() {
         }}
       />
 
-      {/* Floating Navigation */}
-      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-        <nav className="flex items-center gap-1 rounded-full border border-border/50 bg-background/95 backdrop-blur-md px-2 py-1.5 shadow-lg shadow-black/5">
-          <Link
-            to="/verification-status"
-            className="min-w-25 text-center px-4 py-1.5 text-sm rounded-full transition-colors text-muted-foreground hover:text-foreground data-[status=active]:bg-primary data-[status=active]:text-primary-foreground"
-            activeProps={{
-              'data-status': 'active',
-              className:
-                'min-w-[100px] text-center px-4 py-1.5 text-sm rounded-full bg-primary text-primary-foreground font-medium',
-            }}
-          >
-            Status
-          </Link>
-          <Link
-            to="/verification-documents"
-            className="min-w-25 text-center px-4 py-1.5 text-sm rounded-full transition-colors text-muted-foreground hover:text-foreground data-[status=active]:bg-primary data-[status=active]:text-primary-foreground"
-            activeProps={{
-              'data-status': 'active',
-              className:
-                'min-w-[100px] text-center px-4 py-1.5 text-sm rounded-full bg-primary text-primary-foreground font-medium',
-            }}
-          >
-            Documents
-          </Link>
-        </nav>
-      </div>
 
       {/* Brand & Mode Toggle */}
       <div className="fixed top-6 left-6 z-50">

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
-import { useNavigate, useSearch } from '@tanstack/react-router'
 import { steps } from '../constants'
 import { usePersonalInfo } from './queries/use-personal-info'
 import { useEducation } from './queries/use-education'
@@ -136,15 +135,15 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
   }
 }
 
-export function useWizardState() {
-  const { step: urlStep } = useSearch({
-    from: '/_pending_verification/verification-documents',
-  })
-  const navigate = useNavigate()
-
+/**
+ * Wizard state hook for use in modals/dialogs.
+ * Uses local reducer state (no URL sync).
+ * Auto-save to database works as expected.
+ */
+export function useWizardState(initialStep: VerificationStep = 'personal_info') {
   const [state, dispatch] = useReducer(wizardReducer, {
     ...initialState,
-    currentStep: urlStep ?? 'personal_info',
+    currentStep: initialStep,
   })
 
   // Fetch saved personal info from database
@@ -174,7 +173,7 @@ export function useWizardState() {
 
   // Initialize job history data from fetched data (only once when data loads)
   useEffect(() => {
-    if (savedJobHistory && savedJobHistory.jobs && savedJobHistory.jobs.length > 0) {
+    if (savedJobHistory?.jobs && savedJobHistory.jobs.length > 0) {
       dispatch({ type: 'SET_JOB_HISTORY_DATA', data: savedJobHistory })
     }
   }, [savedJobHistory])
@@ -201,7 +200,7 @@ export function useWizardState() {
           type: 'SET_FRONT_FILE',
           file: {
             name: 'Previously uploaded document',
-            size: 0, // Size not stored in DB, showing as 0
+            size: 0,
             progress: 100,
             status: 'success',
             url: savedIdentityDocument.frontImageUrl,
@@ -215,7 +214,7 @@ export function useWizardState() {
           type: 'SET_BACK_FILE',
           file: {
             name: 'Previously uploaded document',
-            size: 0, // Size not stored in DB, showing as 0
+            size: 0,
             progress: 100,
             status: 'success',
             url: savedIdentityDocument.backImageUrl,
@@ -231,22 +230,16 @@ export function useWizardState() {
   const lastSavedBackUrl = useRef<string | undefined>(undefined)
 
   useEffect(() => {
-    // Only save when we have a successfully uploaded file with a URL
-    // and the URL is different from what we last saved
     const frontUrl = state.frontFile?.status === 'success' ? state.frontFile.url : undefined
     const backUrl = state.backFile?.status === 'success' ? state.backFile.url : undefined
 
-    // Check if we need to save (either URL changed)
     const frontChanged = frontUrl !== lastSavedFrontUrl.current
     const backChanged = backUrl !== lastSavedBackUrl.current
 
-    // Only save if something changed and we have at least one file
     if ((frontChanged || backChanged) && (frontUrl || backUrl)) {
-      // Update refs before saving to prevent duplicate saves
       lastSavedFrontUrl.current = frontUrl
       lastSavedBackUrl.current = backUrl
 
-      // Save to database
       saveIdentityDocument({
         documentType: state.selectedDocType,
         frontImageUrl: frontUrl,
@@ -261,15 +254,6 @@ export function useWizardState() {
     state.selectedDocType,
     saveIdentityDocument,
   ])
-
-  // Sync current step to URL query params
-  useEffect(() => {
-    void navigate({
-      to: '/verification-documents',
-      search: { step: state.currentStep },
-      replace: true,
-    })
-  }, [state.currentStep, navigate])
 
   const currentStepIndex = steps.findIndex((s) => s.id === state.currentStep)
   const isFirstStep = currentStepIndex === 0
@@ -393,3 +377,6 @@ export function useWizardState() {
     handleJobHistoryDataChange,
   }
 }
+
+// Alias for backwards compatibility
+export const useWizardStateLocal = useWizardState
