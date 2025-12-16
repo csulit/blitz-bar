@@ -16,6 +16,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as Pending_verificationRouteImport } from './routes/_pending_verification'
 import { Route as MainRouteImport } from './routes/_main'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UserIdRouteImport } from './routes/user.$id'
@@ -23,6 +24,7 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-qu
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
+import { Route as AdminSplatRouteImport } from './routes/admin/$'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
@@ -72,6 +74,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -106,6 +113,11 @@ const ApiUploadthingRoute = ApiUploadthingRouteImport.update({
   id: '/api/uploadthing',
   path: '/api/uploadthing',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSplatRoute = AdminSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => AdminRoute,
 } as any)
 const Pending_verificationVerificationStatusRoute =
   Pending_verificationVerificationStatusRouteImport.update({
@@ -191,6 +203,7 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/privacy': typeof PrivacyRoute
@@ -202,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -220,6 +234,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -230,6 +245,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -249,6 +265,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_main': typeof MainRouteWithChildren
   '/_pending_verification': typeof Pending_verificationRouteWithChildren
@@ -263,6 +280,7 @@ export interface FileRoutesById {
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_main/dashboard': typeof MainDashboardRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
+  '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -283,6 +301,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$'
     | '/about'
     | '/admin'
     | '/privacy'
@@ -294,6 +313,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/dashboard'
     | '/verification-status'
+    | '/admin/$'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -312,6 +332,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$'
     | '/about'
     | '/privacy'
     | '/terms'
@@ -322,6 +343,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/dashboard'
     | '/verification-status'
+    | '/admin/$'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -340,6 +362,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$'
     | '/_auth'
     | '/_main'
     | '/_pending_verification'
@@ -354,6 +377,7 @@ export interface FileRouteTypes {
     | '/_auth/verify-email'
     | '/_main/dashboard'
     | '/_pending_verification/verification-status'
+    | '/admin/$'
     | '/api/uploadthing'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -373,6 +397,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
   AuthRoute: typeof AuthRouteWithChildren
   MainRoute: typeof MainRouteWithChildren
   Pending_verificationRoute: typeof Pending_verificationRouteWithChildren
@@ -447,6 +472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -495,6 +527,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/uploadthing'
       preLoaderRoute: typeof ApiUploadthingRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/$': {
+      id: '/admin/$'
+      path: '/$'
+      fullPath: '/admin/$'
+      preLoaderRoute: typeof AdminSplatRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_pending_verification/verification-status': {
       id: '/_pending_verification/verification-status'
@@ -652,10 +691,12 @@ const Pending_verificationRouteWithChildren =
   Pending_verificationRoute._addFileChildren(Pending_verificationRouteChildren)
 
 interface AdminRouteChildren {
+  AdminSplatRoute: typeof AdminSplatRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminSplatRoute: AdminSplatRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -663,6 +704,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   AuthRoute: AuthRouteWithChildren,
   MainRoute: MainRouteWithChildren,
   Pending_verificationRoute: Pending_verificationRouteWithChildren,

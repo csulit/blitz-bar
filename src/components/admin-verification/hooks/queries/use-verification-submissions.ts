@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import { and, asc, desc, eq, gte, lte, ne, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, gte, lte, ne, or, sql } from 'drizzle-orm'
 import { adminVerificationKeys } from '../keys'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import type {
@@ -37,22 +37,43 @@ export const getVerificationSubmissions = createServerFn({ method: 'POST' })
     const { page, pageSize, filters } = data
     const offset = (page - 1) * pageSize
 
-    // Build where conditions
-    const conditions = []
+    // Build where conditions for verification table
+    const verificationConditions = []
 
     // Only show non-draft verifications (submitted, verified, rejected, info_requested)
     if (filters.status === 'all') {
-      conditions.push(ne(userVerification.status, 'draft'))
+      verificationConditions.push(ne(userVerification.status, 'draft'))
     } else {
-      conditions.push(eq(userVerification.status, filters.status))
+      verificationConditions.push(eq(userVerification.status, filters.status))
     }
 
     // Date range filters
     if (filters.dateFrom) {
-      conditions.push(gte(userVerification.submittedAt, filters.dateFrom))
+      verificationConditions.push(
+        gte(userVerification.submittedAt, filters.dateFrom),
+      )
     }
     if (filters.dateTo) {
-      conditions.push(lte(userVerification.submittedAt, filters.dateTo))
+      verificationConditions.push(
+        lte(userVerification.submittedAt, filters.dateTo),
+      )
+    }
+
+    // Build search condition using pg_trgm similarity
+    let searchCondition = undefined
+    if (filters.search && filters.search.trim()) {
+      const searchTerm = filters.search.trim()
+      // Use pg_trgm similarity search across name, email, firstName, lastName
+      // The % operator checks if similarity > 0.3 (default threshold)
+      searchCondition = or(
+        sql`${user.name} % ${searchTerm}`,
+        sql`${user.email} % ${searchTerm}`,
+        sql`${user.firstName} % ${searchTerm}`,
+        sql`${user.lastName} % ${searchTerm}`,
+        // Also include ILIKE for exact substring matches
+        sql`${user.name} ILIKE ${'%' + searchTerm + '%'}`,
+        sql`${user.email} ILIKE ${'%' + searchTerm + '%'}`,
+      )
     }
 
     // Build order by
@@ -61,50 +82,54 @@ export const getVerificationSubmissions = createServerFn({ method: 'POST' })
     const orderByDirection =
       filters.sortOrder === 'asc' ? asc(orderByColumn) : desc(orderByColumn)
 
-    // Query with joins
-    const submissions = await db.query.userVerification.findMany({
-      where: conditions.length > 0 ? and(...conditions) : undefined,
-      with: {
+    // Query with explicit join for search functionality
+    const submissions = await db
+      .select({
+        id: userVerification.id,
+        userId: userVerification.userId,
+        status: userVerification.status,
+        submittedAt: userVerification.submittedAt,
+        verifiedAt: userVerification.verifiedAt,
+        rejectionReason: userVerification.rejectionReason,
+        createdAt: userVerification.createdAt,
+        updatedAt: userVerification.updatedAt,
         user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            image: true,
-          },
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          image: user.image,
         },
-      },
-      orderBy: [orderByDirection],
-      limit: pageSize,
-      offset,
-    })
-
-    // Filter by search (name or email) after join
-    let filteredSubmissions = submissions
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
-      filteredSubmissions = submissions.filter(
-        (s) =>
-          s.user.name.toLowerCase().includes(searchLower) ||
-          s.user.email.toLowerCase().includes(searchLower) ||
-          s.user.firstName?.toLowerCase().includes(searchLower) ||
-          s.user.lastName?.toLowerCase().includes(searchLower),
+      })
+      .from(userVerification)
+      .innerJoin(user, eq(userVerification.userId, user.id))
+      .where(
+        and(
+          ...verificationConditions,
+          ...(searchCondition ? [searchCondition] : []),
+        ),
       )
-    }
+      .orderBy(orderByDirection)
+      .limit(pageSize)
+      .offset(offset)
 
-    // Get total count for pagination
-    const countConditions = [...conditions]
+    // Get total count for pagination (with same filters including search)
     const totalResult = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(userVerification)
-      .where(countConditions.length > 0 ? and(...countConditions) : undefined)
+      .innerJoin(user, eq(userVerification.userId, user.id))
+      .where(
+        and(
+          ...verificationConditions,
+          ...(searchCondition ? [searchCondition] : []),
+        ),
+      )
 
     const total = totalResult[0]?.count ?? 0
 
     return {
-      data: filteredSubmissions as Array<VerificationSubmission>,
+      data: submissions as Array<VerificationSubmission>,
       total,
       page,
       pageSize,

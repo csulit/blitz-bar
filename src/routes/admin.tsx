@@ -46,6 +46,17 @@ export const Route = createFileRoute('/admin')({
 
     return { session }
   },
+  notFoundComponent: () => (
+    <div className="flex flex-col items-center justify-center gap-4 py-12">
+      <h1 className="font-display text-4xl">404 - Not Found</h1>
+      <p className="text-muted-foreground">
+        The admin page you're looking for doesn't exist.
+      </p>
+      <Link to="/admin" className="text-primary underline hover:no-underline">
+        Back to Admin Dashboard
+      </Link>
+    </div>
+  ),
   component: UserVerificationLayout,
 })
 
