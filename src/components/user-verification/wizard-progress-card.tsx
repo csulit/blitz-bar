@@ -1,15 +1,19 @@
+import { useMemo } from 'react'
 import type { ReviewData } from './hooks/queries/use-review-data'
+import { requiresEducationAndJobHistory } from './constants'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import type { UserType } from '@/lib/schemas/signup'
 
 interface WizardProgressCardProps {
   reviewData: ReviewData
   onContinue: () => void
+  userType: UserType
   className?: string
 }
 
-const wizardSteps = [
+const allWizardSteps = [
   { id: 'personal', label: 'Personal Info', key: 'personalInfo' as const },
   { id: 'education', label: 'Education', key: 'education' as const },
   { id: 'documents', label: 'Documents', key: 'document' as const },
@@ -19,8 +23,19 @@ const wizardSteps = [
 export function WizardProgressCard({
   reviewData,
   onContinue,
+  userType,
   className,
 }: WizardProgressCardProps) {
+  // Filter steps based on userType
+  const wizardSteps = useMemo(() => {
+    if (requiresEducationAndJobHistory(userType)) {
+      return allWizardSteps
+    }
+    return allWizardSteps.filter(
+      (step) => step.id !== 'education' && step.id !== 'job',
+    )
+  }, [userType])
+
   const completedSteps = wizardSteps.filter(
     (step) => reviewData[step.key].isComplete,
   ).length

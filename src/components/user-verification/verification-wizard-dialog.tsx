@@ -9,7 +9,9 @@ import { JobHistoryForm } from './job-history-form'
 import { useWizardStateLocal } from './hooks/use-wizard-state'
 import { useReviewData } from './hooks/queries/use-review-data'
 import { useSubmitIdentityDocument } from './hooks/mutations/use-submit-identity-document'
+import { requiresEducationAndJobHistory } from './constants'
 import { cn } from '@/lib/utils'
+import type { UserType } from '@/lib/schemas/signup'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -30,12 +32,14 @@ interface VerificationWizardDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmitSuccess?: () => void
+  userType: UserType
 }
 
 export function VerificationWizardDialog({
   open,
   onOpenChange,
   onSubmitSuccess,
+  userType,
 }: VerificationWizardDialogProps) {
   const isMobile = useIsMobile()
 
@@ -51,6 +55,7 @@ export function VerificationWizardDialog({
           <WizardContent
             onClose={() => onOpenChange(false)}
             onSubmitSuccess={onSubmitSuccess}
+            userType={userType}
           />
         </div>
       </DrawerContent>
@@ -64,6 +69,7 @@ export function VerificationWizardDialog({
         <WizardContent
           onClose={() => onOpenChange(false)}
           onSubmitSuccess={onSubmitSuccess}
+          userType={userType}
         />
       </SheetContent>
     </Sheet>
@@ -73,9 +79,14 @@ export function VerificationWizardDialog({
 interface WizardContentProps {
   onClose: () => void
   onSubmitSuccess?: () => void
+  userType: UserType
 }
 
-function WizardContent({ onClose, onSubmitSuccess }: WizardContentProps) {
+function WizardContent({
+  onClose,
+  onSubmitSuccess,
+  userType,
+}: WizardContentProps) {
   const {
     state,
     actions,
@@ -83,6 +94,7 @@ function WizardContent({ onClose, onSubmitSuccess }: WizardContentProps) {
     isFirstStep,
     isLastStep,
     canContinue,
+    applicableSteps,
     isLoadingPersonalInfo,
     isLoadingEducation,
     isLoadingIdentityDocument,
@@ -96,12 +108,12 @@ function WizardContent({ onClose, onSubmitSuccess }: WizardContentProps) {
     handleEducationDataChange,
     handleJobHistoryValidChange,
     handleJobHistoryDataChange,
-  } = useWizardStateLocal()
+  } = useWizardStateLocal('personal_info', userType)
 
   const { mutateAsync: submitDocument, isPending: isSubmitting } =
     useSubmitIdentityDocument()
 
-  const reviewData = useReviewData()
+  const reviewData = useReviewData(userType)
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
@@ -141,7 +153,10 @@ function WizardContent({ onClose, onSubmitSuccess }: WizardContentProps) {
     <div className="flex h-full flex-col">
       {/* Header with stepper */}
       <div className="border-b bg-muted/20 px-6 py-6">
-        <HorizontalStepper currentStepIndex={currentStepIndex} />
+        <HorizontalStepper
+          currentStepIndex={currentStepIndex}
+          steps={applicableSteps}
+        />
       </div>
 
       {/* Main Content */}
@@ -295,21 +310,25 @@ function WizardContent({ onClose, onSubmitSuccess }: WizardContentProps) {
                 isComplete={reviewData.personalInfo.isComplete}
                 summary={reviewData.personalInfo.summary}
               />
-              <ReviewCard
-                title="Education Info"
-                isComplete={reviewData.education.isComplete}
-                summary={reviewData.education.summary}
-              />
+              {requiresEducationAndJobHistory(userType) && (
+                <ReviewCard
+                  title="Education Info"
+                  isComplete={reviewData.education.isComplete}
+                  summary={reviewData.education.summary}
+                />
+              )}
               <ReviewCard
                 title="Documents Uploaded"
                 isComplete={reviewData.document.isComplete}
                 summary={reviewData.document.summary}
               />
-              <ReviewCard
-                title="Job History"
-                isComplete={reviewData.jobHistory.isComplete}
-                summary={reviewData.jobHistory.summary}
-              />
+              {requiresEducationAndJobHistory(userType) && (
+                <ReviewCard
+                  title="Job History"
+                  isComplete={reviewData.jobHistory.isComplete}
+                  summary={reviewData.jobHistory.summary}
+                />
+              )}
 
               <WhatHappensNextBox />
             </div>

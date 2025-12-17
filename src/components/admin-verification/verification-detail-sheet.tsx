@@ -19,6 +19,8 @@ import { useApproveVerification } from './hooks/mutations/use-approve-verificati
 import { useRejectVerification } from './hooks/mutations/use-reject-verification'
 import { useRequestInfo } from './hooks/mutations/use-request-info'
 import { useVerificationDetail } from './hooks/queries/use-verification-detail'
+import { requiresEducationAndJobHistory } from '../user-verification/constants'
+import type { UserType } from '@/lib/schemas/signup'
 import {
   Accordion,
   AccordionContent,
@@ -200,7 +202,12 @@ export function VerificationDetailSheet({
                       </SheetDescription>
                     </div>
                   </div>
-                  {getStatusBadge(detail.status)}
+                  <div className="flex items-center gap-2">
+                    {detail.user.userType && (
+                      <Badge variant="outline">{detail.user.userType}</Badge>
+                    )}
+                    {getStatusBadge(detail.status)}
+                  </div>
                 </div>
                 <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
                   {detail.submittedAt && (
@@ -287,10 +294,29 @@ export function VerificationDetailSheet({
                     <div className="flex items-center gap-2">
                       <IconSchool className="h-4 w-4" />
                       Education ({detail.education.length})
+                      {detail.user.userType &&
+                        !requiresEducationAndJobHistory(
+                          detail.user.userType as UserType,
+                        ) && (
+                          <Badge
+                            variant="outline"
+                            className="ml-2 text-xs font-normal"
+                          >
+                            Not Required
+                          </Badge>
+                        )}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    {detail.education.length > 0 ? (
+                    {detail.user.userType &&
+                    !requiresEducationAndJobHistory(
+                      detail.user.userType as UserType,
+                    ) ? (
+                      <p className="text-sm text-muted-foreground">
+                        Education information is not required for{' '}
+                        {detail.user.userType} accounts.
+                      </p>
+                    ) : detail.education.length > 0 ? (
                       <div className="space-y-4">
                         {detail.education.map((edu) => (
                           <div
@@ -453,10 +479,29 @@ export function VerificationDetailSheet({
                     <div className="flex items-center gap-2">
                       <IconBriefcase className="h-4 w-4" />
                       Job History ({detail.jobHistory.length})
+                      {detail.user.userType &&
+                        !requiresEducationAndJobHistory(
+                          detail.user.userType as UserType,
+                        ) && (
+                          <Badge
+                            variant="outline"
+                            className="ml-2 text-xs font-normal"
+                          >
+                            Not Required
+                          </Badge>
+                        )}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    {detail.jobHistory.length > 0 ? (
+                    {detail.user.userType &&
+                    !requiresEducationAndJobHistory(
+                      detail.user.userType as UserType,
+                    ) ? (
+                      <p className="text-sm text-muted-foreground">
+                        Job history is not required for {detail.user.userType}{' '}
+                        accounts.
+                      </p>
+                    ) : detail.jobHistory.length > 0 ? (
                       <div className="space-y-4">
                         {detail.jobHistory.map((job) => (
                           <div

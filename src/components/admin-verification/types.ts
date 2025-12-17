@@ -23,6 +23,7 @@ export interface VerificationSubmission {
     firstName: string | null
     lastName: string | null
     image: string | null
+    userType: string | null
   }
 }
 
