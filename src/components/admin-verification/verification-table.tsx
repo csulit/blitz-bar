@@ -156,7 +156,7 @@ export function VerificationTable({
       },
       {
         accessorKey: 'user',
-        header: 'User',
+        header: () => <span className="font-display">User</span>,
         cell: ({ row }) => {
           const user = row.original.user
           const displayName =
@@ -183,7 +183,7 @@ export function VerificationTable({
       },
       {
         accessorKey: 'submittedAt',
-        header: 'Submitted',
+        header: () => <span className="font-display">Submitted</span>,
         cell: ({ row }) => {
           const date = row.original.submittedAt
           if (!date) return <span className="text-muted-foreground">-</span>
@@ -196,7 +196,7 @@ export function VerificationTable({
       },
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: () => <span className="font-display">Status</span>,
         cell: ({ row }) => getStatusBadge(row.original.status),
       },
     ],
