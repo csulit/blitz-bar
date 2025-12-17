@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { useRouter } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import {
+  IconCheck,
   IconCreditCard,
   IconDotsVertical,
+  IconLoader2,
   IconLogout,
   IconNotification,
   IconUserCircle,
+  IconUserPlus,
+  IconX,
 } from '@tabler/icons-react'
 
 import {
@@ -20,6 +25,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { authClient } from '@/lib/auth-client'
+import { useDeviceSessions, queryKeys } from '@/hooks'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +42,15 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+
 export function NavUser({
   user,
 }: {
@@ -47,11 +62,53 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
+  const [switchingSessionToken, setSwitchingSessionToken] = useState<
+    string | null
+  >(null)
+  const [removingSessionToken, setRemovingSessionToken] = useState<
+    string | null
+  >(null)
+
+  const { data: deviceSessions } = useDeviceSessions()
+
+  // Filter out the current active session to show other accounts
+  const otherSessions =
+    deviceSessions?.filter((session) => session.user.email !== user.email) ?? []
 
   async function handleLogout() {
     await authClient.signOut()
     router.navigate({ to: '/login' })
+  }
+
+  async function handleSwitchAccount(sessionToken: string) {
+    setSwitchingSessionToken(sessionToken)
+    try {
+      await authClient.multiSession.setActive({ sessionToken })
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.deviceSessions.all,
+      })
+      router.invalidate()
+    } finally {
+      setSwitchingSessionToken(null)
+    }
+  }
+
+  async function handleRemoveSession(
+    e: React.MouseEvent,
+    sessionToken: string
+  ) {
+    e.stopPropagation()
+    setRemovingSessionToken(sessionToken)
+    try {
+      await authClient.multiSession.revoke({ sessionToken })
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.deviceSessions.all,
+      })
+    } finally {
+      setRemovingSessionToken(null)
+    }
   }
 
   return (
@@ -65,7 +122,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {getInitials(user.name)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -86,7 +145,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {getInitials(user.name)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -94,8 +155,75 @@ export function NavUser({
                     {user.email}
                   </span>
                 </div>
+                <IconCheck className="text-muted-foreground size-4" />
               </div>
             </DropdownMenuLabel>
+
+            {otherSessions.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+                    Switch account
+                  </DropdownMenuLabel>
+                  {otherSessions.map((session) => (
+                    <DropdownMenuItem
+                      key={session.session.token}
+                      onSelect={() =>
+                        handleSwitchAccount(session.session.token)
+                      }
+                      disabled={
+                        switchingSessionToken === session.session.token ||
+                        removingSessionToken === session.session.token
+                      }
+                      className="group"
+                    >
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage
+                          src={session.user.image ?? undefined}
+                          alt={session.user.name}
+                        />
+                        <AvatarFallback className="rounded-lg">
+                          {getInitials(session.user.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">
+                          {session.user.name}
+                        </span>
+                        <span className="text-muted-foreground truncate text-xs">
+                          {session.user.email}
+                        </span>
+                      </div>
+                      {switchingSessionToken === session.session.token ? (
+                        <IconLoader2 className="text-muted-foreground size-4 animate-spin" />
+                      ) : removingSessionToken === session.session.token ? (
+                        <IconLoader2 className="text-muted-foreground size-4 animate-spin" />
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            handleRemoveSession(e, session.session.token)
+                          }
+                          className="hover:bg-destructive/10 hover:text-destructive hidden size-6 items-center justify-center rounded group-hover:flex"
+                        >
+                          <IconX className="size-4" />
+                        </button>
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </>
+            )}
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/login">
+                <IconUserPlus />
+                Add another account
+              </Link>
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>

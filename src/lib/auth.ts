@@ -142,12 +142,13 @@ export const auth = betterAuth({
             console.log(ctx.body)
           }
 
+          const nameParts = user?.name?.split(' ') ?? []
           return {
             data: {
               // Ensure to return Better-Auth named fields, not the original field names in your database.
               ...user,
-              firstName: user?.name.split(' ')[0],
-              lastName: user?.name.split(' ')[1],
+              firstName: nameParts[0] ?? null,
+              lastName: nameParts.slice(1).join(' ') || null,
             },
           }
         },
@@ -159,7 +160,8 @@ export const auth = betterAuth({
               to: user.email,
               subject: 'Welcome to My Home Support',
               react: WelcomeEmail({
-                userName: user.firstName ?? user.name,
+                userName:
+                  (user.firstName as string | undefined) ?? user.name ?? 'User',
                 loginUrl,
               }),
             }),
@@ -181,7 +183,41 @@ export const auth = betterAuth({
   },
   plugins: [
     tanstackStartCookies(),
-    multiSession(),
+    multiSession({
+      schema: {
+        user: {
+          additionalFields: {
+            role: {
+              type: 'string',
+              required: false,
+              defaultValue: 'partner',
+            },
+            userType: {
+              type: 'string',
+              required: false,
+              defaultValue: 'Employee',
+            },
+            userVerified: {
+              type: 'boolean',
+              required: false,
+              defaultValue: false,
+            },
+            firstName: {
+              type: 'string',
+              required: false,
+            },
+            middleInitial: {
+              type: 'string',
+              required: false,
+            },
+            lastName: {
+              type: 'string',
+              required: false,
+            },
+          },
+        },
+      },
+    }),
     twoFactor(),
     lastLoginMethod(),
     organization(),

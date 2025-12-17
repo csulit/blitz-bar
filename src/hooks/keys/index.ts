@@ -20,6 +20,9 @@ export const queryKeys = {
     details: () => [...queryKeys.todos.all, 'detail'] as const,
     detail: (id: number) => [...queryKeys.todos.details(), id] as const,
   },
+  deviceSessions: {
+    all: ['deviceSessions'] as const,
+  },
 } as const
 
 // Type helpers for query keys

@@ -4,12 +4,14 @@ import {
   inferAdditionalFields,
   organizationClient,
   twoFactorClient,
+  multiSessionClient,
 } from 'better-auth/client/plugins'
 import type { auth } from './auth'
 
 export const authClient = createAuthClient({
   plugins: [
     inferAdditionalFields<typeof auth>(),
+    multiSessionClient(),
     twoFactorClient(),
     organizationClient(),
     adminClient(),
