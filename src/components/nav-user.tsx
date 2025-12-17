@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { authClient } from '@/lib/auth-client'
-import { useDeviceSessions, queryKeys } from '@/hooks'
+import { useDeviceSessions, queryKeys, type DeviceSession } from '@/hooks'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,7 +75,9 @@ export function NavUser({
 
   // Filter out the current active session to show other accounts
   const otherSessions =
-    deviceSessions?.filter((session) => session.user.email !== user.email) ?? []
+    deviceSessions?.filter(
+      (session: DeviceSession) => session.user.email !== user.email,
+    ) ?? []
 
   async function handleLogout() {
     await authClient.signOut()
@@ -97,7 +99,7 @@ export function NavUser({
 
   async function handleRemoveSession(
     e: React.MouseEvent,
-    sessionToken: string
+    sessionToken: string,
   ) {
     e.stopPropagation()
     setRemovingSessionToken(sessionToken)
@@ -166,7 +168,7 @@ export function NavUser({
                   <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
                     Switch account
                   </DropdownMenuLabel>
-                  {otherSessions.map((session) => (
+                  {otherSessions.map((session: DeviceSession) => (
                     <DropdownMenuItem
                       key={session.session.token}
                       onSelect={() =>

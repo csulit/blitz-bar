@@ -7,6 +7,7 @@ type DeviceSessionsResponse = Awaited<
   ReturnType<typeof authClient.multiSession.listDeviceSessions>
 >
 type DeviceSessionsData = DeviceSessionsResponse['data']
+export type DeviceSession = NonNullable<DeviceSessionsData>[number]
 
 /**
  * Hook for fetching all device sessions (multi-account support)
