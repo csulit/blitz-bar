@@ -21,7 +21,7 @@ export function VerificationReviewPage() {
   // Convert search params to filters format
   const filters: FilterType = {
     search: searchParams.search ?? '',
-    status: searchParams.status ?? 'all',
+    status: searchParams.status ?? 'submitted',
     dateFrom: null,
     dateTo: null,
     sortBy: searchParams.sortBy ?? 'submittedAt',
@@ -41,7 +41,7 @@ export function VerificationReviewPage() {
       search: (prev) => ({
         ...prev,
         search: newFilters.search || undefined,
-        status: newFilters.status === 'all' ? undefined : newFilters.status,
+        status: newFilters.status === 'submitted' ? undefined : newFilters.status,
         sortBy: newFilters.sortBy === 'submittedAt' ? undefined : newFilters.sortBy,
         sortOrder: newFilters.sortOrder === 'desc' ? undefined : newFilters.sortOrder,
         page: undefined, // Reset to first page when filters change
