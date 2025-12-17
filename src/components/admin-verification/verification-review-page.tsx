@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { getRouteApi } from '@tanstack/react-router'
 import { VerificationStatsCards } from './verification-stats-cards'
 import { VerificationFilters } from './verification-filters'
 import { VerificationTable } from './verification-table'
@@ -9,30 +10,66 @@ import type {
   VerificationSubmission,
 } from './types'
 
-const defaultFilters: FilterType = {
-  search: '',
-  status: 'submitted', // Default to pending review
-  dateFrom: null,
-  dateTo: null,
-  sortBy: 'submittedAt',
-  sortOrder: 'desc',
-}
+const routeApi = getRouteApi('/admin/')
 
 export function VerificationReviewPage() {
-  const [filters, setFilters] = useState<FilterType>(defaultFilters)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const searchParams = routeApi.useSearch()
+  const navigate = routeApi.useNavigate()
   const [selectedIds, setSelectedIds] = useState<Array<string>>([])
   const [detailId, setDetailId] = useState<string | null>(null)
+
+  // Convert search params to filters format
+  const filters: FilterType = {
+    search: searchParams.search ?? '',
+    status: searchParams.status ?? 'all',
+    dateFrom: null,
+    dateTo: null,
+    sortBy: searchParams.sortBy ?? 'submittedAt',
+    sortOrder: searchParams.sortOrder ?? 'desc',
+  }
+
+  const page = searchParams.page ?? 1
+  const pageSize = searchParams.pageSize ?? 10
 
   function handleRowClick(submission: VerificationSubmission) {
     setDetailId(submission.id)
   }
 
   function handleFiltersChange(newFilters: FilterType) {
-    setFilters(newFilters)
-    setPage(1) // Reset to first page when filters change
     setSelectedIds([]) // Clear selection when filters change
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: newFilters.search || undefined,
+        status: newFilters.status === 'all' ? undefined : newFilters.status,
+        sortBy: newFilters.sortBy === 'submittedAt' ? undefined : newFilters.sortBy,
+        sortOrder: newFilters.sortOrder === 'desc' ? undefined : newFilters.sortOrder,
+        page: undefined, // Reset to first page when filters change
+      }),
+      replace: true,
+    })
+  }
+
+  function handlePageChange(newPage: number) {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: newPage === 1 ? undefined : newPage,
+      }),
+      replace: true,
+    })
+  }
+
+  function handlePageSizeChange(newPageSize: number) {
+    setSelectedIds([])
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        pageSize: newPageSize === 10 ? undefined : newPageSize,
+        page: undefined, // Reset to first page when page size changes
+      }),
+      replace: true,
+    })
   }
 
   return (
@@ -61,8 +98,8 @@ export function VerificationReviewPage() {
         pageSize={pageSize}
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
         onRowClick={handleRowClick}
       />
 
