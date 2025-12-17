@@ -15,7 +15,9 @@ export function ProfileHeader({ account }: ProfileHeaderProps) {
       : account.name
 
   const initials = fullName
+    .trim()
     .split(' ')
+    .filter((n) => n.length > 0)
     .map((n) => n[0])
     .join('')
     .toUpperCase()
