@@ -91,9 +91,7 @@ export function NavUser({
     setSwitchingSessionToken(sessionToken)
     try {
       await authClient.multiSession.setActive({ sessionToken })
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.deviceSessions.all,
-      })
+      await queryClient.invalidateQueries()
       router.invalidate()
     } catch (error) {
       console.error('Failed to switch account:', error)
