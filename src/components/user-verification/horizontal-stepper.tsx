@@ -1,14 +1,17 @@
-import { steps } from './constants'
+import type { StepConfig } from './constants'
 import { cn } from '@/lib/utils'
 
 interface HorizontalStepperProps {
   currentStepIndex: number
+  /** The steps to display (filtered by userType) */
+  steps: StepConfig[]
   /** When true, all steps (including current) show as completed */
   allCompleted?: boolean
 }
 
 export function HorizontalStepper({
   currentStepIndex,
+  steps,
   allCompleted = false,
 }: HorizontalStepperProps) {
   return (

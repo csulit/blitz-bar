@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { getRouteApi } from '@tanstack/react-router'
 import { useVerificationStatus } from './hooks/queries/use-verification-status'
 import { useReviewData } from './hooks/queries/use-review-data'
 import { AdminProgressStepper } from './admin-progress-stepper'
@@ -8,14 +9,21 @@ import { WizardProgressCard } from './wizard-progress-card'
 import { VerificationWizardDialog } from './verification-wizard-dialog'
 import { VerificationSubmittedView } from './verification-submitted-view'
 import { Card, CardContent } from '@/components/ui/card'
+import type { UserType } from '@/lib/schemas/signup'
+
+const rootRoute = getRouteApi('__root__')
 
 export function VerificationUnifiedPage() {
+  // Get userType from session context
+  const { sessionUser } = rootRoute.useRouteContext()
+  const userType = (sessionUser?.userType ?? 'Employee') as UserType
+
   const {
     data: verificationStatus,
     isLoading,
     refetch,
   } = useVerificationStatus()
-  const reviewData = useReviewData()
+  const reviewData = useReviewData(userType)
   const [wizardOpen, setWizardOpen] = useState(false)
 
   if (isLoading) {
@@ -72,13 +80,17 @@ export function VerificationUnifiedPage() {
           <WizardProgressCard
             reviewData={reviewData}
             onContinue={() => setWizardOpen(true)}
+            userType={userType}
           />
           <WhatHappensNextCard />
         </>
       )}
 
       {status === 'submitted' && verificationStatus && (
-        <VerificationSubmittedView verificationStatus={verificationStatus} />
+        <VerificationSubmittedView
+          verificationStatus={verificationStatus}
+          userType={userType}
+        />
       )}
 
       {status === 'verified' && <VerificationVerifiedView />}
@@ -89,6 +101,7 @@ export function VerificationUnifiedPage() {
           <WizardProgressCard
             reviewData={reviewData}
             onContinue={() => setWizardOpen(true)}
+            userType={userType}
           />
         </>
       )}
@@ -101,6 +114,7 @@ export function VerificationUnifiedPage() {
           <WizardProgressCard
             reviewData={reviewData}
             onContinue={() => setWizardOpen(true)}
+            userType={userType}
           />
         </>
       )}
@@ -109,6 +123,7 @@ export function VerificationUnifiedPage() {
       <VerificationWizardDialog
         open={wizardOpen}
         onOpenChange={setWizardOpen}
+        userType={userType}
         onSubmitSuccess={() => {
           refetch()
         }}

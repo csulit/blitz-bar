@@ -2,6 +2,8 @@ import { usePersonalInfo } from './use-personal-info'
 import { useEducation } from './use-education'
 import { useIdentityDocument } from './use-identity-document'
 import { useJobHistory } from './use-job-history'
+import { requiresEducationAndJobHistory } from '../../constants'
+import type { UserType } from '@/lib/schemas/signup'
 
 export interface ReviewStepData {
   isComplete: boolean
@@ -21,12 +23,16 @@ export interface ReviewData {
  * Hook that aggregates all verification data for the review step
  * Returns completion status and summary for each step
  */
-export function useReviewData(): ReviewData {
+export function useReviewData(userType: UserType = 'Employee'): ReviewData {
   const { data: personalInfo, isLoading: isLoadingPersonalInfo } =
     usePersonalInfo()
   const { data: education, isLoading: isLoadingEducation } = useEducation()
   const { data: document, isLoading: isLoadingDocument } = useIdentityDocument()
   const { data: jobHistory, isLoading: isLoadingJobHistory } = useJobHistory()
+
+  // Check if education and job history are required for this user type
+  const educationRequired = requiresEducationAndJobHistory(userType)
+  const jobHistoryRequired = requiresEducationAndJobHistory(userType)
 
   const isLoading =
     isLoadingPersonalInfo ||
@@ -45,9 +51,10 @@ export function useReviewData(): ReviewData {
     : 'Not completed'
 
   // Build education summary
-  const educationComplete = !!(education?.level && education?.schoolName)
-  let educationSummary = 'Not completed'
-  if (educationComplete) {
+  const educationDataComplete = !!(education?.level && education?.schoolName)
+  const educationComplete = educationRequired ? educationDataComplete : true
+  let educationSummary = educationRequired ? 'Not completed' : 'Not required'
+  if (educationDataComplete) {
     const levelDisplay = formatEducationLevel(education.level!)
     educationSummary = education.degree
       ? `${education.degree} at ${education.schoolName}`
@@ -61,11 +68,15 @@ export function useReviewData(): ReviewData {
     : 'Not completed'
 
   // Build job history summary
-  const jobHistoryComplete = !!(jobHistory?.jobs && jobHistory.jobs.length > 0)
+  const jobHistoryDataComplete = !!(
+    jobHistory?.jobs && jobHistory.jobs.length > 0
+  )
+  const jobHistoryComplete = jobHistoryRequired ? jobHistoryDataComplete : true
   const jobCount = jobHistory?.jobs?.length ?? 0
-  const jobHistorySummary = jobHistoryComplete
-    ? `${jobCount} ${jobCount === 1 ? 'job' : 'jobs'} added`
-    : 'Not completed'
+  let jobHistorySummary = jobHistoryRequired ? 'Not completed' : 'Not required'
+  if (jobHistoryDataComplete) {
+    jobHistorySummary = `${jobCount} ${jobCount === 1 ? 'job' : 'jobs'} added`
+  }
 
   const isAllComplete =
     personalInfoComplete &&

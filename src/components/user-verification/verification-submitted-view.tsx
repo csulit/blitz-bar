@@ -2,6 +2,7 @@ import { usePersonalInfo } from './hooks/queries/use-personal-info'
 import { useEducation } from './hooks/queries/use-education'
 import { useIdentityDocument } from './hooks/queries/use-identity-document'
 import { useJobHistory } from './hooks/queries/use-job-history'
+import { requiresEducationAndJobHistory } from './constants'
 import type { VerificationStatusData } from './hooks/queries/use-verification-status'
 import { cn } from '@/lib/utils'
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,20 +12,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import type { UserType } from '@/lib/schemas/signup'
 
 interface VerificationSubmittedViewProps {
   verificationStatus: VerificationStatusData
+  userType: UserType
   className?: string
 }
 
 export function VerificationSubmittedView({
   verificationStatus,
+  userType,
   className,
 }: VerificationSubmittedViewProps) {
   const { data: personalInfo } = usePersonalInfo()
   const { data: education } = useEducation()
   const { data: identityDocument } = useIdentityDocument()
   const { data: jobHistory } = useJobHistory()
+
+  // Check if education and job history should be shown
+  const showEducationAndJobHistory = requiresEducationAndJobHistory(userType)
 
   const submittedDate = verificationStatus.submittedAt
     ? new Date(verificationStatus.submittedAt).toLocaleDateString('en-US', {
@@ -142,62 +149,64 @@ export function VerificationSubmittedView({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Education */}
-            <AccordionItem value="education" className="border-b">
-              <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
-                    <svg
-                      className="h-4 w-4 text-green-600 dark:text-green-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+            {/* Education - Only shown for Employee userType */}
+            {showEducationAndJobHistory && (
+              <AccordionItem value="education" className="border-b">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
+                      <svg
+                        className="h-4 w-4 text-green-600 dark:text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="font-medium">Educational Background</span>
                   </div>
-                  <span className="font-medium">Educational Background</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <InfoItem
-                    label="Education Level"
-                    value={
-                      education?.level
-                        ? formatEducationLevel(education.level)
-                        : '-'
-                    }
-                  />
-                  <InfoItem
-                    label="School Name"
-                    value={education?.schoolName ?? '-'}
-                  />
-                  {education?.degree && (
-                    <InfoItem label="Degree" value={education.degree} />
-                  )}
-                  {education?.course && (
-                    <InfoItem label="Course" value={education.course} />
-                  )}
-                  <InfoItem
-                    label="Year"
-                    value={
-                      education
-                        ? `${education.yearStarted} - ${education.yearGraduated ?? 'Present'}`
-                        : '-'
-                    }
-                  />
-                  {education?.honors && (
-                    <InfoItem label="Honors" value={education.honors} />
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <InfoItem
+                      label="Education Level"
+                      value={
+                        education?.level
+                          ? formatEducationLevel(education.level)
+                          : '-'
+                      }
+                    />
+                    <InfoItem
+                      label="School Name"
+                      value={education?.schoolName ?? '-'}
+                    />
+                    {education?.degree && (
+                      <InfoItem label="Degree" value={education.degree} />
+                    )}
+                    {education?.course && (
+                      <InfoItem label="Course" value={education.course} />
+                    )}
+                    <InfoItem
+                      label="Year"
+                      value={
+                        education
+                          ? `${education.yearStarted} - ${education.yearGraduated ?? 'Present'}`
+                          : '-'
+                      }
+                    />
+                    {education?.honors && (
+                      <InfoItem label="Honors" value={education.honors} />
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
             {/* Identity Document */}
             <AccordionItem value="document" className="border-b">
@@ -265,67 +274,69 @@ export function VerificationSubmittedView({
               </AccordionContent>
             </AccordionItem>
 
-            {/* Job History */}
-            <AccordionItem value="job-history" className="border-0">
-              <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
-                    <svg
-                      className="h-4 w-4 text-green-600 dark:text-green-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <span className="font-medium">Work Experience</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                {jobHistory?.jobs && jobHistory.jobs.length > 0 ? (
-                  <div className="space-y-4">
-                    {jobHistory.jobs.map((job, index) => (
-                      <div
-                        key={index}
-                        className="rounded-lg border bg-muted/30 p-4"
+            {/* Job History - Only shown for Employee userType */}
+            {showEducationAndJobHistory && (
+              <AccordionItem value="job-history" className="border-0">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
+                      <svg
+                        className="h-4 w-4 text-green-600 dark:text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
                       >
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="font-medium text-foreground">
-                              {job.position}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {job.companyName}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="font-medium">Work Experience</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                  {jobHistory?.jobs && jobHistory.jobs.length > 0 ? (
+                    <div className="space-y-4">
+                      {jobHistory.jobs.map((job, index) => (
+                        <div
+                          key={index}
+                          className="rounded-lg border bg-muted/30 p-4"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="font-medium text-foreground">
+                                {job.position}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {job.companyName}
+                              </p>
+                            </div>
+                            <p className="shrink-0 text-sm text-muted-foreground">
+                              {formatDate(job.startMonth)} -{' '}
+                              {job.isCurrentJob
+                                ? 'Present'
+                                : formatDate(job.endMonth)}
                             </p>
                           </div>
-                          <p className="shrink-0 text-sm text-muted-foreground">
-                            {formatDate(job.startMonth)} -{' '}
-                            {job.isCurrentJob
-                              ? 'Present'
-                              : formatDate(job.endMonth)}
-                          </p>
+                          {job.summary && (
+                            <p className="mt-2 text-sm text-muted-foreground">
+                              {job.summary}
+                            </p>
+                          )}
                         </div>
-                        {job.summary && (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {job.summary}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No job history provided
-                  </p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No job history provided
+                    </p>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            )}
           </Accordion>
         </CardContent>
       </Card>

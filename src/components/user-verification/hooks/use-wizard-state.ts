@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
-import { steps } from '../constants'
+import {
+  type StepConfig,
+  getStepsForUserType,
+  requiresEducationAndJobHistory,
+} from '../constants'
 import { usePersonalInfo } from './queries/use-personal-info'
 import { useEducation } from './queries/use-education'
 import { useIdentityDocument } from './queries/use-identity-document'
@@ -9,6 +13,7 @@ import type { DocumentType, UploadedFile, VerificationStep } from '../types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import type { EducationFormData } from '@/lib/schemas/education'
 import type { JobHistoryFormData } from '@/lib/schemas/job-history'
+import type { UserType } from '@/lib/schemas/signup'
 
 // State
 export interface WizardState {
@@ -32,8 +37,8 @@ export interface WizardState {
 
 // Actions
 type WizardAction =
-  | { type: 'GO_NEXT' }
-  | { type: 'GO_BACK' }
+  | { type: 'GO_NEXT'; steps: StepConfig[] }
+  | { type: 'GO_BACK'; steps: StepConfig[] }
   | { type: 'SET_STEP'; step: VerificationStep }
   | { type: 'SET_DOC_TYPE'; docType: DocumentType }
   | { type: 'SET_FRONT_FILE'; file: UploadedFile | null }
@@ -75,6 +80,7 @@ const initialState: WizardState = {
 function wizardReducer(state: WizardState, action: WizardAction): WizardState {
   switch (action.type) {
     case 'GO_NEXT': {
+      const { steps } = action
       const currentIndex = steps.findIndex((s) => s.id === state.currentStep)
       if (currentIndex < steps.length - 1) {
         return { ...state, currentStep: steps[currentIndex + 1].id }
@@ -82,6 +88,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
       return state
     }
     case 'GO_BACK': {
+      const { steps } = action
       const currentIndex = steps.findIndex((s) => s.id === state.currentStep)
       if (currentIndex > 0) {
         return { ...state, currentStep: steps[currentIndex - 1].id }
@@ -140,11 +147,20 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
  * Uses local reducer state (no URL sync).
  * Auto-save to database works as expected.
  */
-export function useWizardState(initialStep: VerificationStep = 'personal_info') {
+export function useWizardState(
+  initialStep: VerificationStep = 'personal_info',
+  userType: UserType = 'Employee',
+) {
   const [state, dispatch] = useReducer(wizardReducer, {
     ...initialState,
     currentStep: initialStep,
   })
+
+  // Get applicable steps for this user type
+  const applicableSteps = useMemo(
+    () => getStepsForUserType(userType),
+    [userType],
+  )
 
   // Fetch saved personal info from database
   const { data: savedPersonalInfo, isLoading: isLoadingPersonalInfo } =
@@ -255,23 +271,31 @@ export function useWizardState(initialStep: VerificationStep = 'personal_info') 
     saveIdentityDocument,
   ])
 
-  const currentStepIndex = steps.findIndex((s) => s.id === state.currentStep)
+  const currentStepIndex = applicableSteps.findIndex(
+    (s) => s.id === state.currentStep,
+  )
   const isFirstStep = currentStepIndex === 0
-  const isLastStep = currentStepIndex === steps.length - 1
+  const isLastStep = currentStepIndex === applicableSteps.length - 1
 
   const canContinue = useMemo(() => {
     switch (state.currentStep) {
       case 'personal_info':
         return state.personalInfo.isValid
       case 'education':
-        return state.education.isValid
+        // This case won't be reached for Employer/Agency, but keep for safety
+        return requiresEducationAndJobHistory(userType)
+          ? state.education.isValid
+          : true
       case 'upload':
         return (
           state.frontFile?.status === 'success' &&
           state.backFile?.status === 'success'
         )
       case 'job_history':
-        return state.jobHistory.isValid
+        // This case won't be reached for Employer/Agency, but keep for safety
+        return requiresEducationAndJobHistory(userType)
+          ? state.jobHistory.isValid
+          : true
       case 'review':
         return true
       default:
@@ -284,13 +308,14 @@ export function useWizardState(initialStep: VerificationStep = 'personal_info') 
     state.frontFile,
     state.backFile,
     state.jobHistory.isValid,
+    userType,
   ])
 
   // Actions
   const actions = useMemo(
     () => ({
-      goNext: () => dispatch({ type: 'GO_NEXT' }),
-      goBack: () => dispatch({ type: 'GO_BACK' }),
+      goNext: () => dispatch({ type: 'GO_NEXT', steps: applicableSteps }),
+      goBack: () => dispatch({ type: 'GO_BACK', steps: applicableSteps }),
       setStep: (step: VerificationStep) => dispatch({ type: 'SET_STEP', step }),
       setDocType: (docType: DocumentType) =>
         dispatch({ type: 'SET_DOC_TYPE', docType }),
@@ -317,7 +342,7 @@ export function useWizardState(initialStep: VerificationStep = 'personal_info') 
       setJobHistoryData: (data: JobHistoryFormData) =>
         dispatch({ type: 'SET_JOB_HISTORY_DATA', data }),
     }),
-    [],
+    [applicableSteps],
   )
 
   // Stable callbacks for form components
@@ -358,6 +383,9 @@ export function useWizardState(initialStep: VerificationStep = 'personal_info') 
     isFirstStep,
     isLastStep,
     canContinue,
+    // User type and applicable steps
+    userType,
+    applicableSteps,
     // Loading states
     isLoadingPersonalInfo,
     isLoadingEducation,

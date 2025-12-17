@@ -25,6 +25,7 @@ export const getVerificationDetail = createServerFn({ method: 'POST' })
             firstName: true,
             lastName: true,
             image: true,
+            userType: true,
           },
           with: {
             profile: true,
@@ -74,6 +75,7 @@ export const getVerificationDetail = createServerFn({ method: 'POST' })
         firstName: verification.user.firstName,
         lastName: verification.user.lastName,
         image: verification.user.image,
+        userType: verification.user.userType,
       },
       profile: verification.user.profile
         ? {

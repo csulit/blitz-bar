@@ -1,16 +1,40 @@
 import type { DocumentType, VerificationStep } from './types'
+import type { UserType } from '@/lib/schemas/signup'
 
-export const steps: Array<{
+export interface StepConfig {
   id: VerificationStep
   label: string
   completed: boolean
-}> = [
+}
+
+export const steps: StepConfig[] = [
   { id: 'personal_info', label: 'Personal Info', completed: false },
   { id: 'education', label: 'Education', completed: false },
   { id: 'upload', label: 'Upload', completed: false },
   { id: 'job_history', label: 'Job History', completed: false },
   { id: 'review', label: 'Review', completed: false },
 ]
+
+// Steps that are skipped for Employer/Agency users
+const EMPLOYER_AGENCY_SKIP_STEPS: VerificationStep[] = ['education', 'job_history']
+
+/**
+ * Get the applicable steps for a given user type.
+ * Employees see all steps; Employer/Agency skip education and job_history.
+ */
+export function getStepsForUserType(userType: UserType): StepConfig[] {
+  if (userType === 'Employee') {
+    return steps
+  }
+  return steps.filter((step) => !EMPLOYER_AGENCY_SKIP_STEPS.includes(step.id))
+}
+
+/**
+ * Check if education and job history are required for a user type.
+ */
+export function requiresEducationAndJobHistory(userType: UserType): boolean {
+  return userType === 'Employee'
+}
 
 export const documentTypes: Array<{
   id: DocumentType
