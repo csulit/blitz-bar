@@ -27,6 +27,7 @@ import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
 import { Route as AdminSplatRouteImport } from './routes/admin/$'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
+import { Route as MainAccountRouteImport } from './routes/_main/account'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -130,6 +131,11 @@ const MainDashboardRoute = MainDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => MainRoute,
 } as any)
+const MainAccountRoute = MainAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => MainRoute,
+} as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/account': typeof MainAccountRoute
   '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/account': typeof MainAccountRoute
   '/dashboard': typeof MainDashboardRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_main/account': typeof MainAccountRoute
   '/_main/dashboard': typeof MainDashboardRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
+    | '/account'
     | '/dashboard'
     | '/verification-status'
     | '/admin/$'
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-email'
+    | '/account'
     | '/dashboard'
     | '/verification-status'
     | '/admin/$'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/_auth/verify-email'
+    | '/_main/account'
     | '/_main/dashboard'
     | '/_pending_verification/verification-status'
     | '/admin/$'
@@ -549,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDashboardRouteImport
       parentRoute: typeof MainRoute
     }
+    '/_main/account': {
+      id: '/_main/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof MainAccountRouteImport
+      parentRoute: typeof MainRoute
+    }
     '/_auth/verify-email': {
       id: '/_auth/verify-email'
       path: '/verify-email'
@@ -669,10 +688,12 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface MainRouteChildren {
+  MainAccountRoute: typeof MainAccountRoute
   MainDashboardRoute: typeof MainDashboardRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
+  MainAccountRoute: MainAccountRoute,
   MainDashboardRoute: MainDashboardRoute,
 }
 
