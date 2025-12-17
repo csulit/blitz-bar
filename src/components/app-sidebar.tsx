@@ -1,21 +1,18 @@
 import * as React from 'react'
 import {
-  IconCamera,
-  IconChartBar,
+  IconBuilding,
+  IconChecklist,
+  IconCreditCard,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
+  IconUsersGroup,
 } from '@tabler/icons-react'
+import type { Icon } from '@tabler/icons-react'
 
 import { NavDocuments } from '@/components/nav-documents'
 import { NavMain } from '@/components/nav-main'
@@ -30,6 +27,77 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import type { UserType } from '@/lib/casl'
+import type { SessionUserData } from '@/routes/__root'
+
+type NavItem = {
+  title: string
+  url: string
+  icon: Icon
+}
+
+function getNavMainItems(userType: UserType): NavItem[] {
+  const baseItems: NavItem[] = [
+    {
+      title: 'Dashboard',
+      url: '#',
+      icon: IconDashboard,
+    },
+    {
+      title: 'Team',
+      url: '#',
+      icon: IconUsers,
+    },
+  ]
+
+  switch (userType) {
+    case 'Employee':
+      return baseItems
+
+    case 'Employer':
+      return [
+        ...baseItems,
+        {
+          title: 'Employees',
+          url: '#',
+          icon: IconUsersGroup,
+        },
+        {
+          title: 'Approvals',
+          url: '#',
+          icon: IconChecklist,
+        },
+        {
+          title: 'Payroll',
+          url: '#',
+          icon: IconCreditCard,
+        },
+      ]
+
+    case 'Agency':
+      return [
+        ...baseItems,
+        {
+          title: 'Employees',
+          url: '#',
+          icon: IconUsersGroup,
+        },
+        {
+          title: 'Employers',
+          url: '#',
+          icon: IconBuilding,
+        },
+        {
+          title: 'Approvals',
+          url: '#',
+          icon: IconChecklist,
+        },
+      ]
+
+    default:
+      return baseItems
+  }
+}
 
 const data = {
   user: {
@@ -37,81 +105,6 @@ const data = {
     email: 'm@example.com',
     avatar: '/avatars/shadcn.jpg',
   },
-  navMain: [
-    {
-      title: 'Dashboard',
-      url: '#',
-      icon: IconDashboard,
-    },
-    {
-      title: 'Lifecycle',
-      url: '#',
-      icon: IconListDetails,
-    },
-    {
-      title: 'Analytics',
-      url: '#',
-      icon: IconChartBar,
-    },
-    {
-      title: 'Projects',
-      url: '#',
-      icon: IconFolder,
-    },
-    {
-      title: 'Team',
-      url: '#',
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: 'Capture',
-      icon: IconCamera,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Proposal',
-      icon: IconFileDescription,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Prompts',
-      icon: IconFileAi,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-  ],
   navSecondary: [
     {
       title: 'Settings',
@@ -131,24 +124,21 @@ const data = {
   ],
   documents: [
     {
-      name: 'Data Library',
-      url: '#',
-      icon: IconDatabase,
-    },
-    {
       name: 'Reports',
       url: '#',
       icon: IconReport,
     },
-    {
-      name: 'Word Assistant',
-      url: '#',
-      icon: IconFileWord,
-    },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  sessionUser: SessionUserData
+}
+
+export function AppSidebar({ sessionUser, ...props }: AppSidebarProps) {
+  const userType = (sessionUser?.userType as UserType) ?? 'Employee'
+  const navMainItems = getNavMainItems(userType)
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -167,12 +157,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMainItems} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            name: sessionUser?.name ?? 'Guest',
+            email: sessionUser?.email ?? '',
+            avatar: sessionUser?.image ?? '/avatars/default.jpg',
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   )

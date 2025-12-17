@@ -1,27 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { and, eq, gte, sql } from 'drizzle-orm'
 import { adminVerificationKeys } from '../keys'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import type { VerificationStats } from '../../types'
 import { db } from '@/db'
 import { userVerification } from '@/db/schema'
+import { assertCan } from '@/lib/casl/server'
 
 export const getVerificationStats = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const request = getRequest()
-    const { auth } = await import('@/lib/auth')
-    const session = await auth.api.getSession({ headers: request.headers })
-
-    if (!session) {
-      throw new Error('Unauthorized')
-    }
-
-    const sessionUser = session.user as typeof session.user & { role?: string }
-    if (sessionUser.role !== 'admin') {
-      throw new Error('Forbidden: Admin access required')
-    }
+    // Check if user can manage verifications (admin only)
+    await assertCan('manage', 'UserVerification')
 
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
