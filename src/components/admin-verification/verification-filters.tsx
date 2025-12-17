@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { IconFilter, IconSearch, IconSortAscending } from '@tabler/icons-react'
 import type { VerificationFilters as FilterType } from './types'
 import { Button } from '@/components/ui/button'
@@ -19,6 +20,25 @@ export function VerificationFilters({
   filters,
   onFiltersChange,
 }: VerificationFiltersProps) {
+  const [searchValue, setSearchValue] = useState(filters.search)
+
+  // Sync local state when URL changes (e.g., back/forward navigation)
+  useEffect(() => {
+    setSearchValue(filters.search)
+  }, [filters.search])
+
+  // Debounce search input
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (searchValue !== filters.search) {
+        onFiltersChange({ ...filters, search: searchValue })
+      }
+    }, 300)
+
+    return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue, filters.search])
+
   function updateFilter<TKey extends keyof FilterType>(
     key: TKey,
     value: FilterType[TKey],
@@ -33,8 +53,8 @@ export function VerificationFilters({
           <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name or email..."
-            value={filters.search}
-            onChange={(e) => updateFilter('search', e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="pl-9"
           />
         </div>
