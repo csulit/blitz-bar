@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { eq } from 'drizzle-orm'
 import { adminVerificationKeys } from '../keys'
 import { db } from '@/db'
 import { user, userVerification, verificationAuditLog } from '@/db/schema'
+import { assertCan } from '@/lib/casl/server'
 
 type BulkAction = 'approve' | 'reject' | 'request_info'
 
@@ -24,18 +24,8 @@ interface BulkActionResult {
 export const bulkAction = createServerFn({ method: 'POST' })
   .inputValidator((data: BulkActionInput) => data)
   .handler(async ({ data }) => {
-    const request = getRequest()
-    const { auth } = await import('@/lib/auth')
-    const session = await auth.api.getSession({ headers: request.headers })
-
-    if (!session) {
-      throw new Error('Unauthorized')
-    }
-
-    const sessionUser = session.user as typeof session.user & { role?: string }
-    if (sessionUser.role !== 'admin') {
-      throw new Error('Forbidden: Admin access required')
-    }
+    // Bulk actions require manage permission (includes all verification actions)
+    const sessionUser = await assertCan('manage', 'UserVerification')
 
     if (
       data.action !== 'approve' &&
@@ -44,7 +34,7 @@ export const bulkAction = createServerFn({ method: 'POST' })
       throw new Error('Reason is required for rejection and info requests')
     }
 
-    const adminId = session.user.id
+    const adminId = sessionUser.id
     const now = new Date()
 
     const results: BulkActionResult = {

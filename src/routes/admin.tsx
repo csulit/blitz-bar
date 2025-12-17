@@ -6,7 +6,6 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { IconArrowLeft, IconLogout } from '@tabler/icons-react'
 import {
   AlertDialog,
@@ -23,28 +22,29 @@ import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 
-const getAdminSession = createServerFn({ method: 'GET' }).handler(async () => {
-  const request = getRequest()
-  const { auth } = await import('@/lib/auth')
-  const session = await auth.api.getSession({ headers: request.headers })
-  return session
+const checkAdminAccess = createServerFn({ method: 'GET' }).handler(async () => {
+  const { getAbility } = await import('@/lib/casl/server')
+  const { ability, user } = await getAbility()
+
+  return {
+    user,
+    canAccessAdmin: ability.can('manage', 'UserVerification'),
+  }
 })
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async () => {
-    const session = await getAdminSession()
+    const { user, canAccessAdmin } = await checkAdminAccess()
 
-    if (!session) {
+    if (!user) {
       throw redirect({ to: '/login' })
     }
 
-    // Check if user has admin role
-    const user = session.user as typeof session.user & { role?: string }
-    if (user.role !== 'admin') {
+    if (!canAccessAdmin) {
       throw redirect({ to: '/dashboard' })
     }
 
-    return { session }
+    return { user }
   },
   notFoundComponent: () => (
     <div className="flex flex-col items-center justify-center gap-4 py-12">

@@ -1,19 +1,22 @@
 import {
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
-// import Header from '../components/Header'
 import { ThemeProvider } from '../components/theme-provider'
+import { AbilityProvider } from '../components/ability-provider'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import type { AppAbilityRules } from '@/lib/casl'
 
 const themeScript = `
   (function() {
@@ -25,11 +28,39 @@ const themeScript = `
   })();
 `
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SerializableRules = Array<Record<string, any>>
+
+export type SessionUserData = {
+  id: string
+  email: string
+  name: string
+  userType: string
+  role: string
+  userVerified: boolean
+  firstName?: string | null
+  lastName?: string | null
+  middleInitial?: string | null
+  image?: string | null
+} | null
+
+const getAbilityRulesServerFn = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ rules: SerializableRules; user: SessionUserData }> => {
+    const { getAbilityRules } = await import('@/lib/casl/server')
+    const { rules, user } = await getAbilityRules()
+    return { rules: rules as SerializableRules, user: user as SessionUserData }
+  },
+)
+
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async () => {
+    const { rules, user } = await getAbilityRulesServerFn()
+    return { abilityRules: rules, sessionUser: user }
+  },
   head: () => ({
     meta: [
       {
@@ -50,9 +81,20 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
+  component: RootComponent,
   notFoundComponent: () => <div>404... This page could not be found.</div>,
   shellComponent: RootDocument,
 })
+
+function RootComponent() {
+  const { abilityRules } = Route.useRouteContext()
+
+  return (
+    <AbilityProvider rules={abilityRules as AppAbilityRules}>
+      <Outlet />
+    </AbilityProvider>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -63,7 +105,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         <ThemeProvider defaultTheme="system" storageKey="blitz-bar-theme">
-          {/* <Header /> */}
           {children}
         </ThemeProvider>
         <TanStackDevtools

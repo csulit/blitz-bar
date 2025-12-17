@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { and, asc, desc, eq, gte, lte, ne, or, sql } from 'drizzle-orm'
 import { adminVerificationKeys } from '../keys'
 import type { UseQueryOptions } from '@tanstack/react-query'
@@ -11,6 +10,7 @@ import type {
 } from '../../types'
 import { db } from '@/db'
 import { user, userVerification } from '@/db/schema'
+import { assertCan } from '@/lib/casl/server'
 
 interface GetSubmissionsInput {
   page: number
@@ -21,18 +21,8 @@ interface GetSubmissionsInput {
 export const getVerificationSubmissions = createServerFn({ method: 'POST' })
   .inputValidator((data: GetSubmissionsInput) => data)
   .handler(async ({ data }) => {
-    const request = getRequest()
-    const { auth } = await import('@/lib/auth')
-    const session = await auth.api.getSession({ headers: request.headers })
-
-    if (!session) {
-      throw new Error('Unauthorized')
-    }
-
-    const sessionUser = session.user as typeof session.user & { role?: string }
-    if (sessionUser.role !== 'admin') {
-      throw new Error('Forbidden: Admin access required')
-    }
+    // Check if user can manage verifications (admin only)
+    await assertCan('manage', 'UserVerification')
 
     const { page, pageSize, filters } = data
     const offset = (page - 1) * pageSize
