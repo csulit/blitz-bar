@@ -27,6 +27,9 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  ssr: {
+    noExternal: ['@tabler/icons-react'],
+  },
 })
 
 export default config
