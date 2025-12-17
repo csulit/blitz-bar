@@ -183,41 +183,7 @@ export const auth = betterAuth({
   },
   plugins: [
     tanstackStartCookies(),
-    multiSession({
-      schema: {
-        user: {
-          additionalFields: {
-            role: {
-              type: 'string',
-              required: false,
-              defaultValue: 'partner',
-            },
-            userType: {
-              type: 'string',
-              required: false,
-              defaultValue: 'Employee',
-            },
-            userVerified: {
-              type: 'boolean',
-              required: false,
-              defaultValue: false,
-            },
-            firstName: {
-              type: 'string',
-              required: false,
-            },
-            middleInitial: {
-              type: 'string',
-              required: false,
-            },
-            lastName: {
-              type: 'string',
-              required: false,
-            },
-          },
-        },
-      },
-    }),
+    multiSession(),
     twoFactor(),
     lastLoginMethod(),
     organization(),

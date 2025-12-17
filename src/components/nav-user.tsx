@@ -43,12 +43,15 @@ import {
 } from '@/components/ui/sidebar'
 
 function getInitials(name: string): string {
-  return name
+  const initials = name
+    .trim()
     .split(' ')
+    .filter((n) => n.length > 0)
     .map((n) => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2)
+  return initials || '??'
 }
 
 export function NavUser({
@@ -92,6 +95,8 @@ export function NavUser({
         queryKey: queryKeys.deviceSessions.all,
       })
       router.invalidate()
+    } catch (error) {
+      console.error('Failed to switch account:', error)
     } finally {
       setSwitchingSessionToken(null)
     }
@@ -108,6 +113,8 @@ export function NavUser({
       await queryClient.invalidateQueries({
         queryKey: queryKeys.deviceSessions.all,
       })
+    } catch (error) {
+      console.error('Failed to remove session:', error)
     } finally {
       setRemovingSessionToken(null)
     }
