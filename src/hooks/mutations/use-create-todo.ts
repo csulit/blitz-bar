@@ -12,7 +12,7 @@ interface CreateTodoInput {
  * Server function for creating a todo
  */
 export const createTodo = createServerFn({ method: 'POST' })
-  .validator((data: CreateTodoInput) => data)
+  .inputValidator((data: CreateTodoInput) => data)
   .handler(async ({ data }) => {
     const [newTodo] = await db.insert(todos).values({ title: data.title }).returning()
     return newTodo
