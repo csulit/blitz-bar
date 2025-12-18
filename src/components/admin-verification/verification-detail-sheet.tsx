@@ -363,12 +363,9 @@ export function VerificationDetailSheet({
                       <div className="space-y-4">
                         {detail.identityDocuments.map((doc) => (
                           <div key={doc.id} className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium">
-                                {formatDocumentType(doc.documentType)}
-                              </span>
-                              {getStatusBadge(doc.status)}
-                            </div>
+                            <span className="text-sm font-medium">
+                              {formatDocumentType(doc.documentType)}
+                            </span>
                             <div className="grid grid-cols-2 gap-2">
                               <Dialog>
                                 <DialogTrigger asChild>

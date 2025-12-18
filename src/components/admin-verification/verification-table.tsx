@@ -46,13 +46,53 @@ interface VerificationTableProps {
   onRowClick: (submission: VerificationSubmission) => void
 }
 
+function getUserTypeBadge(userType: string | null) {
+  if (!userType) return <span className="text-muted-foreground">-</span>
+
+  switch (userType.toLowerCase()) {
+    case 'employee':
+      return (
+        <Badge
+          variant="outline"
+          className="rounded-sm! bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800"
+        >
+          Employee
+        </Badge>
+      )
+    case 'employer':
+      return (
+        <Badge
+          variant="outline"
+          className="rounded-sm! bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800"
+        >
+          Employer
+        </Badge>
+      )
+    case 'agency':
+      return (
+        <Badge
+          variant="outline"
+          className="rounded-sm! bg-red-50 text-red-700 border-red-200 dark:bg-red-950/50 dark:text-red-400 dark:border-red-800"
+        >
+          Agency
+        </Badge>
+      )
+    default:
+      return (
+        <Badge variant="outline" className="rounded-sm! capitalize">
+          {userType}
+        </Badge>
+      )
+  }
+}
+
 function getStatusBadge(status: string) {
   switch (status) {
     case 'submitted':
       return (
         <Badge
           variant="outline"
-          className="bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800"
+          className="rounded-sm! bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800"
         >
           Pending
         </Badge>
@@ -61,7 +101,7 @@ function getStatusBadge(status: string) {
       return (
         <Badge
           variant="outline"
-          className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950/50 dark:text-green-400 dark:border-green-800"
+          className="rounded-sm! bg-green-50 text-green-700 border-green-200 dark:bg-green-950/50 dark:text-green-400 dark:border-green-800"
         >
           Approved
         </Badge>
@@ -70,7 +110,7 @@ function getStatusBadge(status: string) {
       return (
         <Badge
           variant="outline"
-          className="bg-red-50 text-red-700 border-red-200 dark:bg-red-950/50 dark:text-red-400 dark:border-red-800"
+          className="rounded-sm! bg-red-50 text-red-700 border-red-200 dark:bg-red-950/50 dark:text-red-400 dark:border-red-800"
         >
           Rejected
         </Badge>
@@ -79,13 +119,17 @@ function getStatusBadge(status: string) {
       return (
         <Badge
           variant="outline"
-          className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800"
+          className="rounded-sm! bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800"
         >
           Info Requested
         </Badge>
       )
     default:
-      return <Badge variant="outline">{status}</Badge>
+      return (
+        <Badge variant="outline" className="rounded-sm!">
+          {status}
+        </Badge>
+      )
   }
 }
 
@@ -182,6 +226,11 @@ export function VerificationTable({
         },
       },
       {
+        accessorKey: 'userType',
+        header: () => <span className="font-display">User Type</span>,
+        cell: ({ row }) => getUserTypeBadge(row.original.user.userType),
+      },
+      {
         accessorKey: 'submittedAt',
         header: () => <span className="font-display">Submitted</span>,
         cell: ({ row }) => {
@@ -228,6 +277,9 @@ export function VerificationTable({
                   <Skeleton className="h-4 w-20" />
                 </TableHead>
                 <TableHead>
+                  <Skeleton className="h-4 w-20" />
+                </TableHead>
+                <TableHead>
                   <Skeleton className="h-4 w-16" />
                 </TableHead>
               </TableRow>
@@ -246,6 +298,9 @@ export function VerificationTable({
                         <Skeleton className="h-3 w-40" />
                       </div>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
                   </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-24" />

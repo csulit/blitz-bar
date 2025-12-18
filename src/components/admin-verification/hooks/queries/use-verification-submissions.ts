@@ -90,6 +90,7 @@ export const getVerificationSubmissions = createServerFn({ method: 'POST' })
           firstName: user.firstName,
           lastName: user.lastName,
           image: user.image,
+          userType: user.userType,
         },
       })
       .from(userVerification)
