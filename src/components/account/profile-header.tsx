@@ -49,7 +49,7 @@ export function ProfileHeader({ account }: ProfileHeaderProps) {
               {account.emailVerified && (
                 <Badge
                   variant="outline"
-                  className="ml-1 border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
+                  className="ml-1 rounded-sm border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400"
                 >
                   Verified
                 </Badge>
@@ -58,12 +58,14 @@ export function ProfileHeader({ account }: ProfileHeaderProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">{account.userType}</Badge>
-            <Badge variant="outline" className="capitalize">
+            <Badge variant="secondary" className="rounded-sm">
+              {account.userType}
+            </Badge>
+            <Badge variant="outline" className="rounded-sm capitalize">
               {account.role}
             </Badge>
             {account.userVerified && (
-              <Badge className="bg-emerald-600 hover:bg-emerald-600">
+              <Badge className="rounded-sm bg-emerald-600 hover:bg-emerald-600">
                 <IconShieldCheck className="mr-1 h-3 w-3" />
                 Account Verified
               </Badge>

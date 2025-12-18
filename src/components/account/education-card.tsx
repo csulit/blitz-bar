@@ -45,12 +45,12 @@ export function EducationCard({ education }: EducationCardProps) {
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {edu.isCurrentlyEnrolled && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="rounded-sm text-xs">
                         Currently Enrolled
                       </Badge>
                     )}
                     {edu.honors && (
-                      <Badge className="bg-amber-500 text-xs hover:bg-amber-500">
+                      <Badge className="rounded-sm bg-amber-500 text-xs hover:bg-amber-500">
                         {edu.honors}
                       </Badge>
                     )}

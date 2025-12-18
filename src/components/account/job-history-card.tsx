@@ -35,7 +35,7 @@ export function JobHistoryCard({ jobHistory }: JobHistoryCardProps) {
                     </p>
                   </div>
                   {job.isCurrentJob && (
-                    <Badge className="bg-emerald-600 text-xs hover:bg-emerald-600">
+                    <Badge className="rounded-sm bg-emerald-600 text-xs hover:bg-emerald-600">
                       Current
                     </Badge>
                   )}
