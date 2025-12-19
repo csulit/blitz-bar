@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
+import { Eye, EyeOff } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 
 export const Route = createFileRoute('/_main/employees')({
@@ -234,6 +236,7 @@ function formatDate(dateString: string) {
 function EmployeesPage() {
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+  const [showSalary, setShowSalary] = useState(false)
 
   // Generate 200 fake employees for demo
   const allEmployees = useMemo(() => generateFakeEmployees(200), [])
@@ -302,16 +305,35 @@ function EmployeesPage() {
       },
       {
         accessorKey: 'salary',
-        header: 'Salary',
-        size: 100,
+        header: () => (
+          <div className="flex items-center gap-1.5">
+            <span>Salary</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowSalary(!showSalary)
+              }}
+            >
+              {showSalary ? (
+                <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+              ) : (
+                <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+              )}
+            </Button>
+          </div>
+        ),
+        size: 120,
         cell: ({ row }) => (
           <span className="text-sm font-medium tabular-nums">
-            {formatCurrency(row.original.salary)}
+            {showSalary ? formatCurrency(row.original.salary) : '••••••'}
           </span>
         ),
       },
     ],
-    [],
+    [showSalary],
   )
 
   return (
