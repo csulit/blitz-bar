@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import type { ColumnDef } from '@tanstack/react-table'
 import { Eye, EyeOff } from 'lucide-react'
+import type { ColumnDef } from '@tanstack/react-table'
+import type { SkeletonType } from '@/components/ui/data-table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { DataTable, type SkeletonType } from '@/components/ui/data-table'
+import { DataTable } from '@/components/ui/data-table'
 
 export const Route = createFileRoute('/_main/employees')({
   component: EmployeesPage,
