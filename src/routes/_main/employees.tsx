@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Eye, EyeOff } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { SkeletonType } from '@/components/ui/data-table'
+import { EmployeesPageSkeleton } from '@/components/employees/employees-page-skeleton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ import { DataTable } from '@/components/ui/data-table'
 
 export const Route = createFileRoute('/_main/employees')({
   component: EmployeesPage,
+  pendingComponent: EmployeesPageSkeleton,
 })
 
 // Types

@@ -36,4 +36,5 @@ export type Subjects =
   | 'Profile'
   | 'VerificationAuditLog'
   | 'Invitation'
+  | 'Dashboard'
   | 'all'
