@@ -335,6 +335,7 @@ function EmployeesPage() {
               variant="ghost"
               size="icon"
               className="h-6 w-6"
+              aria-label={showSalary ? 'Hide salaries' : 'Show salaries'}
               onClick={(e) => {
                 e.stopPropagation()
                 setShowSalary(!showSalary)
