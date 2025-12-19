@@ -76,6 +76,15 @@ function getPageNumbers(
   return pages
 }
 
+export type SkeletonType =
+  | 'text'
+  | 'text-sm'
+  | 'text-lg'
+  | 'avatar'
+  | 'avatar-with-text'
+  | 'badge'
+  | 'number'
+
 export interface DataTableProps<TData> {
   columns: Array<ColumnDef<TData, unknown>>
   data: Array<TData>
@@ -92,40 +101,160 @@ export interface DataTableProps<TData> {
   rowHeight?: number
   maxHeight?: number
   showPagination?: boolean
+  skeletonConfig?: Array<SkeletonType>
+}
+
+function SkeletonCell({
+  type,
+  rowIndex,
+}: {
+  type: SkeletonType
+  rowIndex: number
+}) {
+  const delay = rowIndex * 75
+
+  switch (type) {
+    case 'avatar':
+      return (
+        <Skeleton
+          className="h-9 w-9 rounded-full"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+    case 'avatar-with-text':
+      return (
+        <div className="flex items-center gap-3">
+          <Skeleton
+            className="h-9 w-9 rounded-full"
+            style={{ animationDelay: `${delay}ms` }}
+          />
+          <div className="flex flex-col gap-1.5">
+            <Skeleton
+              className="h-4 w-28"
+              style={{ animationDelay: `${delay + 50}ms` }}
+            />
+            <Skeleton
+              className="h-3 w-36"
+              style={{ animationDelay: `${delay + 100}ms` }}
+            />
+          </div>
+        </div>
+      )
+    case 'badge':
+      return (
+        <Skeleton
+          className="h-5 w-16 rounded-full"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+    case 'text-sm':
+      return (
+        <Skeleton
+          className="h-4 w-20"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+    case 'text-lg':
+      return (
+        <Skeleton
+          className="h-4 w-32"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+    case 'number':
+      return (
+        <Skeleton
+          className="h-4 w-16"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+    case 'text':
+    default:
+      return (
+        <Skeleton
+          className="h-4 w-24"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      )
+  }
+}
+
+function DataTablePaginationSkeleton() {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-8 w-17.5 rounded-md" />
+      </div>
+      <div className="flex items-center gap-1">
+        <Skeleton className="h-8 w-20 rounded-md" />
+        <Skeleton className="h-8 w-8 rounded-md" />
+        <Skeleton className="h-8 w-8 rounded-md" />
+        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-8 w-8 rounded-md" />
+        <Skeleton className="h-8 w-14 rounded-md" />
+      </div>
+    </div>
+  )
 }
 
 function DataTableSkeleton<TData>({
   columns,
   pageSize,
+  skeletonConfig,
+  maxHeight,
+  showPagination,
 }: {
   columns: Array<ColumnDef<TData, unknown>>
   pageSize: number
+  skeletonConfig?: Array<SkeletonType>
+  maxHeight: number
+  showPagination: boolean
 }) {
   return (
-    <div className="rounded-xl border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((_, index) => (
-              <TableHead key={index}>
-                <Skeleton className="h-4 w-20" />
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: Math.min(pageSize, 5) }).map((_, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((_, colIndex) => (
-                <TableCell key={colIndex}>
-                  <Skeleton className="h-4 w-full max-w-32" />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div className="overflow-hidden rounded-xl border">
+        <div className="relative overflow-auto" style={{ maxHeight }}>
+          <Table className="table-fixed">
+            <TableHeader className="sticky top-0 z-10 bg-background">
+              <TableRow className="hover:bg-transparent">
+                {columns.map((col, index) => {
+                  const size = col.size
+                  return (
+                    <TableHead
+                      key={index}
+                      className="font-display"
+                      style={{
+                        width: size && size !== 150 ? size : undefined,
+                      }}
+                    >
+                      <Skeleton className="h-4 w-20" />
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: Math.min(pageSize, 10) }).map(
+                (_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {columns.map((_, colIndex) => (
+                      <TableCell key={colIndex}>
+                        <SkeletonCell
+                          type={skeletonConfig?.[colIndex] ?? 'text'}
+                          rowIndex={rowIndex}
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ),
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+      {showPagination && <DataTablePaginationSkeleton />}
+    </>
   )
 }
 
@@ -259,6 +388,7 @@ export function DataTable<TData>({
   rowHeight = 52,
   maxHeight = 600,
   showPagination = true,
+  skeletonConfig,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -307,7 +437,13 @@ export function DataTable<TData>({
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <DataTableSkeleton columns={columns} pageSize={pageSize} />
+        <DataTableSkeleton
+          columns={columns}
+          pageSize={pageSize}
+          skeletonConfig={skeletonConfig}
+          maxHeight={maxHeight}
+          showPagination={showPagination}
+        />
       </div>
     )
   }

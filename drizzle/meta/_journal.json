@@ -43,6 +43,13 @@
       "when": 1765852224487,
       "tag": "0005_sweet_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1766121976111,
+      "tag": "0006_blue_korg",
+      "breakpoints": true
     }
   ]
 }

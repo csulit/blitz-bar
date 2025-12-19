@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
+import { Eye, EyeOff } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { DataTable } from '@/components/ui/data-table'
+import { Button } from '@/components/ui/button'
+import { DataTable, type SkeletonType } from '@/components/ui/data-table'
 
 export const Route = createFileRoute('/_main/employees')({
   component: EmployeesPage,
@@ -45,7 +47,11 @@ function generateFakeEmployees(count: number): Array<Employee> {
     'Tech Lead',
     'UX Researcher',
   ]
-  const statuses: Array<Employee['status']> = ['active', 'on_leave', 'terminated']
+  const statuses: Array<Employee['status']> = [
+    'active',
+    'on_leave',
+    'terminated',
+  ]
   const firstNames = [
     'James',
     'Mary',
@@ -234,15 +240,35 @@ function formatDate(dateString: string) {
 function EmployeesPage() {
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+  const [showSalary, setShowSalary] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [allEmployees, setAllEmployees] = useState<Array<Employee>>([])
 
-  // Generate 200 fake employees for demo
-  const allEmployees = useMemo(() => generateFakeEmployees(200), [])
+  // Simulate async data fetching
+  useEffect(() => {
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      setAllEmployees(generateFakeEmployees(200))
+      setIsLoading(false)
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Simulate pagination (in real app, this would be server-side)
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize
     return allEmployees.slice(start, start + pageSize)
   }, [allEmployees, currentPage, pageSize])
+
+  // Skeleton config matching column content types
+  const skeletonConfig: Array<SkeletonType> = [
+    'avatar-with-text', // Employee (avatar + name + email)
+    'badge', // Department
+    'text-lg', // Position
+    'badge', // Status
+    'text-sm', // Hire Date
+    'number', // Salary
+  ]
 
   const columns = useMemo<Array<ColumnDef<Employee, unknown>>>(
     () => [
@@ -302,22 +328,40 @@ function EmployeesPage() {
       },
       {
         accessorKey: 'salary',
-        header: 'Salary',
-        size: 100,
+        header: () => (
+          <div className="flex items-center gap-1.5">
+            <span>Salary</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowSalary(!showSalary)
+              }}
+            >
+              {showSalary ? (
+                <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+              ) : (
+                <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+              )}
+            </Button>
+          </div>
+        ),
+        size: 120,
         cell: ({ row }) => (
           <span className="text-sm font-medium tabular-nums">
-            {formatCurrency(row.original.salary)}
+            {showSalary ? formatCurrency(row.original.salary) : '••••••'}
           </span>
         ),
       },
     ],
-    [],
+    [showSalary],
   )
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-3xl">Employees</h1>
         <p className="text-muted-foreground mt-1">
           Manage your team members and their roles.
         </p>
@@ -326,6 +370,7 @@ function EmployeesPage() {
       <DataTable
         columns={columns}
         data={paginatedData}
+        isLoading={isLoading}
         pageSize={pageSize}
         onPageSizeChange={(size) => {
           setPageSize(size)
@@ -335,6 +380,7 @@ function EmployeesPage() {
         onPageChange={setCurrentPage}
         totalRows={allEmployees.length}
         manualPagination
+        skeletonConfig={skeletonConfig}
       />
     </div>
   )
