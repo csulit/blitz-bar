@@ -62,19 +62,27 @@ The essentials every employer needs to see at a glance.
 ### Implementation Notes
 
 - Traffic light system (Green/Yellow/Red) for each agency
-- Calendar view for upcoming deadlines
+- Calendar view for upcoming deadlines (future iteration)
 - Alert when remittance is overdue or approaching
 - Monthly summary of total contributions
 
 ### Status
 
-- [ ] Design compliance dashboard
-- [ ] Build SSS tracking card
-- [ ] Build PhilHealth tracking card
-- [ ] Build Pag-IBIG tracking card
-- [ ] Build BIR tracking card
-- [ ] Add deadline calendar/alerts
-- [ ] Add compliance health indicator
+- [x] Design compliance dashboard
+- [x] Build SSS tracking card
+- [x] Build PhilHealth tracking card
+- [x] Build Pag-IBIG tracking card
+- [x] Build BIR tracking card
+- [x] Add deadline list (calendar view planned for future)
+- [x] Add compliance health indicator
+
+### Technical Notes
+
+- Components: `src/components/dashboard/compliance/`
+- Main component: `ComplianceTracker`
+- Query hook: `useComplianceStats`
+- Data: Mock data (to be replaced with real DB queries)
+- Traffic light colors: emerald (compliant), amber (at-risk), rose (non-compliant)
 
 ---
 
@@ -187,3 +195,5 @@ No fixed dates. Ship when ready:
 _Last updated: December 2024_
 
 _Phase 1 completed: December 19, 2024_
+
+_Phase 2 completed: December 19, 2024_

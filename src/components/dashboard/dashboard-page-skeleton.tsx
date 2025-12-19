@@ -38,6 +38,54 @@ export function DashboardPageSkeleton() {
           ))}
         </div>
       </div>
+
+      {/* Government Compliance Header */}
+      <div className="mb-6 mt-10">
+        <Skeleton className="h-7 w-56" />
+        <Skeleton className="mt-2 h-4 w-72" />
+      </div>
+
+      {/* Compliance Score Card */}
+      <div className="rounded-xl border border-border/50 bg-card p-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-10 w-20" />
+            <Skeleton className="h-3 w-48" />
+          </div>
+          <Skeleton className="h-16 w-16 rounded-full" />
+        </div>
+      </div>
+
+      {/* Compliance Agency Cards */}
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-xl border border-border/50 bg-card p-5"
+          >
+            <Skeleton className="mb-3 h-3 w-20" />
+            <Skeleton className="mb-2 h-9 w-24" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        ))}
+      </div>
+
+      {/* Deadline List */}
+      <div className="mt-6 rounded-xl border border-border/50 bg-card p-6">
+        <Skeleton className="mb-4 h-5 w-40" />
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+              <Skeleton className="h-4 w-20" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
