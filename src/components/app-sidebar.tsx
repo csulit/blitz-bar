@@ -40,7 +40,7 @@ function getNavMainItems(userType: UserType): NavItem[] {
   const baseItems: NavItem[] = [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: IconDashboard,
     },
     {
@@ -59,7 +59,7 @@ function getNavMainItems(userType: UserType): NavItem[] {
         ...baseItems,
         {
           title: 'Employees',
-          url: '#',
+          url: '/employees',
           icon: IconUsersGroup,
         },
         {
@@ -79,7 +79,7 @@ function getNavMainItems(userType: UserType): NavItem[] {
         ...baseItems,
         {
           title: 'Employees',
-          url: '#',
+          url: '/employees',
           icon: IconUsersGroup,
         },
         {
