@@ -185,6 +185,13 @@ export const profile = pgTable(
     gender: text('gender'),
     maritalStatus: text('marital_status'),
     phoneNumber: text('phone_number'),
+    // Address fields for job matching
+    city: text('city'),
+    province: text('province'),
+    // Employment preferences
+    expectedSalary: text('expected_salary'), // Stored as text to handle ranges like "25000-30000"
+    employmentStatus: text('employment_status'), // 'full-time' | 'part-time' | 'contractual' | 'freelance'
+    availabilityDate: timestamp('availability_date'), // When they can start work
   },
   (table) => [index('profile_userId_idx').on(table.userId)],
 )
