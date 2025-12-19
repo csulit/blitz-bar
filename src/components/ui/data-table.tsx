@@ -1,6 +1,4 @@
-'use client'
-
-import { useRef, useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import {
   flexRender,
   getCoreRowModel,
@@ -40,8 +38,8 @@ import { cn } from '@/lib/utils'
 function getPageNumbers(
   currentPage: number,
   totalPages: number,
-): (number | 'ellipsis')[] {
-  const pages: (number | 'ellipsis')[] = []
+): Array<number | 'ellipsis'> {
+  const pages: Array<number | 'ellipsis'> = []
   const showPages = 5
 
   if (totalPages <= showPages + 2) {
@@ -79,11 +77,11 @@ function getPageNumbers(
 }
 
 export interface DataTableProps<TData> {
-  columns: ColumnDef<TData, unknown>[]
-  data: TData[]
+  columns: Array<ColumnDef<TData, unknown>>
+  data: Array<TData>
   isLoading?: boolean
   pageSize?: number
-  pageSizeOptions?: number[]
+  pageSizeOptions?: Array<number>
   onPageSizeChange?: (size: number) => void
   totalRows?: number
   currentPage?: number
@@ -100,7 +98,7 @@ function DataTableSkeleton<TData>({
   columns,
   pageSize,
 }: {
-  columns: ColumnDef<TData, unknown>[]
+  columns: Array<ColumnDef<TData, unknown>>
   pageSize: number
 }) {
   return (
@@ -141,7 +139,7 @@ function DataTablePagination<TData>({
   totalPages,
 }: {
   table: TanstackTable<TData>
-  pageSizeOptions: number[]
+  pageSizeOptions: Array<number>
   onPageSizeChange?: (size: number) => void
   manualPagination: boolean
   currentPage: number

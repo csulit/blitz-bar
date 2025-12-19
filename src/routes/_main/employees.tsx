@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -23,7 +23,7 @@ interface Employee {
 }
 
 // Fake data generator
-function generateFakeEmployees(count: number): Employee[] {
+function generateFakeEmployees(count: number): Array<Employee> {
   const departments = [
     'Engineering',
     'Design',
@@ -45,7 +45,7 @@ function generateFakeEmployees(count: number): Employee[] {
     'Tech Lead',
     'UX Researcher',
   ]
-  const statuses: Employee['status'][] = ['active', 'on_leave', 'terminated']
+  const statuses: Array<Employee['status']> = ['active', 'on_leave', 'terminated']
   const firstNames = [
     'James',
     'Mary',
@@ -244,7 +244,7 @@ function EmployeesPage() {
     return allEmployees.slice(start, start + pageSize)
   }, [allEmployees, currentPage, pageSize])
 
-  const columns = useMemo<ColumnDef<Employee, unknown>[]>(
+  const columns = useMemo<Array<ColumnDef<Employee, unknown>>>(
     () => [
       {
         accessorKey: 'name',
@@ -335,9 +335,6 @@ function EmployeesPage() {
         onPageChange={setCurrentPage}
         totalRows={allEmployees.length}
         manualPagination
-        onRowClick={(employee) => {
-          console.log('Clicked employee:', employee)
-        }}
       />
     </div>
   )
