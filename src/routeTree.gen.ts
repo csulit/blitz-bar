@@ -26,6 +26,7 @@ import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ApiUploadthingRouteImport } from './routes/api/uploadthing'
 import { Route as AdminSplatRouteImport } from './routes/admin/$'
 import { Route as Pending_verificationVerificationStatusRouteImport } from './routes/_pending_verification/verification-status'
+import { Route as MainEmployeesRouteImport } from './routes/_main/employees'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
 import { Route as MainAccountRouteImport } from './routes/_main/account'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
@@ -126,6 +127,11 @@ const Pending_verificationVerificationStatusRoute =
     path: '/verification-status',
     getParentRoute: () => Pending_verificationRoute,
   } as any)
+const MainEmployeesRoute = MainEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainDashboardRoute = MainDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof MainAccountRoute
   '/dashboard': typeof MainDashboardRoute
+  '/employees': typeof MainEmployeesRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof MainAccountRoute
   '/dashboard': typeof MainDashboardRoute
+  '/employees': typeof MainEmployeesRoute
   '/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
@@ -288,6 +296,7 @@ export interface FileRoutesById {
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_main/account': typeof MainAccountRoute
   '/_main/dashboard': typeof MainDashboardRoute
+  '/_main/employees': typeof MainEmployeesRoute
   '/_pending_verification/verification-status': typeof Pending_verificationVerificationStatusRoute
   '/admin/$': typeof AdminSplatRoute
   '/api/uploadthing': typeof ApiUploadthingRoute
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/account'
     | '/dashboard'
+    | '/employees'
     | '/verification-status'
     | '/admin/$'
     | '/api/uploadthing'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/account'
     | '/dashboard'
+    | '/employees'
     | '/verification-status'
     | '/admin/$'
     | '/api/uploadthing'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/_auth/verify-email'
     | '/_main/account'
     | '/_main/dashboard'
+    | '/_main/employees'
     | '/_pending_verification/verification-status'
     | '/admin/$'
     | '/api/uploadthing'
@@ -554,6 +566,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Pending_verificationVerificationStatusRouteImport
       parentRoute: typeof Pending_verificationRoute
     }
+    '/_main/employees': {
+      id: '/_main/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof MainEmployeesRouteImport
+      parentRoute: typeof MainRoute
+    }
     '/_main/dashboard': {
       id: '/_main/dashboard'
       path: '/dashboard'
@@ -690,11 +709,13 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 interface MainRouteChildren {
   MainAccountRoute: typeof MainAccountRoute
   MainDashboardRoute: typeof MainDashboardRoute
+  MainEmployeesRoute: typeof MainEmployeesRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
   MainAccountRoute: MainAccountRoute,
   MainDashboardRoute: MainDashboardRoute,
+  MainEmployeesRoute: MainEmployeesRoute,
 }
 
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
