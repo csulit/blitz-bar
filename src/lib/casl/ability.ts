@@ -111,6 +111,9 @@ export function defineAbilityFor(user: SessionUser | null): AppAbility {
       can('create', 'Invitation')
       can('read', 'Invitation')
       can('delete', 'Invitation')
+
+      // Employers can view the workforce dashboard
+      can('read', 'Dashboard')
       break
 
     case 'Agency':
@@ -125,6 +128,9 @@ export function defineAbilityFor(user: SessionUser | null): AppAbility {
 
       // Full invitation management
       can('manage', 'Invitation')
+
+      // Agencies can view the workforce dashboard
+      can('read', 'Dashboard')
       break
   }
 
