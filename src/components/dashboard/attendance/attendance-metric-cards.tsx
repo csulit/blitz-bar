@@ -4,7 +4,7 @@ import {
   IconUserCheck,
   IconUserX,
 } from '@tabler/icons-react'
-import type { LateArrivalsSummary, OvertimeSummary } from './types'
+import type { OvertimeSummary } from './types'
 import { cn } from '@/lib/utils'
 
 interface AttendanceMetricCardsProps {
@@ -12,7 +12,6 @@ interface AttendanceMetricCardsProps {
   absentToday: number
   onLeave: number
   overtime: OvertimeSummary
-  lateArrivals: LateArrivalsSummary
 }
 
 interface MetricCardData {
