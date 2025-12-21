@@ -40,7 +40,6 @@ export function AttendanceTracker() {
         absentToday={stats.absentToday}
         onLeave={stats.onLeave}
         overtime={stats.overtime}
-        lateArrivals={stats.lateArrivals}
       />
 
       {/* Employee Lists */}
