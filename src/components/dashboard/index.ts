@@ -13,6 +13,16 @@ export {
   ComplianceDeadlineList,
 } from './compliance'
 
+// Attendance Components
+export {
+  AttendanceTracker,
+  AttendanceTrackerSkeleton,
+  AttendanceRateCard,
+  AttendanceMetricCards,
+  AttendanceEmployeeList,
+  PeriodSelector,
+} from './attendance'
+
 // Types
 export type { DepartmentCount, WorkforceStats } from './types'
 export type {
@@ -23,10 +33,20 @@ export type {
   ComplianceStats,
   ComplianceStatus,
 } from './compliance'
+export type {
+  AttendancePeriod,
+  AttendanceStatus,
+  AttendanceStats,
+  EmployeeAttendance,
+  LeaveType,
+  OvertimeSummary,
+  LateArrivalsSummary,
+} from './attendance'
 
 // Hooks - Queries
 export { useWorkforceStats } from './hooks/queries/use-workforce-stats'
 export { useComplianceStats } from './compliance'
+export { useAttendanceStats } from './attendance'
 
 // Query keys
 export { dashboardKeys } from './hooks/keys'

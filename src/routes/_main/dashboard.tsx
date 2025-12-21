@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { AttendanceTracker } from '@/components/dashboard/attendance'
 import { ComplianceTracker } from '@/components/dashboard/compliance'
 import { DashboardPageSkeleton } from '@/components/dashboard/dashboard-page-skeleton'
 import { WorkforceStatsCards } from '@/components/dashboard/workforce-stats-cards'
@@ -29,6 +30,16 @@ function DashboardPage() {
       </div>
 
       <ComplianceTracker />
+
+      {/* Attendance Summary */}
+      <div className="mb-6 mt-10">
+        <h2 className="font-display text-2xl">Attendance Summary</h2>
+        <p className="mt-1 text-muted-foreground">
+          Track daily attendance, leaves, and overtime at a glance.
+        </p>
+      </div>
+
+      <AttendanceTracker />
     </div>
   )
 }
