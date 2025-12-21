@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { ComplianceTracker } from '@/components/dashboard/compliance'
 import { DashboardPageSkeleton } from '@/components/dashboard/dashboard-page-skeleton'
 import { WorkforceStatsCards } from '@/components/dashboard/workforce-stats-cards'
 
@@ -18,6 +19,16 @@ function DashboardPage() {
       </div>
 
       <WorkforceStatsCards />
+
+      {/* Government Compliance Tracker */}
+      <div className="mb-6 mt-10">
+        <h2 className="font-display text-2xl">Government Compliance</h2>
+        <p className="mt-1 text-muted-foreground">
+          Track mandatory contributions and remittance deadlines.
+        </p>
+      </div>
+
+      <ComplianceTracker />
     </div>
   )
 }
