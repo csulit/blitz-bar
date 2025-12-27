@@ -27,4 +27,6 @@ export const queryKeys = {
 
 // Type helpers for query keys
 export type QueryKeys = typeof queryKeys
-export type TodosQueryKey = ReturnType<(typeof queryKeys.todos)[keyof typeof queryKeys.todos]>
+export type TodosQueryKey = ReturnType<
+  (typeof queryKeys.todos)[keyof typeof queryKeys.todos]
+>

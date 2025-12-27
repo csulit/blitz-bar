@@ -66,7 +66,7 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: false,
-    sendVerificationEmail: async ({
+    sendVerificationEmail: ({
       user,
       token,
     }: {
@@ -113,7 +113,7 @@ export const auth = betterAuth({
       })
     },
     resetPasswordTokenExpiresIn: 3600,
-    onPasswordReset: async ({
+    onPasswordReset: ({
       user,
     }: {
       user: { email: string; firstName?: string }
@@ -135,25 +135,28 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user, ctx) => {
+        before: (user, ctx) => {
           // Modify the user object before it is created
 
           if (ctx) {
             console.log(ctx.body)
           }
 
-          const nameParts = user?.name?.split(' ') ?? []
+          const nameParts = user.name ? user.name.split(' ') : []
+          const firstName = nameParts[0]
+          const lastName = nameParts.slice(1).join(' ')
           return {
             data: {
               // Ensure to return Better-Auth named fields, not the original field names in your database.
               ...user,
-              firstName: nameParts[0] ?? null,
-              lastName: nameParts.slice(1).join(' ') || null,
+              firstName: firstName || null,
+              lastName: lastName || null,
             },
           }
         },
-        after: async (user) => {
-          const loginUrl = `${env.VITE_APP_URL || 'http://localhost:3000'}/login`
+        after: (user) => {
+          const appUrl = env.VITE_APP_URL
+          const loginUrl = `${appUrl || 'http://localhost:3000'}/login`
           waitUntil(
             resend.emails.send({
               from: 'My Home Support <noreply@no-reply.myhomesupport.ph>',
@@ -161,7 +164,7 @@ export const auth = betterAuth({
               subject: 'Welcome to My Home Support',
               react: WelcomeEmail({
                 userName:
-                  (user.firstName as string | undefined) ?? user.name ?? 'User',
+                  (user.firstName as string | undefined) || user.name || 'User',
                 loginUrl,
               }),
             }),

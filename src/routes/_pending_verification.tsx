@@ -1,4 +1,9 @@
-import { Outlet, createFileRoute, useRouter, Link } from '@tanstack/react-router'
+import {
+  Link,
+  Outlet,
+  createFileRoute,
+  useRouter,
+} from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
 import {
   AlertDialog,
@@ -79,7 +84,6 @@ function PendingVerificationLayout() {
           WebkitMaskComposite: 'source-in',
         }}
       />
-
 
       {/* Brand & Mode Toggle */}
       <div className="fixed top-6 left-6 z-50">

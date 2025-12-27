@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { UTApi } from 'uploadthing/server'
-import { eq, desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { identityDocumentKeys } from '../keys'
 import { extractFileKeyFromUrl } from '../../lib/extract-file-key'
+import type { DocumentType } from '../../types'
 import { db } from '@/db'
 import { identityDocument } from '@/db/schema'
-import type { DocumentType } from '../../types'
 
 interface SaveIdentityDocumentInput {
   documentType: DocumentType
@@ -44,7 +44,7 @@ export const saveIdentityDocument = createServerFn({ method: 'POST' })
 
     if (existingDocument) {
       const utapi = new UTApi()
-      const filesToDelete: string[] = []
+      const filesToDelete: Array<string> = []
 
       // Delete old front image if being replaced
       if (

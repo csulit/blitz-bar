@@ -41,8 +41,8 @@ export function EmailConfirmationEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Thanks for signing up for My Home Support! Please confirm your email
-              address by clicking the button below.
+              Thanks for signing up for My Home Support! Please confirm your
+              email address by clicking the button below.
             </Text>
             <Section style={buttonContainer}>
               <Button style={button} href={verificationLink}>
@@ -63,7 +63,8 @@ export function EmailConfirmationEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights
+            reserved.
           </Text>
         </Container>
       </Body>

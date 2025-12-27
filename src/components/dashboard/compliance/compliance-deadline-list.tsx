@@ -3,7 +3,7 @@ import type { AgencyCode, ComplianceDeadline, ComplianceStatus } from './types'
 import { cn } from '@/lib/utils'
 
 interface ComplianceDeadlineListProps {
-  deadlines: ComplianceDeadline[]
+  deadlines: Array<ComplianceDeadline>
 }
 
 const agencyColors: Record<AgencyCode, { bg: string; text: string }> = {

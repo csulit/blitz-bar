@@ -56,10 +56,13 @@ export const jobHistoryEntrySchema = z
       .min(1, { error: 'Job summary is required' })
       .max(500, { error: 'Summary must be 500 characters or less' }),
   })
-  .refine((data) => data.isCurrentJob || (data.endMonth && data.endMonth.length > 0), {
-    message: 'End date is required unless currently working here',
-    path: ['endMonth'],
-  })
+  .refine(
+    (data) => data.isCurrentJob || (data.endMonth && data.endMonth.length > 0),
+    {
+      message: 'End date is required unless currently working here',
+      path: ['endMonth'],
+    },
+  )
 
 export const jobHistorySchema = z.object({
   jobs: z

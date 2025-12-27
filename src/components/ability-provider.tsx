@@ -1,13 +1,11 @@
 'use client'
 
-import { createContext, useContext, useMemo, type ReactNode } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { createMongoAbility } from '@casl/ability'
 import { createContextualCan } from '@casl/react'
-import {
-  createAbilityFromRules,
-  type AppAbility,
-  type AppAbilityRules,
-} from '@/lib/casl'
+import type { ReactNode } from 'react'
+import type { AppAbility, AppAbilityRules } from '@/lib/casl'
+import { createAbilityFromRules } from '@/lib/casl'
 
 // Create a default empty ability for initial context
 const defaultAbility = createMongoAbility([])

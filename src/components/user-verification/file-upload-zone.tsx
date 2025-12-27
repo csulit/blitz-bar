@@ -61,15 +61,13 @@ export function FileUploadZone({
     },
     onClientUploadComplete: (res) => {
       const uploadedFile = res[0]
-      if (uploadedFile) {
-        onUploadComplete({
-          name: uploadedFile.name,
-          size: uploadedFile.size,
-          progress: 100,
-          status: 'success',
-          url: uploadedFile.ufsUrl,
-        })
-      }
+      onUploadComplete({
+        name: uploadedFile.name,
+        size: uploadedFile.size,
+        progress: 100,
+        status: 'success',
+        url: uploadedFile.ufsUrl,
+      })
     },
     onUploadError: (error) => {
       console.error('Upload error:', error)
@@ -117,8 +115,8 @@ export function FileUploadZone({
       e.stopPropagation()
       setIsDragging(false)
 
-      const droppedFile = e.dataTransfer.files[0]
-      if (droppedFile && !isUploading) {
+      const droppedFile = e.dataTransfer.files[0] as File | undefined
+      if (droppedFile !== undefined && !isUploading) {
         handleUpload(droppedFile)
       }
     },

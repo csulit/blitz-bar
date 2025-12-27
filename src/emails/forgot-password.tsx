@@ -41,8 +41,8 @@ export function ForgotPasswordEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              We received a request to reset your password for your My Home Support
-              account. Click the button below to choose a new password.
+              We received a request to reset your password for your My Home
+              Support account. Click the button below to choose a new password.
             </Text>
             <Section style={buttonContainer}>
               <Button style={button} href={resetLink}>
@@ -63,7 +63,8 @@ export function ForgotPasswordEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights
+            reserved.
           </Text>
         </Container>
       </Body>

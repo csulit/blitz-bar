@@ -1,8 +1,8 @@
 import { IconMapPin, IconSchool } from '@tabler/icons-react'
-import { Badge } from '@/components/ui/badge'
 import { EmptyState } from './empty-state'
 import { formatEducationLevel } from './utils'
 import type { AccountData } from './hooks/queries/use-account'
+import { Badge } from '@/components/ui/badge'
 
 interface EducationCardProps {
   education: AccountData['education']

@@ -14,5 +14,5 @@ export interface WorkforceStats {
   separationsChange: number
   turnoverRate: number
   turnoverRatePrevious: number
-  departmentBreakdown: DepartmentCount[]
+  departmentBreakdown: Array<DepartmentCount>
 }

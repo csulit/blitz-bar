@@ -12,6 +12,7 @@ import {
   IconUser,
   IconX,
 } from '@tabler/icons-react'
+import { requiresEducationAndJobHistory } from '../user-verification/constants'
 import { ApproveDialog } from './action-modals/approve-dialog'
 import { RejectDialog } from './action-modals/reject-dialog'
 import { RequestInfoDialog } from './action-modals/request-info-dialog'
@@ -19,7 +20,6 @@ import { useApproveVerification } from './hooks/mutations/use-approve-verificati
 import { useRejectVerification } from './hooks/mutations/use-reject-verification'
 import { useRequestInfo } from './hooks/mutations/use-request-info'
 import { useVerificationDetail } from './hooks/queries/use-verification-detail'
-import { requiresEducationAndJobHistory } from '../user-verification/constants'
 import type { UserType } from '@/lib/schemas/signup'
 import {
   Accordion,
@@ -167,7 +167,7 @@ export function VerificationDetailSheet({
               <SheetHeader className="mb-4">
                 <SheetTitle>Error Loading Details</SheetTitle>
                 <SheetDescription>
-                  {error?.message || 'Failed to load verification details'}
+                  {error.message || 'Failed to load verification details'}
                 </SheetDescription>
               </SheetHeader>
               <Button variant="outline" onClick={() => onOpenChange(false)}>

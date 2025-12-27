@@ -63,6 +63,23 @@ pnpm dlx shadcn@latest add <component>
 
 Files/routes prefixed with `demo` are examples and can be safely deleted.
 
+### Subagents
+
+Use subagents for specialized tasks (all run with Opus):
+
+| Subagent   | Purpose                   | Commands                                    |
+| ---------- | ------------------------- | ------------------------------------------- |
+| `dev-ops`  | Test, lint, format, build | `pnpm test`, `pnpm check`, `pnpm build`     |
+| `db-ops`   | Database migrations       | `pnpm db:generate`, `db:migrate`, `db:push` |
+| `explorer` | Codebase research         | Read-only exploration                       |
+
+After implementing features, delegate validation:
+
+```
+Use the dev-ops subagent to run tests and lint
+Use the db-ops subagent to generate migrations for schema changes
+```
+
 ### Font Convention
 
 - **Inter** (`font-sans`): Default body font for all text, labels, paragraphs, and UI elements

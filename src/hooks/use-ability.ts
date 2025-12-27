@@ -1,5 +1,5 @@
-import { useAbilityContext } from '@/components/ability-provider'
 import type { Action, Subjects } from '@/lib/casl'
+import { useAbilityContext } from '@/components/ability-provider'
 
 /**
  * Hook for checking abilities in components

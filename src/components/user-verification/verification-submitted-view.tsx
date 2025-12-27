@@ -4,6 +4,7 @@ import { useIdentityDocument } from './hooks/queries/use-identity-document'
 import { useJobHistory } from './hooks/queries/use-job-history'
 import { requiresEducationAndJobHistory } from './constants'
 import type { VerificationStatusData } from './hooks/queries/use-verification-status'
+import type { UserType } from '@/lib/schemas/signup'
 import { cn } from '@/lib/utils'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -12,7 +13,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import type { UserType } from '@/lib/schemas/signup'
 
 interface VerificationSubmittedViewProps {
   verificationStatus: VerificationStatusData

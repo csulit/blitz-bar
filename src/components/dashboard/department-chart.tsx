@@ -1,14 +1,14 @@
 import { Bar, BarChart, Cell, LabelList, XAxis, YAxis } from 'recharts'
 import type { DepartmentCount } from './types'
+import type { ChartConfig } from '@/components/ui/chart'
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from '@/components/ui/chart'
 
 interface DepartmentChartProps {
-  data: DepartmentCount[]
+  data: Array<DepartmentCount>
 }
 
 export function DepartmentChart({ data }: DepartmentChartProps) {

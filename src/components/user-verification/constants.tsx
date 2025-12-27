@@ -7,7 +7,7 @@ export interface StepConfig {
   completed: boolean
 }
 
-export const steps: StepConfig[] = [
+export const steps: Array<StepConfig> = [
   { id: 'personal_info', label: 'Personal Info', completed: false },
   { id: 'education', label: 'Education', completed: false },
   { id: 'upload', label: 'Upload', completed: false },
@@ -16,13 +16,16 @@ export const steps: StepConfig[] = [
 ]
 
 // Steps that are skipped for Employer/Agency users
-const EMPLOYER_AGENCY_SKIP_STEPS: VerificationStep[] = ['education', 'job_history']
+const EMPLOYER_AGENCY_SKIP_STEPS: Array<VerificationStep> = [
+  'education',
+  'job_history',
+]
 
 /**
  * Get the applicable steps for a given user type.
  * Employees see all steps; Employer/Agency skip education and job_history.
  */
-export function getStepsForUserType(userType: UserType): StepConfig[] {
+export function getStepsForUserType(userType: UserType): Array<StepConfig> {
   if (userType === 'Employee') {
     return steps
   }

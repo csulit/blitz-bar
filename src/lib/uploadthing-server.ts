@@ -1,4 +1,4 @@
-import { createUploadthing, UploadThingError } from 'uploadthing/server'
+import { UploadThingError, createUploadthing } from 'uploadthing/server'
 import type { FileRouter } from 'uploadthing/server'
 import { auth } from '@/lib/auth'
 
@@ -22,7 +22,7 @@ export const uploadRouter = {
 
       return { userId: session.user.id }
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(({ metadata, file }) => {
       console.log('Upload complete for userId:', metadata.userId)
       console.log('File URL:', file.ufsUrl)
 

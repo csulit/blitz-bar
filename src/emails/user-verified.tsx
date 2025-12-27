@@ -21,7 +21,8 @@ export function UserVerifiedEmail({
   userFirstName,
   loginUrl,
 }: UserVerifiedEmailProps) {
-  const previewText = 'Your account has been verified - you can now start using My Home Support'
+  const previewText =
+    'Your account has been verified - you can now start using My Home Support'
 
   return (
     <Html>
@@ -63,7 +64,8 @@ export function UserVerifiedEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights
+            reserved.
           </Text>
         </Container>
       </Body>

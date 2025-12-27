@@ -1,15 +1,15 @@
 import type { InferSelectModel } from 'drizzle-orm'
 import type {
-  user,
-  organization,
-  member,
-  userVerification,
-  identityDocument,
   education,
-  jobHistory,
-  profile,
-  verificationAuditLog,
+  identityDocument,
   invitation,
+  jobHistory,
+  member,
+  organization,
+  profile,
+  user,
+  userVerification,
+  verificationAuditLog,
 } from '@/db/schema'
 
 // Infer types from Drizzle schema

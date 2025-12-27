@@ -14,5 +14,9 @@ export type { Action } from './actions'
 export type { Subjects } from './subjects'
 
 // Re-export client components for convenience
-export { Can, AbilityProvider, useAbilityContext } from '@/components/ability-provider'
+export {
+  Can,
+  AbilityProvider,
+  useAbilityContext,
+} from '@/components/ability-provider'
 export { useAbility } from '@/hooks/use-ability'

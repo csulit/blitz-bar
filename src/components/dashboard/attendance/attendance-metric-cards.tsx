@@ -30,7 +30,7 @@ export function AttendanceMetricCards({
   onLeave,
   overtime,
 }: AttendanceMetricCardsProps) {
-  const cards: MetricCardData[] = [
+  const cards: Array<MetricCardData> = [
     {
       key: 'present',
       title: 'Present',

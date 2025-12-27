@@ -1,9 +1,5 @@
-import {
-  AbilityBuilder,
-  createMongoAbility,
-  type MongoAbility,
-  type RawRuleOf,
-} from '@casl/ability'
+import { AbilityBuilder, createMongoAbility } from '@casl/ability'
+import type { MongoAbility, RawRuleOf } from '@casl/ability'
 import type { Action } from './actions'
 import type { Subjects } from './subjects'
 
@@ -28,7 +24,7 @@ export interface SessionUser {
 export type AppAbility = MongoAbility<[Action, Subjects]>
 
 // Raw rules type for serialization
-export type AppAbilityRules = RawRuleOf<AppAbility>[]
+export type AppAbilityRules = Array<RawRuleOf<AppAbility>>
 
 /**
  * Defines abilities for a given user

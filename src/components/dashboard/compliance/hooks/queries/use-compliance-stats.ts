@@ -14,7 +14,7 @@ function generateMockComplianceStats(): ComplianceStats {
   const totalEmployees = 148
 
   // Philippine government agency data with realistic compliance scenarios
-  const agencies: AgencyCompliance[] = [
+  const agencies: Array<AgencyCompliance> = [
     {
       agency: 'SSS',
       agencyFullName: 'Social Security System',
@@ -69,7 +69,7 @@ function generateMockComplianceStats(): ComplianceStats {
     },
   ]
 
-  const deadlines: ComplianceDeadline[] = [
+  const deadlines: Array<ComplianceDeadline> = [
     {
       id: '1',
       agency: 'PhilHealth',
@@ -119,7 +119,10 @@ function generateMockComplianceStats(): ComplianceStats {
 
   // Calculate overall score
   // Weight: compliant = 100%, at-risk = 50%, non-compliant = 0%
-  const compliantTotal = agencies.reduce((sum, a) => sum + a.employeesCompliant, 0)
+  const compliantTotal = agencies.reduce(
+    (sum, a) => sum + a.employeesCompliant,
+    0,
+  )
   const atRiskTotal = agencies.reduce((sum, a) => sum + a.employeesAtRisk, 0)
   const nonCompliantTotal = agencies.reduce(
     (sum, a) => sum + a.employeesNonCompliant,
@@ -128,11 +131,15 @@ function generateMockComplianceStats(): ComplianceStats {
 
   const maxPossible = totalEmployees * agencies.length
   const overallScore = Math.round(
-    ((compliantTotal * 100 + atRiskTotal * 50) / maxPossible),
+    (compliantTotal * 100 + atRiskTotal * 50) / maxPossible,
   )
 
   const overallStatus: ComplianceStatus =
-    overallScore >= 90 ? 'compliant' : overallScore >= 70 ? 'at-risk' : 'non-compliant'
+    overallScore >= 90
+      ? 'compliant'
+      : overallScore >= 70
+        ? 'at-risk'
+        : 'non-compliant'
 
   return {
     agencies,

@@ -67,7 +67,8 @@ function TermsOfServicePage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
             Please read these terms carefully before using our services. By
-            accessing or using My Home Support, you agree to be bound by these terms.
+            accessing or using My Home Support, you agree to be bound by these
+            terms.
           </p>
         </div>
       </header>
@@ -113,10 +114,10 @@ function TermsOfServicePage() {
           <article className="space-y-16">
             <Section id="section-01" number="01" title="Acceptance of Terms">
               <p>
-                By accessing and using the services provided by My Home Support ("we,"
-                "us," or "our"), you accept and agree to be bound by these Terms
-                of Service and our Privacy Policy. If you do not agree to these
-                terms, you may not use our services.
+                By accessing and using the services provided by My Home Support
+                ("we," "us," or "our"), you accept and agree to be bound by
+                these Terms of Service and our Privacy Policy. If you do not
+                agree to these terms, you may not use our services.
               </p>
               <p>
                 We reserve the right to update or modify these terms at any time
@@ -160,9 +161,9 @@ function TermsOfServicePage() {
               <p>
                 All content, features, and functionality of our services,
                 including but not limited to text, graphics, logos, icons,
-                images, audio clips, and software, are owned by My Home Support or our
-                licensors and are protected by copyright, trademark, and other
-                intellectual property laws.
+                images, audio clips, and software, are owned by My Home Support
+                or our licensors and are protected by copyright, trademark, and
+                other intellectual property laws.
               </p>
               <p>
                 You may not reproduce, distribute, modify, create derivative
@@ -217,11 +218,11 @@ function TermsOfServicePage() {
               title="Limitation of Liability"
             >
               <p>
-                To the fullest extent permitted by applicable law, My Home Support
-                shall not be liable for any indirect, incidental, special,
-                consequential, or punitive damages, or any loss of profits or
-                revenues, whether incurred directly or indirectly, or any loss
-                of data, use, goodwill, or other intangible losses.
+                To the fullest extent permitted by applicable law, My Home
+                Support shall not be liable for any indirect, incidental,
+                special, consequential, or punitive damages, or any loss of
+                profits or revenues, whether incurred directly or indirectly, or
+                any loss of data, use, goodwill, or other intangible losses.
               </p>
               <p>
                 In no event shall our aggregate liability exceed the greater of

@@ -90,7 +90,7 @@ export function SignupFormCard({ className, ...props }: SignupFormCardProps) {
       password: data.password,
       name: `${data.firstName} ${data.lastName}`,
       firstName: data.firstName,
-      middleInitial: data?.middleInitial || null,
+      middleInitial: data.middleInitial || null,
       lastName: data.lastName,
       userType: data.userType,
     })

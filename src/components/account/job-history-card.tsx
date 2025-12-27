@@ -1,7 +1,7 @@
 import { IconBriefcase } from '@tabler/icons-react'
-import { Badge } from '@/components/ui/badge'
 import { EmptyState } from './empty-state'
 import type { AccountData } from './hooks/queries/use-account'
+import { Badge } from '@/components/ui/badge'
 
 interface JobHistoryCardProps {
   jobHistory: AccountData['jobHistory']

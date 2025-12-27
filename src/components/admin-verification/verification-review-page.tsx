@@ -41,9 +41,12 @@ export function VerificationReviewPage() {
       search: (prev) => ({
         ...prev,
         search: newFilters.search || undefined,
-        status: newFilters.status === 'submitted' ? undefined : newFilters.status,
-        sortBy: newFilters.sortBy === 'submittedAt' ? undefined : newFilters.sortBy,
-        sortOrder: newFilters.sortOrder === 'desc' ? undefined : newFilters.sortOrder,
+        status:
+          newFilters.status === 'submitted' ? undefined : newFilters.status,
+        sortBy:
+          newFilters.sortBy === 'submittedAt' ? undefined : newFilters.sortBy,
+        sortOrder:
+          newFilters.sortOrder === 'desc' ? undefined : newFilters.sortOrder,
         page: undefined, // Reset to first page when filters change
       }),
       replace: true,

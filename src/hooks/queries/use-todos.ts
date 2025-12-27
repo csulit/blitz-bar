@@ -1,7 +1,7 @@
-import {  useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { queryKeys } from '../keys'
-import type {UseQueryOptions} from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query'
 import { db } from '@/db'
 
 /**
@@ -28,7 +28,7 @@ type TodosData = Awaited<ReturnType<typeof getTodos>>
  * const { data: todos } = useTodos({ staleTime: 5 * 60 * 1000 })
  */
 export function useTodos(
-  options?: Omit<UseQueryOptions<TodosData, Error>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<TodosData, Error>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: queryKeys.todos.all,

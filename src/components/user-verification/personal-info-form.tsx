@@ -5,7 +5,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { format, parse } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useUpdatePersonalInfo } from './hooks/mutations/use-update-personal-info'
-import type {PersonalInfoFormData} from '@/lib/schemas/personal-info';
+import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import { cn } from '@/lib/utils'
 import {
   Field,
@@ -30,10 +30,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  
   genderOptions,
   maritalStatusOptions,
-  personalInfoSchema
+  personalInfoSchema,
 } from '@/lib/schemas/personal-info'
 
 interface PersonalInfoFormProps {
@@ -64,15 +63,9 @@ export function PersonalInfoForm({
   // Debounced save function - 500ms delay
   const debouncedSave = useDebouncedCallback(
     (data: Partial<PersonalInfoFormData>) => {
-      // Only save non-empty values
-      const nonEmptyData = Object.fromEntries(
-        Object.entries(data).filter(
-          ([, value]) => value !== undefined && value !== '',
-        ),
-      ) as Partial<PersonalInfoFormData>
-
-      if (Object.keys(nonEmptyData).length > 0) {
-        savePersonalInfo(nonEmptyData)
+      // Only save if we have data
+      if (Object.keys(data).length > 0) {
+        savePersonalInfo(data)
       }
     },
     500,
@@ -169,13 +162,11 @@ export function PersonalInfoForm({
                       variant="outline"
                       className={cn(
                         'w-full justify-start text-left font-normal',
-                        !field.value && 'text-muted-foreground'
+                        !field.value && 'text-muted-foreground',
                       )}
                     >
                       <CalendarIcon className="mr-2 size-4" />
-                      {field.value
-                        ? format(dateValue!, 'PPP')
-                        : 'Pick a date'}
+                      {field.value ? format(dateValue!, 'PPP') : 'Pick a date'}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import {
-  type StepConfig,
   getStepsForUserType,
   requiresEducationAndJobHistory,
 } from '../constants'
@@ -9,6 +8,7 @@ import { useEducation } from './queries/use-education'
 import { useIdentityDocument } from './queries/use-identity-document'
 import { useJobHistory } from './queries/use-job-history'
 import { useSaveIdentityDocument } from './mutations/use-save-identity-document'
+import type { StepConfig } from '../constants'
 import type { DocumentType, UploadedFile, VerificationStep } from '../types'
 import type { PersonalInfoFormData } from '@/lib/schemas/personal-info'
 import type { EducationFormData } from '@/lib/schemas/education'
@@ -37,8 +37,8 @@ export interface WizardState {
 
 // Actions
 type WizardAction =
-  | { type: 'GO_NEXT'; steps: StepConfig[] }
-  | { type: 'GO_BACK'; steps: StepConfig[] }
+  | { type: 'GO_NEXT'; steps: Array<StepConfig> }
+  | { type: 'GO_BACK'; steps: Array<StepConfig> }
   | { type: 'SET_STEP'; step: VerificationStep }
   | { type: 'SET_DOC_TYPE'; docType: DocumentType }
   | { type: 'SET_FRONT_FILE'; file: UploadedFile | null }
@@ -246,8 +246,10 @@ export function useWizardState(
   const lastSavedBackUrl = useRef<string | undefined>(undefined)
 
   useEffect(() => {
-    const frontUrl = state.frontFile?.status === 'success' ? state.frontFile.url : undefined
-    const backUrl = state.backFile?.status === 'success' ? state.backFile.url : undefined
+    const frontUrl =
+      state.frontFile?.status === 'success' ? state.frontFile.url : undefined
+    const backUrl =
+      state.backFile?.status === 'success' ? state.backFile.url : undefined
 
     const frontChanged = frontUrl !== lastSavedFrontUrl.current
     const backChanged = backUrl !== lastSavedBackUrl.current

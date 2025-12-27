@@ -8,7 +8,7 @@ import type { AgencyCode, AgencyCompliance, ComplianceStatus } from './types'
 import { cn } from '@/lib/utils'
 
 interface ComplianceAgencyCardsProps {
-  agencies: AgencyCompliance[]
+  agencies: Array<AgencyCompliance>
 }
 
 const agencyIcons: Record<AgencyCode, typeof IconShieldCheck> = {

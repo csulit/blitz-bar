@@ -33,9 +33,9 @@ export interface AttendanceStats {
   onLeave: number
   overtime: OvertimeSummary
   lateArrivals: LateArrivalsSummary
-  absentEmployees: EmployeeAttendance[]
-  lateEmployees: EmployeeAttendance[]
-  onLeaveEmployees: EmployeeAttendance[]
+  absentEmployees: Array<EmployeeAttendance>
+  lateEmployees: Array<EmployeeAttendance>
+  onLeaveEmployees: Array<EmployeeAttendance>
   period: AttendancePeriod
   periodLabel: string
 }

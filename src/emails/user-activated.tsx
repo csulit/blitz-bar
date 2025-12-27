@@ -41,8 +41,9 @@ export function UserActivatedEmail({
               Hi{userFirstName ? ` ${userFirstName}` : ''},
             </Text>
             <Text style={paragraph}>
-              Great news! Your My Home Support account has been reactivated by an
-              administrator. You can now log in and access your account again.
+              Great news! Your My Home Support account has been reactivated by
+              an administrator. You can now log in and access your account
+              again.
             </Text>
             <Section style={buttonContainer}>
               <Button style={button} href={loginUrl}>
@@ -59,7 +60,8 @@ export function UserActivatedEmail({
             </Link>
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights
+            reserved.
           </Text>
         </Container>
       </Body>

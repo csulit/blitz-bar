@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { UTApi } from 'uploadthing/server'
-import { eq, desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { identityDocumentKeys, verificationStatusKeys } from '../keys'
 import { extractFileKeyFromUrl } from '../../lib/extract-file-key'
+import type { DocumentType } from '../../types'
 import { db } from '@/db'
 import { identityDocument, userVerification } from '@/db/schema'
-import type { DocumentType } from '../../types'
 
 interface SubmitIdentityDocumentInput {
   documentType: DocumentType
@@ -44,7 +44,7 @@ export const submitIdentityDocument = createServerFn({ method: 'POST' })
     // If existing document, delete old files from UploadThing
     if (existingDocument) {
       const utapi = new UTApi()
-      const filesToDelete: string[] = []
+      const filesToDelete: Array<string> = []
 
       // Collect old file keys if URLs are different from new ones
       if (

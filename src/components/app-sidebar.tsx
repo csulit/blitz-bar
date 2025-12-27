@@ -14,6 +14,8 @@ import {
 } from '@tabler/icons-react'
 import type { Icon } from '@tabler/icons-react'
 
+import type { UserType } from '@/lib/casl'
+import type { SessionUserData } from '@/routes/__root'
 import { NavDocuments } from '@/components/nav-documents'
 import { NavMain } from '@/components/nav-main'
 import { NavSecondary } from '@/components/nav-secondary'
@@ -27,8 +29,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import type { UserType } from '@/lib/casl'
-import type { SessionUserData } from '@/routes/__root'
 
 type NavItem = {
   title: string
@@ -36,8 +36,8 @@ type NavItem = {
   icon: Icon
 }
 
-function getNavMainItems(userType: UserType): NavItem[] {
-  const baseItems: NavItem[] = [
+function getNavMainItems(userType: UserType): Array<NavItem> {
+  const baseItems: Array<NavItem> = [
     {
       title: 'Dashboard',
       url: '/dashboard',
@@ -136,7 +136,8 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ sessionUser, ...props }: AppSidebarProps) {
-  const userType = (sessionUser?.userType as UserType) ?? 'Employee'
+  const rawUserType = sessionUser.userType as UserType | undefined
+  const userType = rawUserType || 'Employee'
   const navMainItems = getNavMainItems(userType)
 
   return (

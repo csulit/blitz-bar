@@ -17,7 +17,8 @@ interface WelcomeEmailProps {
 }
 
 export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
-  const previewText = 'Welcome to My Home Support - Your account is being verified'
+  const previewText =
+    'Welcome to My Home Support - Your account is being verified'
 
   return (
     <Html>
@@ -70,8 +71,8 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
             </Text>
             <Hr style={hr} />
             <Text style={footer}>
-              If you didn&apos;t create an account with My Home Support, please ignore
-              this email or contact our support team.
+              If you didn&apos;t create an account with My Home Support, please
+              ignore this email or contact our support team.
             </Text>
             {loginUrl && (
               <>
@@ -83,7 +84,8 @@ export function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) {
             )}
           </Section>
           <Text style={footerText}>
-            &copy; {new Date().getFullYear()} My Home Support. All rights reserved.
+            &copy; {new Date().getFullYear()} My Home Support. All rights
+            reserved.
           </Text>
         </Container>
       </Body>

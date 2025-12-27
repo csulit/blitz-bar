@@ -7,7 +7,13 @@
 
 body {
   @apply m-0;
-  font-family: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    'Inter Variable',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -91,7 +97,9 @@ code {
 }
 
 @theme inline {
-  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-sans:
+    'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    sans-serif;
   --font-display: 'Cal Sans', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -140,4 +148,3 @@ code {
     @apply bg-background text-foreground;
   }
 }
-

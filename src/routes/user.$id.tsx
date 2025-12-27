@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/user/$id')({
   component: RouteComponent,
-  loader: async ({ params }) => {
+  loader: ({ params }) => {
     const { id } = params
     return { id }
   },

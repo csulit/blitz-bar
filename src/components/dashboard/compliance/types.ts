@@ -33,8 +33,8 @@ export interface ComplianceBreakdown {
 }
 
 export interface ComplianceStats {
-  agencies: AgencyCompliance[]
-  deadlines: ComplianceDeadline[]
+  agencies: Array<AgencyCompliance>
+  deadlines: Array<ComplianceDeadline>
   overallScore: number
   overallStatus: ComplianceStatus
   totalMonthlyContributions: number

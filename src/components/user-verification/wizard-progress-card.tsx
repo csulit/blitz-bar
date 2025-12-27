@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import type { ReviewData } from './hooks/queries/use-review-data'
 import { requiresEducationAndJobHistory } from './constants'
+import type { ReviewData } from './hooks/queries/use-review-data'
+import type { UserType } from '@/lib/schemas/signup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import type { UserType } from '@/lib/schemas/signup'
 
 interface WizardProgressCardProps {
   reviewData: ReviewData

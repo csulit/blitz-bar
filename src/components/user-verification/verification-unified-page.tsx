@@ -8,8 +8,8 @@ import { AdminProgressStepper } from './admin-progress-stepper'
 import { WizardProgressCard } from './wizard-progress-card'
 import { VerificationWizardDialog } from './verification-wizard-dialog'
 import { VerificationSubmittedView } from './verification-submitted-view'
-import { Card, CardContent } from '@/components/ui/card'
 import type { UserType } from '@/lib/schemas/signup'
+import { Card, CardContent } from '@/components/ui/card'
 
 const rootRoute = getRouteApi('__root__')
 

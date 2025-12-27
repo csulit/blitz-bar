@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryKeys } from '../keys'
+import type { UseQueryOptions } from '@tanstack/react-query'
 import { authClient } from '@/lib/auth-client'
 
 type DeviceSessionsResponse = Awaited<

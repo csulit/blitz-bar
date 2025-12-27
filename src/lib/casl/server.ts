@@ -1,5 +1,6 @@
 import { getRequest } from '@tanstack/react-start/server'
-import { defineAbilityFor, type AppAbility, type SessionUser } from './ability'
+import { defineAbilityFor } from './ability'
+import type { AppAbility, SessionUser } from './ability'
 import type { Action } from './actions'
 import type { Subjects } from './subjects'
 
@@ -34,7 +35,7 @@ export async function getAbility(): Promise<{
 export async function assertCan(
   action: Action,
   subject: Subjects,
-  field?: string
+  field?: string,
 ): Promise<SessionUser> {
   const { ability, user } = await getAbility()
 
@@ -55,7 +56,7 @@ export async function assertCan(
 export async function canDo(
   action: Action,
   subject: Subjects,
-  field?: string
+  field?: string,
 ): Promise<boolean> {
   const { ability } = await getAbility()
   return ability.can(action, subject, field)

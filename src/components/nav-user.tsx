@@ -13,6 +13,7 @@ import {
   IconX,
 } from '@tabler/icons-react'
 
+import type { DeviceSession } from '@/hooks'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +26,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { authClient } from '@/lib/auth-client'
-import { useDeviceSessions, queryKeys, type DeviceSession } from '@/hooks'
+import { queryKeys, useDeviceSessions } from '@/hooks'
 import {
   DropdownMenu,
   DropdownMenuContent,

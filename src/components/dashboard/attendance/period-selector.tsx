@@ -1,5 +1,5 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { AttendancePeriod } from './types'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface PeriodSelectorProps {
   value: AttendancePeriod

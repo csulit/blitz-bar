@@ -51,11 +51,7 @@ export function AccountDetailsCard({ account }: AccountDetailsCardProps) {
         />
         <InfoField
           label="Member Since"
-          value={
-            account.createdAt
-              ? format(new Date(account.createdAt), 'MMM d, yyyy')
-              : null
-          }
+          value={format(new Date(account.createdAt), 'MMM d, yyyy')}
         />
       </div>
     </section>

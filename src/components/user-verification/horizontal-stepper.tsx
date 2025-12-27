@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 interface HorizontalStepperProps {
   currentStepIndex: number
   /** The steps to display (filtered by userType) */
-  steps: StepConfig[]
+  steps: Array<StepConfig>
   /** When true, all steps (including current) show as completed */
   allCompleted?: boolean
 }

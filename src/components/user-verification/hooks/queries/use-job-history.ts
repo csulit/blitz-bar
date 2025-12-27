@@ -39,7 +39,7 @@ export const getJobHistory = createServerFn({ method: 'GET' }).handler(
     }
 
     // Map database records to JobHistoryEntry shape
-    const jobs: JobHistoryEntry[] = jobHistoryData.map((job) => ({
+    const jobs: Array<JobHistoryEntry> = jobHistoryData.map((job) => ({
       id: job.id,
       companyName: job.companyName,
       position: job.position,

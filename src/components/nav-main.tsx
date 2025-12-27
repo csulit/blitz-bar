@@ -1,6 +1,6 @@
 import { IconCirclePlusFilled, IconMail } from '@tabler/icons-react'
-import type { Icon } from '@tabler/icons-react'
 import { Link } from '@tanstack/react-router'
+import type { Icon } from '@tabler/icons-react'
 
 import { Button } from '@/components/ui/button'
 import {

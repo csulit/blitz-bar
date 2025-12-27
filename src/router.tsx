@@ -1,11 +1,11 @@
-import { createRouter, Link } from '@tanstack/react-router'
+import { Link, createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import { IconArrowLeft } from '@tabler/icons-react'
 import * as TanstackQuery from './integrations/tanstack-query/root-provider'
+import { routeTree } from './routeTree.gen'
 import { Button } from '@/components/ui/button'
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
 
 function NotFoundComponent() {
   return (

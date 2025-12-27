@@ -1,8 +1,8 @@
 import { format } from 'date-fns'
 import { IconMail, IconShieldCheck } from '@tabler/icons-react'
+import type { AccountData } from './hooks/queries/use-account'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import type { AccountData } from './hooks/queries/use-account'
 
 interface ProfileHeaderProps {
   account: AccountData
@@ -73,10 +73,7 @@ export function ProfileHeader({ account }: ProfileHeaderProps) {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Member since{' '}
-            {account.createdAt
-              ? format(new Date(account.createdAt), 'MMMM d, yyyy')
-              : '—'}
+            Member since {format(new Date(account.createdAt), 'MMMM d, yyyy')}
           </p>
         </div>
       </div>

@@ -370,3 +370,11 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxx
 For development, use `onboarding@resend.dev` as the from address (only sends to your own email).
 
 For production, verify your domain in the Resend dashboard.
+
+## After Implementation
+
+Use the `dev-ops` subagent to validate new email templates:
+
+```
+Use the dev-ops subagent to run pnpm check and pnpm test
+```

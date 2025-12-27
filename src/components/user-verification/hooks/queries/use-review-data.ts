@@ -1,8 +1,8 @@
+import { requiresEducationAndJobHistory } from '../../constants'
 import { usePersonalInfo } from './use-personal-info'
 import { useEducation } from './use-education'
 import { useIdentityDocument } from './use-identity-document'
 import { useJobHistory } from './use-job-history'
-import { requiresEducationAndJobHistory } from '../../constants'
 import type { UserType } from '@/lib/schemas/signup'
 
 export interface ReviewStepData {
@@ -41,38 +41,45 @@ export function useReviewData(userType: UserType = 'Employee'): ReviewData {
     isLoadingJobHistory
 
   // Build personal info summary
-  const personalInfoComplete = !!(
-    personalInfo?.firstName &&
-    personalInfo?.lastName &&
-    personalInfo?.gender
-  )
-  const personalInfoSummary = personalInfoComplete
-    ? `${personalInfo.firstName} ${personalInfo.lastName} - ${capitalizeFirst(personalInfo.gender!)}`
-    : 'Not completed'
+  const personalInfoComplete =
+    personalInfo != null &&
+    Boolean(personalInfo.firstName) &&
+    Boolean(personalInfo.lastName) &&
+    Boolean(personalInfo.gender)
+  const personalInfoSummary =
+    personalInfoComplete && personalInfo.firstName && personalInfo.gender
+      ? `${personalInfo.firstName} ${personalInfo.lastName} - ${capitalizeFirst(personalInfo.gender)}`
+      : 'Not completed'
 
   // Build education summary
-  const educationDataComplete = !!(education?.level && education?.schoolName)
+  const educationDataComplete =
+    education != null &&
+    Boolean(education.level) &&
+    Boolean(education.schoolName)
   const educationComplete = educationRequired ? educationDataComplete : true
   let educationSummary = educationRequired ? 'Not completed' : 'Not required'
-  if (educationDataComplete) {
-    const levelDisplay = formatEducationLevel(education.level!)
+  if (educationDataComplete && education.level && education.schoolName) {
+    const levelDisplay = formatEducationLevel(education.level)
     educationSummary = education.degree
       ? `${education.degree} at ${education.schoolName}`
       : `${levelDisplay} at ${education.schoolName}`
   }
 
   // Build document summary
-  const documentComplete = !!(document?.frontImageUrl && document?.backImageUrl)
+  const documentComplete =
+    document != null &&
+    Boolean(document.frontImageUrl) &&
+    Boolean(document.backImageUrl)
   const documentSummary = documentComplete
     ? `${formatDocumentType(document.documentType)} - Front & Back`
     : 'Not completed'
 
   // Build job history summary
-  const jobHistoryDataComplete = !!(
-    jobHistory?.jobs && jobHistory.jobs.length > 0
-  )
+  const hasJobHistoryData =
+    jobHistory?.jobs != null && jobHistory.jobs.length > 0
+  const jobHistoryDataComplete = hasJobHistoryData
   const jobHistoryComplete = jobHistoryRequired ? jobHistoryDataComplete : true
-  const jobCount = jobHistory?.jobs?.length ?? 0
+  const jobCount = hasJobHistoryData ? jobHistory.jobs.length : 0
   let jobHistorySummary = jobHistoryRequired ? 'Not completed' : 'Not required'
   if (jobHistoryDataComplete) {
     jobHistorySummary = `${jobCount} ${jobCount === 1 ? 'job' : 'jobs'} added`

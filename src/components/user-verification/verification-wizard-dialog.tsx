@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { HorizontalStepper } from './horizontal-stepper'
 import { DocumentTypeSelector } from './document-type-selector'
 import { FileUploadZone } from './file-upload-zone'
@@ -10,8 +11,8 @@ import { useWizardStateLocal } from './hooks/use-wizard-state'
 import { useReviewData } from './hooks/queries/use-review-data'
 import { useSubmitIdentityDocument } from './hooks/mutations/use-submit-identity-document'
 import { requiresEducationAndJobHistory } from './constants'
-import { cn } from '@/lib/utils'
 import type { UserType } from '@/lib/schemas/signup'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -26,7 +27,6 @@ import {
 import { Drawer, DrawerContent } from '@/components/ui/drawer'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { useState } from 'react'
 
 interface VerificationWizardDialogProps {
   open: boolean

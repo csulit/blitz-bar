@@ -607,3 +607,11 @@ export const Route = createFileRoute('/protected')({
   },
 })
 ```
+
+## After Implementation
+
+Use the `dev-ops` subagent to validate new routes:
+
+```
+Use the dev-ops subagent to run pnpm check and pnpm test
+```

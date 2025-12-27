@@ -71,7 +71,7 @@ export function JobHistoryForm({
   // Debounced save function - 500ms delay
   const debouncedSave = useDebouncedCallback((data: JobHistoryFormData) => {
     // Only save if we have at least one job with data
-    const hasData = data.jobs?.some(
+    const hasData = data.jobs.some(
       (job) => job.companyName || job.position || job.summary,
     )
 

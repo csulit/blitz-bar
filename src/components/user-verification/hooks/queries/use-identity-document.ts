@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import { eq, desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { identityDocumentKeys } from '../keys'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { db } from '@/db'

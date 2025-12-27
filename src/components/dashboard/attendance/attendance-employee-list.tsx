@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 interface AttendanceEmployeeListProps {
   title: string
-  employees: EmployeeAttendance[]
+  employees: Array<EmployeeAttendance>
   emptyMessage: string
   type: 'absent' | 'late' | 'on-leave'
 }

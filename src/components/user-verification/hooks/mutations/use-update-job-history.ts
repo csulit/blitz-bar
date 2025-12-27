@@ -31,7 +31,7 @@ export const updateJobHistory = createServerFn({ method: 'POST' })
     const userId = session.user.id
 
     // Skip if no jobs to save
-    if (!data.jobs || data.jobs.length === 0) {
+    if (data.jobs.length === 0) {
       return { success: true }
     }
 

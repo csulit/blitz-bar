@@ -137,10 +137,7 @@ export function DashboardPageSkeleton() {
             <Skeleton className="mb-4 h-5 w-32" />
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, j) => (
-                <div
-                  key={j}
-                  className="flex items-center justify-between py-2"
-                >
+                <div key={j} className="flex items-center justify-between py-2">
                   <div className="space-y-1">
                     <Skeleton className="h-4 w-32" />
                     <Skeleton className="h-3 w-20" />

@@ -65,15 +65,9 @@ export function EducationForm({
   // Debounced save function - 500ms delay
   const debouncedSave = useDebouncedCallback(
     (data: Partial<EducationFormData>) => {
-      // Only save non-empty values
-      const nonEmptyData = Object.fromEntries(
-        Object.entries(data).filter(
-          ([, value]) => value !== undefined && value !== '',
-        ),
-      ) as Partial<EducationFormData>
-
-      if (Object.keys(nonEmptyData).length > 0) {
-        saveEducation(nonEmptyData)
+      // Only save if we have data
+      if (Object.keys(data).length > 0) {
+        saveEducation(data)
       }
     },
     500,

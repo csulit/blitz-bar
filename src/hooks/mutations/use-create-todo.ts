@@ -14,7 +14,10 @@ interface CreateTodoInput {
 export const createTodo = createServerFn({ method: 'POST' })
   .inputValidator((data: CreateTodoInput) => data)
   .handler(async ({ data }) => {
-    const [newTodo] = await db.insert(todos).values({ title: data.title }).returning()
+    const [newTodo] = await db
+      .insert(todos)
+      .values({ title: data.title })
+      .returning()
     return newTodo
   })
 

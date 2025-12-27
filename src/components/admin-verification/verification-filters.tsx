@@ -36,8 +36,7 @@ export function VerificationFilters({
     }, 300)
 
     return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue, filters.search])
+  }, [searchValue, filters, onFiltersChange])
 
   function updateFilter<TKey extends keyof FilterType>(
     key: TKey,
