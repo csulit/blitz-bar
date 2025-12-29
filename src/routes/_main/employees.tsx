@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Eye, EyeOff } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { SkeletonType } from '@/components/ui/data-table'
+import type { Employee } from '@/components/employees/types'
 import { EmployeesPageSkeleton } from '@/components/employees/employees-page-skeleton'
+import { useEmployees } from '@/components/employees/hooks/queries/use-employees'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -13,147 +15,6 @@ export const Route = createFileRoute('/_main/employees')({
   component: EmployeesPage,
   pendingComponent: EmployeesPageSkeleton,
 })
-
-// Types
-interface Employee {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  department: string
-  position: string
-  status: 'active' | 'on_leave' | 'terminated'
-  hireDate: string
-  salary: number
-}
-
-// Fake data generator
-function generateFakeEmployees(count: number): Array<Employee> {
-  const departments = [
-    'Engineering',
-    'Design',
-    'Marketing',
-    'Sales',
-    'HR',
-    'Finance',
-    'Operations',
-  ]
-  const positions = [
-    'Software Engineer',
-    'Senior Developer',
-    'Product Designer',
-    'Marketing Manager',
-    'Sales Representative',
-    'HR Specialist',
-    'Financial Analyst',
-    'Operations Lead',
-    'Tech Lead',
-    'UX Researcher',
-  ]
-  const statuses: Array<Employee['status']> = [
-    'active',
-    'on_leave',
-    'terminated',
-  ]
-  const firstNames = [
-    'James',
-    'Mary',
-    'Robert',
-    'Patricia',
-    'John',
-    'Jennifer',
-    'Michael',
-    'Linda',
-    'David',
-    'Elizabeth',
-    'William',
-    'Barbara',
-    'Richard',
-    'Susan',
-    'Joseph',
-    'Jessica',
-    'Thomas',
-    'Sarah',
-    'Christopher',
-    'Karen',
-    'Charles',
-    'Lisa',
-    'Daniel',
-    'Nancy',
-    'Matthew',
-    'Betty',
-    'Anthony',
-    'Margaret',
-    'Mark',
-    'Sandra',
-    'Donald',
-    'Ashley',
-  ]
-  const lastNames = [
-    'Smith',
-    'Johnson',
-    'Williams',
-    'Brown',
-    'Jones',
-    'Garcia',
-    'Miller',
-    'Davis',
-    'Rodriguez',
-    'Martinez',
-    'Hernandez',
-    'Lopez',
-    'Gonzalez',
-    'Wilson',
-    'Anderson',
-    'Thomas',
-    'Taylor',
-    'Moore',
-    'Jackson',
-    'Martin',
-    'Lee',
-    'Perez',
-    'Thompson',
-    'White',
-    'Harris',
-    'Sanchez',
-    'Clark',
-    'Ramirez',
-    'Lewis',
-    'Robinson',
-    'Walker',
-  ]
-
-  return Array.from({ length: count }, (_, i) => {
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-    const name = `${firstName} ${lastName}`
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@company.com`
-
-    return {
-      id: `emp-${i + 1}`,
-      name,
-      email,
-      avatar:
-        Math.random() > 0.3 ? `https://i.pravatar.cc/150?u=${i}` : undefined,
-      department: departments[Math.floor(Math.random() * departments.length)],
-      position: positions[Math.floor(Math.random() * positions.length)],
-      status:
-        statuses[
-          Math.floor(Math.random() * 100) < 85
-            ? 0
-            : Math.floor(Math.random() * 100) < 95
-              ? 1
-              : 2
-        ],
-      hireDate: new Date(
-        2020 + Math.floor(Math.random() * 4),
-        Math.floor(Math.random() * 12),
-        Math.floor(Math.random() * 28) + 1,
-      ).toISOString(),
-      salary: Math.floor(Math.random() * 100000) + 50000,
-    }
-  })
-}
 
 // Utility functions
 function getInitials(name: string) {
@@ -243,21 +104,11 @@ function formatDate(dateString: string) {
 function EmployeesPage() {
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [showSalary, setShowSalary] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [allEmployees, setAllEmployees] = useState<Array<Employee>>([])
+  const [visibleSalaries, setVisibleSalaries] = useState<Set<string>>(new Set())
 
-  // Simulate async data fetching
-  useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => {
-      setAllEmployees(generateFakeEmployees(200))
-      setIsLoading(false)
-    }, 1500)
-    return () => clearTimeout(timer)
-  }, [])
+  const { data: allEmployees = [], isLoading } = useEmployees()
 
-  // Simulate pagination (in real app, this would be server-side)
+  // Client-side pagination (in real app, this would be server-side)
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize
     return allEmployees.slice(start, start + pageSize)
@@ -331,41 +182,52 @@ function EmployeesPage() {
       },
       {
         accessorKey: 'salary',
-        header: () => (
-          <div className="flex items-center gap-1.5">
-            <span>Salary</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              aria-label={showSalary ? 'Hide salaries' : 'Show salaries'}
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowSalary(!showSalary)
-              }}
-            >
-              {showSalary ? (
-                <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
-              ) : (
-                <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
-        ),
-        size: 120,
-        cell: ({ row }) => (
-          <span className="text-sm font-medium tabular-nums">
-            {showSalary ? formatCurrency(row.original.salary) : '••••••'}
-          </span>
-        ),
+        header: 'Salary',
+        size: 140,
+        cell: ({ row }) => {
+          const employeeId = row.original.id
+          const isVisible = visibleSalaries.has(employeeId)
+          return (
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-medium tabular-nums">
+                {isVisible ? formatCurrency(row.original.salary) : '••••••'}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                aria-label={isVisible ? 'Hide salary' : 'Show salary'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setVisibleSalaries((prev) => {
+                    const next = new Set(prev)
+                    if (isVisible) {
+                      next.delete(employeeId)
+                    } else {
+                      next.add(employeeId)
+                    }
+                    return next
+                  })
+                }}
+              >
+                {isVisible ? (
+                  <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+              </Button>
+            </div>
+          )
+        },
       },
     ],
-    [showSalary],
+    [visibleSalaries],
   )
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
       <div className="mb-6">
+        <h1 className="font-display text-2xl">Employee Directory</h1>
         <p className="text-muted-foreground mt-1">
           Manage your team members and their roles.
         </p>

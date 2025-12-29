@@ -35,16 +35,16 @@ Execute all three agents simultaneously:
 
 Provide a summary table:
 
-| Agent      | Check               | Status               |
-| ---------- | ------------------- | -------------------- |
-| dev-ops    | Format & Lint       | Pass/Fail            |
-| dev-ops    | Tests               | Pass/Fail/Skipped    |
-| dev-ops    | Build               | Pass/Fail            |
-| db-ops     | Schema Changes      | Yes/No               |
-| db-ops     | Migrations          | Generated/Not Needed |
-| arch-check | Data Fetching       | Pass/Fail            |
-| arch-check | Page Headings       | Pass/Fail            |
-| arch-check | Import Conventions  | Pass/Fail            |
-| arch-check | Font Usage          | Pass/Fail            |
+| Agent      | Check              | Status               |
+| ---------- | ------------------ | -------------------- |
+| dev-ops    | Format & Lint      | Pass/Fail            |
+| dev-ops    | Tests              | Pass/Fail/Skipped    |
+| dev-ops    | Build              | Pass/Fail            |
+| db-ops     | Schema Changes     | Yes/No               |
+| db-ops     | Migrations         | Generated/Not Needed |
+| arch-check | Data Fetching      | Pass/Fail            |
+| arch-check | Page Headings      | Pass/Fail            |
+| arch-check | Import Conventions | Pass/Fail            |
+| arch-check | Font Usage         | Pass/Fail            |
 
 Report any failures with actionable details.
