@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { SkeletonType } from '@/components/ui/data-table'
+import type { TeamMember } from '@/components/team/types'
 import { TeamPageSkeleton } from '@/components/team/team-page-skeleton'
+import { useTeamMembers } from '@/components/team/hooks/queries/use-team-members'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
@@ -11,138 +13,6 @@ export const Route = createFileRoute('/_main/team')({
   component: TeamPage,
   pendingComponent: TeamPageSkeleton,
 })
-
-// Types
-interface TeamMember {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  role: string
-  department: string
-  status: 'active' | 'away' | 'offline'
-  joinedDate: string
-}
-
-// Fake data generator
-function generateFakeTeamMembers(count: number): Array<TeamMember> {
-  const departments = [
-    'Engineering',
-    'Design',
-    'Marketing',
-    'Sales',
-    'HR',
-    'Finance',
-    'Operations',
-  ]
-  const roles = [
-    'Team Lead',
-    'Senior Member',
-    'Member',
-    'Junior Member',
-    'Intern',
-  ]
-  const statuses: Array<TeamMember['status']> = ['active', 'away', 'offline']
-  const firstNames = [
-    'James',
-    'Mary',
-    'Robert',
-    'Patricia',
-    'John',
-    'Jennifer',
-    'Michael',
-    'Linda',
-    'David',
-    'Elizabeth',
-    'William',
-    'Barbara',
-    'Richard',
-    'Susan',
-    'Joseph',
-    'Jessica',
-    'Thomas',
-    'Sarah',
-    'Christopher',
-    'Karen',
-    'Charles',
-    'Lisa',
-    'Daniel',
-    'Nancy',
-    'Matthew',
-    'Betty',
-    'Anthony',
-    'Margaret',
-    'Mark',
-    'Sandra',
-    'Donald',
-    'Ashley',
-  ]
-  const lastNames = [
-    'Smith',
-    'Johnson',
-    'Williams',
-    'Brown',
-    'Jones',
-    'Garcia',
-    'Miller',
-    'Davis',
-    'Rodriguez',
-    'Martinez',
-    'Hernandez',
-    'Lopez',
-    'Gonzalez',
-    'Wilson',
-    'Anderson',
-    'Thomas',
-    'Taylor',
-    'Moore',
-    'Jackson',
-    'Martin',
-    'Lee',
-    'Perez',
-    'Thompson',
-    'White',
-    'Harris',
-    'Sanchez',
-    'Clark',
-    'Ramirez',
-    'Lewis',
-    'Robinson',
-    'Walker',
-  ]
-
-  return Array.from({ length: count }, (_, i) => {
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-    const name = `${firstName} ${lastName}`
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@company.com`
-
-    return {
-      id: `team-${i + 1}`,
-      name,
-      email,
-      avatar:
-        Math.random() > 0.3
-          ? `https://i.pravatar.cc/150?u=team${i}`
-          : undefined,
-      role: roles[Math.floor(Math.random() * roles.length)],
-      department: departments[Math.floor(Math.random() * departments.length)],
-      status:
-        statuses[
-          Math.floor(Math.random() * 100) < 70
-            ? 0
-            : Math.floor(Math.random() * 100) < 90
-              ? 1
-              : 2
-        ],
-      joinedDate: new Date(
-        2021 + Math.floor(Math.random() * 4),
-        Math.floor(Math.random() * 12),
-        Math.floor(Math.random() * 28) + 1,
-      ).toISOString(),
-    }
-  })
-}
 
 // Utility functions
 function getInitials(name: string) {
@@ -245,24 +115,15 @@ function formatDate(dateString: string) {
 function TeamPage() {
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(true)
-  const [allTeamMembers, setAllTeamMembers] = useState<Array<TeamMember>>([])
 
-  // Simulate async data fetching
-  useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => {
-      setAllTeamMembers(generateFakeTeamMembers(50))
-      setIsLoading(false)
-    }, 1500)
-    return () => clearTimeout(timer)
-  }, [])
+  const { data: teamMembers, isLoading } = useTeamMembers()
 
-  // Simulate pagination (in real app, this would be server-side)
+  // Paginate client-side (in real app, this would be server-side)
   const paginatedData = useMemo(() => {
+    if (!teamMembers) return []
     const start = (currentPage - 1) * pageSize
-    return allTeamMembers.slice(start, start + pageSize)
-  }, [allTeamMembers, currentPage, pageSize])
+    return teamMembers.slice(start, start + pageSize)
+  }, [teamMembers, currentPage, pageSize])
 
   // Skeleton config matching column content types
   const skeletonConfig: Array<SkeletonType> = [
@@ -334,6 +195,7 @@ function TeamPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
       <div className="mb-6">
+        <h1 className="font-display text-2xl">Team Directory</h1>
         <p className="text-muted-foreground mt-1">
           View and manage your team members.
         </p>
@@ -350,7 +212,7 @@ function TeamPage() {
         }}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
-        totalRows={allTeamMembers.length}
+        totalRows={teamMembers?.length ?? 0}
         manualPagination
         skeletonConfig={skeletonConfig}
       />
