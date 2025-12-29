@@ -45,7 +45,7 @@ function getNavMainItems(userType: UserType): Array<NavItem> {
     },
     {
       title: 'Team',
-      url: '#',
+      url: '/team',
       icon: IconUsers,
     },
   ]

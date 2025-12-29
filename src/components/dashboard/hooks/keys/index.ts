@@ -6,4 +6,5 @@ export const dashboardKeys = {
   complianceStats: () => [...dashboardKeys.all, 'complianceStats'] as const,
   attendanceStats: (period: AttendancePeriod = 'day') =>
     [...dashboardKeys.all, 'attendanceStats', { period }] as const,
+  compensationStats: () => [...dashboardKeys.all, 'compensationStats'] as const,
 }
