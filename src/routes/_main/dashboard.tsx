@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { AttendanceTracker } from '@/components/dashboard/attendance'
+import { CompensationTracker } from '@/components/dashboard/compensation'
 import { ComplianceTracker } from '@/components/dashboard/compliance'
 import { DashboardPageSkeleton } from '@/components/dashboard/dashboard-page-skeleton'
 import { WorkforceStatsCards } from '@/components/dashboard/workforce-stats-cards'
@@ -40,6 +41,16 @@ function DashboardPage() {
       </div>
 
       <AttendanceTracker />
+
+      {/* Compensation Overview */}
+      <div className="mb-6 mt-10">
+        <h2 className="font-display text-2xl">Compensation Overview</h2>
+        <p className="mt-1 text-muted-foreground">
+          Monitor payroll costs, 13th month accrual, and department breakdown.
+        </p>
+      </div>
+
+      <CompensationTracker />
     </div>
   )
 }

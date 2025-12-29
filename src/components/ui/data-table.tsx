@@ -513,7 +513,7 @@ export function DataTable<TData>({
                   <TableRow
                     key={row.id}
                     data-index={virtualRow.index}
-                    className={cn(onRowClick && 'cursor-pointer')}
+                    className="cursor-pointer"
                     onClick={() => onRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (

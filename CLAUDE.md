@@ -67,11 +67,12 @@ Files/routes prefixed with `demo` are examples and can be safely deleted.
 
 Use subagents for specialized tasks (all run with Opus):
 
-| Subagent   | Purpose                   | Commands                                    |
-| ---------- | ------------------------- | ------------------------------------------- |
-| `dev-ops`  | Test, lint, format, build | `pnpm test`, `pnpm check`, `pnpm build`     |
-| `db-ops`   | Database migrations       | `pnpm db:generate`, `db:migrate`, `db:push` |
-| `explorer` | Codebase research         | Read-only exploration                       |
+| Subagent     | Purpose                   | Commands                                    |
+| ------------ | ------------------------- | ------------------------------------------- |
+| `dev-ops`    | Test, lint, format, build | `pnpm test`, `pnpm check`, `pnpm build`     |
+| `db-ops`     | Database migrations       | `pnpm db:generate`, `db:migrate`, `db:push` |
+| `arch-check` | Architecture validation   | Pattern & convention checks                 |
+| `explorer`   | Codebase research         | Read-only exploration                       |
 
 After implementing features, delegate validation:
 
